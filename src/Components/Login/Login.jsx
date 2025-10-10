@@ -17,7 +17,7 @@ export default function Login() {
 
   async function submit(values) {
     try {
-      const { data } = await api.post("/api/Auth", values);
+      const { data } = await api.post("/Auth", values);
       localStorage.setItem("token", data.token);
       setUserToken(data.token);
       navigate("/dashboard");

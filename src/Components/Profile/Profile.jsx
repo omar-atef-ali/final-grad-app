@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import "./profile.css";
-import axios from "axios";
+import api from "../../api" ;
 import Swal from "sweetalert2";
 import { userContext } from "../../context/userContext";
 
@@ -16,8 +16,8 @@ export default function Profile() {
 
   async function handleProfileSubmit(values) {
     try {
-      let response = await axios.put(
-        `/api/Account/info`,
+      let response = await api.put(
+        `/Account/info`,
         values,
 
         {
@@ -73,7 +73,7 @@ export default function Profile() {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        let response = await axios.get(`/api/Account`, {
+        let response = await api.get(`/Account`, {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
@@ -111,8 +111,8 @@ export default function Profile() {
   async function handleChangePassword(values) {
     const { confirmNewPassword, ...dataToSend } = values;
     try {
-      let response = await axios.put(
-        `/api/Account/change-password`,
+      let response = await api.put(
+        `/Account/change-password`,
         dataToSend,
 
         {
