@@ -22,7 +22,7 @@ export default function Login() {
   async function submit(values) {
     // console.log("hello", values);
     
-    let {data} =await api.post("/Auth" , values)
+    let { data } = await api.post("/Auth", values)
     .catch((error) =>{ 
       toast.error("this Email is Unauthorized")
       
