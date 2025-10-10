@@ -7,3 +7,8 @@
   to = "https://deebai.runasp.net/api/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
