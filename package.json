@@ -16,7 +16,7 @@
     "@fortawesome/react-fontawesome": "^3.1.0",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
-    "echarts": "^6.0.0",
+    "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.2",
     "formik": "^2.4.6",
     "papaparse": "^5.5.3",
