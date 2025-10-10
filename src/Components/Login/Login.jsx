@@ -8,34 +8,23 @@ import api from "../../api";
 import toast from "react-hot-toast";
 import { userContext } from "../../context/userContext";
 
-
 export default function Login() {
-  let navigate = useNavigate()
+  let navigate = useNavigate();
 
-
-  let {setUserToken} = useContext(userContext)
-  
-  
+  let { setUserToken } = useContext(userContext);
 
   let [showPassword, setShowPassword] = useState(false);
 
   async function submit(values) {
-    // console.log("hello", values);
-    
-    let { data } = await api.post("/Auth", values)
-    .catch((error) =>{ 
-      toast.error("this Email is Unauthorized")
-      
-      
-
-    });
-    // console.log(data.token);
-    localStorage.setItem("token" , data.token)
-    setUserToken(data.token);
-    navigate("/dashboard")
-    
-
-    
+    try {
+      const { data } = await api.post("/api/Auth", values);
+      localStorage.setItem("token", data.token);
+      setUserToken(data.token);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login Error:", error);
+      toast.error(error.response?.data?.message || "Invalid email or password");
+    }
   }
 
   let formik = useFormik({
