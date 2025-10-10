@@ -1,0 +1,10 @@
+.save-profile{
+    background-color: rgb(14, 14, 133) !important;
+     color: white !important;
+     margin-left: 5px !important;
+
+}
+.save-profile:hover{
+    background-color: rgb(17, 17, 162) !important;
+     color: white !important;
+}

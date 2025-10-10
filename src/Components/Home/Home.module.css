@@ -1,0 +1,33 @@
+.btn-primary{
+    background-color: var(--foreground) !important;
+}
+
+
+
+.btndeeb {
+
+  background-color: var(--chart-3) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+.btndeeb:hover {
+  background-color: var(--chart-1) !important;
+  border-color: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+}
+
+
+.btnDeebOutline {
+  background-color: transparent !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+  border-radius: var(--radius) !important;
+  padding: 0.5rem 1rem !important; 
+  transition: all 0.2s ease-in-out !important;
+}
+
+.btnDeebOutline:hover {
+  background-color: var(--chart-3) !important;
+  color: var(--primary-foreground) !important;
+}
