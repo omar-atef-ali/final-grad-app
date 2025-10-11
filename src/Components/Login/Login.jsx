@@ -7,6 +7,7 @@ import axios from "axios";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { userContext } from "../../context/userContext";
+import * as yup from "yup";
 
 export default function Login() {
   let navigate = useNavigate();
@@ -27,12 +28,26 @@ export default function Login() {
     }
   }
 
+  let validationLogin = yup.object({
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Please enter a valid email address")
+      .min(5, "Email must be at least 5 characters long"),
+
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(4, "Password must be at least 4 characters long")
+      
+  });
+
   let formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-
+    validationSchema: validationLogin,
     onSubmit: submit,
   });
 
@@ -75,6 +90,11 @@ export default function Login() {
                     placeholder="you@Example.com"
                     className="form-control"
                   />
+                  {formik.touched.email && formik.errors.email ? (
+                    <div className="text-danger small mt-1">
+                      {formik.errors.email}
+                    </div>
+                  ) : null}
                 </div>
                 <div className="mb-3">
                   <div className="d-flex justify-content-between align-items-center mb-1">
@@ -107,6 +127,7 @@ export default function Login() {
                       placeholder="Enter your password"
                       required
                     />
+
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
@@ -119,7 +140,13 @@ export default function Login() {
                         <i className="fa-solid fa-eye"></i>
                       )}
                     </button>
+                    
                   </div>
+                  {formik.touched.password && formik.errors.password ? (
+                      <div className="text-danger small mt-1">
+                        {formik.errors.password}
+                      </div>
+                    ) : null}
                 </div>
 
                 <button type="submit" className="btn-deeb w-100">

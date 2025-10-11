@@ -2,8 +2,45 @@ import React, { useState } from "react";
 import style from "./ForgetPassword.module.css";
 import { Link } from "react-router-dom";
 import sideImage from "../../assets/images/ChatGPT Image Oct 6, 2025, 05_20_40 PM.png";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import api from "../../api";
 
 export default function ForgetPassword() {
+
+  
+
+  async function submit(values) {
+      try {
+        const response = await api.post("/Auth/forget-password", values);
+        console.log(response);
+        
+      } catch (error) {
+        console.error("forgetPassword Error:", error);
+        
+      }
+    }
+
+
+
+  let validationforget = yup.object({
+      email: yup
+        .string()
+        .required("Email is required")
+        .email("Please enter a valid email address")
+        .min(5, "Email must be at least 5 characters long"),
+  
+      
+        
+    });
+
+  let formik = useFormik({
+    initialValues : {
+      email : ""
+    } ,
+    validationSchema : validationforget ,
+    onSubmit : submit
+  })
 
   return (
     <>
@@ -38,7 +75,7 @@ export default function ForgetPassword() {
                   your password.
                 </p>
               </div>
-              <form>
+              <form onSubmit={formik.handleSubmit}>
                 <div className="mb-3">
                   <label
                     className="form-label fw-medium"
@@ -48,6 +85,10 @@ export default function ForgetPassword() {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="you@Example.com"
                     className="form-control"
                   />

@@ -12,12 +12,14 @@ import Protected from './Components/Protected/Protected'
 import { userContext } from './context/userContext'
 import Dashboard from './Components/Charts/Dashboard'
 import Profile from './Components/Profile/Profile'
+import ResetPassword from './Components/ResetPassword/ResetPassword'
 
 let routers = createBrowserRouter([
   {path:"/" , element: <Layout/> ,children : [
       {index: true , element : <Home/>  } , 
       {path : "login" , element : <Login /> } ,
       {path : "forget-password" , element : <ForgetPassword />  } ,
+      {path : "reset-password" , element : <ResetPassword />  } ,
       {path : "dashboard" , element : <Protected><Dashboard /></Protected>  } ,
       {path : "profile" , element : <Protected>< Profile /></Protected>  } ,
 
