@@ -1,12 +1,13 @@
 
-import React, { useEffect, useState } from "react";
-import Papa from "papaparse";
+import { useEffect, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import { Card, Row, Col, Container, Form } from "react-bootstrap";
+import { Card, Row, Col, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoneyBill1Wave, faMoneyBill, faCreditCard, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
+import { PropagateLoader } from "react-spinners";
 import './dashboard.css'
+
 
 export default function Dashboard() {
   const [kpis, setKpis] = useState({});
@@ -24,212 +25,161 @@ export default function Dashboard() {
   const [customerSegments, setCustomerSegments] = useState([]);
   const [categoryRevenueByCustomer, setCategoryRevenueByCustomer] = useState([]);
   const [salesBySegment, setSalesBySegment] = useState([]);
-  const [loading, setLoading] = useState("loading....");
+  const [selectedYear, setSelectedYear] = useState("2025");
+  const [loading, setLoading] = useState(true); 
 
-  const [selectedYear, setSelectedYear] = useState("2025"); // القيمة الافتراضية
-
+ 
   useEffect(() => {
-    let salesMap = {};
-    let qtyMap = {};
-    let categoryMap = {};
-    let paymentMap = { CASH: 0, BANK: 0 };
-    let totalSales = 0;
-    let totalItems = 0;
-    let totalOrders = 0;
-
-    let catMap = {};
-    let subMap = {};
-    let prodMap = {};
-    let productSalesMap = {};
-    let customerOrders = {};
-    let customerRevenue = {};
-    let monthlyOrderTotals = {};
-
+    setLoading(true);
     Promise.all([
-      fetch("/categories.csv").then(res => res.text()),
-      fetch("/sub_categories.csv").then(res => res.text()),
-      fetch("/products.csv").then(res => res.text()),
-      fetch("/orders.csv").then(res => res.text()),
-    ]).then(([catText, subText, prodText, ordersText]) => {
-      Papa.parse(catText, { header: true, complete: (res) => res.data.forEach(c => { if (c.id) catMap[c.id] = c.name; }) });
-      Papa.parse(subText, { header: true, complete: (res) => res.data.forEach(s => { if (s.id) subMap[s.id] = { name: s.name, category_id: s.category_id }; }) });
-      Papa.parse(prodText, { header: true, complete: (res) => res.data.forEach(p => { if (p.id) prodMap[p.id] = { sub_id: p.sub_category_id, name: p.name }; }) });
+      fetch("/categories.json").then(res => res.json()),
+      fetch("/sub_categories.json").then(res => res.json()),
+      fetch("/products.json").then(res => res.json()),
+      fetch("/orders.json").then(res => res.json()),
+      fetch("/order_items.json").then(res => res.json()),
+    ]).then(([categories, subCategories, products, orders, orderItems]) => {
+      const catMap = Object.fromEntries(categories.map(c => [c.id, c.name]));
+      const subMap = Object.fromEntries(subCategories.map(s => [s.id, { name: s.name, category_id: s.category_id }]));
+      const prodMap = Object.fromEntries(products.map(p => [p.id, { name: p.name, sub_id: p.sub_category_id }]));
+      const ordersMap = Object.fromEntries(orders.map(o => [o.id, { payment: o.payment_method || "CASH", date: o.order_date, customer_id: o.customer_id }]));
 
-      Papa.parse(ordersText, {
-        header: true,
-        complete: (res) => {
-          let ordersInfo = {};
-          res.data.forEach(o => {
-            if (o.id) ordersInfo[o.id] = { payment: o.payment_method || "CASH", date: o.order_date, customer_id: o.customer_id };
-          });
+      let salesMap = {}, qtyMap = {}, categoryMap = {}, paymentMap = { CASH: 0, BANK: 0 };
+      let productSalesMap = {}, customerOrders = {}, customerRevenue = {}, monthlyOrderTotals = {};
+      let totalSales = 0, totalItems = 0, totalOrders = 0;
 
-          Papa.parse("/order_items.csv", {
-            download: true,
-            header: true,
-            step: (row) => {
-              const item = row.data;
-              const price = parseFloat(item.price || 0);
-              const qty = parseInt(item.quantity || 1);
-              const total = price * qty;
+      orderItems.forEach(item => {
+        const price = parseFloat(item.price || 0);
+        const qty = parseInt(item.quantity || 1);
+        const total = price * qty;
+        const order = ordersMap[item.order_id];
+        if (!order) return;
 
-              const order = ordersInfo[item.order_id];
-              if (!order) return;
+        const date = new Date(order.date);
+        const year = date.getFullYear().toString();
+        if (year !== selectedYear) return;
 
-              const date = new Date(order.date);
-              const year = date.getFullYear().toString();
-              if (year !== selectedYear) return; // الفلترة حسب السنة
+        const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 
-              const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+        salesMap[month] = (salesMap[month] || 0) + total;
+        qtyMap[month] = (qtyMap[month] || 0) + qty;
 
-              // المبيعات الشهرية
-              if (!salesMap[month]) salesMap[month] = 0;
-              if (!qtyMap[month]) qtyMap[month] = 0;
-              salesMap[month] += total;
-              qtyMap[month] += qty;
+        productSalesMap[item.product_id] = (productSalesMap[item.product_id] || 0) + total;
 
-              // مبيعات المنتجات
-              productSalesMap[item.product_id] = (productSalesMap[item.product_id] || 0) + total;
+        const prod = prodMap[item.product_id];
+        if (prod) {
+          const sub = subMap[prod.sub_id];
+          const catName = catMap[sub?.category_id] || "Unknown";
+          categoryMap[catName] = (categoryMap[catName] || 0) + total;
 
-              // بيانات الفئة والإيرادات لكل منتج
-              const prod = prodMap[item.product_id];
-              if (prod) {
-                const prodName = prod.name;
-                const sub = subMap[prod.sub_id];
-                const catName = catMap[sub?.category_id] || "Unknown";
-                if (!categoryMap[catName]) categoryMap[catName] = 0;
-                categoryMap[catName] += total;
-
-                if (!customerRevenue[order.customer_id]) customerRevenue[order.customer_id] = {};
-                if (!customerRevenue[order.customer_id][prodName]) customerRevenue[order.customer_id][prodName] = 0;
-                customerRevenue[order.customer_id][prodName] += total;
-              }
-
-              // طريقة الدفع
-              paymentMap[order.payment] = (paymentMap[order.payment] || 0) + total;
-
-              // KPIs
-              totalSales += total;
-              totalItems += qty;
-              totalOrders += 1;
-
-              // بيانات العملاء
-              if (!customerOrders[order.customer_id]) customerOrders[order.customer_id] = { orders: [], total: 0 };
-              customerOrders[order.customer_id].orders.push(month);
-              customerOrders[order.customer_id].total += total;
-
-              // avg order value
-              if (!monthlyOrderTotals[month]) monthlyOrderTotals[month] = { total: 0, orders: new Set() };
-              monthlyOrderTotals[month].total += total;
-              monthlyOrderTotals[month].orders.add(item.order_id);
-            },
-            complete: () => {
-              setAvgOrderValueByMonth(Object.entries(monthlyOrderTotals).map(([month, data]) => ({ month, avg: data.total / data.orders.size })));
-              setTotalOrdersByMonth(Object.entries(monthlyOrderTotals).map(([month, data]) => ({ month, totalOrders: data.orders.size })));
-
-              // العملاء لكل شهر
-              let customersByMonthMap = {};
-              Object.entries(customerOrders).forEach(([cid, data]) => {
-                data.orders.forEach(m => {
-                  if (!customersByMonthMap[m]) customersByMonthMap[m] = new Set();
-                  customersByMonthMap[m].add(cid);
-                });
-              });
-              setCustomersByMonth(Object.entries(customersByMonthMap).sort((a, b) => a[0].localeCompare(b[0])).map(([month, set]) => ({ month, count: set.size })));
-
-              const colors = ["#007bff", "#6c757d", "#17a2b8", "#ffc107", "#28a745"];
-              const treemap = Object.entries(categoryMap).map(([catName, catTotal], index) => {
-                const mainColor = colors[index % colors.length];
-                const subCats = Object.entries(subMap)
-                  .filter(([subId, sub]) => catMap[sub.category_id] === catName)
-                  .map(([subId, sub]) => {
-                    let subTotal = 0;
-                    Object.entries(prodMap).forEach(([prodId, prod]) => {
-                      if (prod.sub_id === subId) subTotal += productSalesMap[prodId] || 0;
-                    });
-                    return {
-                      name: sub.name,
-                      value: subTotal,
-                      itemStyle: { color: `${mainColor}80` }
-                    };
-                  });
-                return {
-                  name: catName,
-                  value: catTotal,
-                  children: subCats,
-                  itemStyle: { color: mainColor + "cc" }
-                };
-              });
-              setTreemapData(treemap);
-
-              // تصنيف العملاء
-              let segments = { Champions: 0, Loyal: 0, Regular: 0, "At Risk": 0 };
-              let salesSegments = { Champions: 0, Loyal: 0, Regular: 0, "At Risk": 0 };
-              const totals = Object.values(customerOrders).map(c => c.total);
-              const threshold = totals.sort((a, b) => b - a)[Math.floor(totals.length * 0.2)] || 0;
-              Object.entries(customerOrders).forEach(([cid, data]) => {
-                const orderCount = data.orders.length;
-                const revenue = data.total;
-                let type = revenue >= threshold ? "Champions" : orderCount >= 3 ? "Loyal" : orderCount === 2 ? "Regular" : "At Risk";
-                segments[type]++;
-                salesSegments[type] += revenue;
-              });
-              setCustomerSegments(Object.entries(segments).map(([name, value]) => ({ name, value })));
-              setSalesBySegment(Object.entries(salesSegments).map(([name, value]) => ({ name, value })));
-
-              // الإيرادات لكل منتج مع الشريحة
-              let catRev = [];
-              Object.entries(customerRevenue).forEach(([cid, products]) => {
-                const orderCount = customerOrders[cid].orders.length;
-                const revenue = customerOrders[cid].total;
-                const segment = revenue >= threshold ? "Champions"
-                  : orderCount >= 3 ? "Loyal"
-                    : orderCount === 2 ? "Regular"
-                      : "At Risk";
-
-                Object.entries(products).forEach(([prodName, value]) => {
-                  const prod = Object.values(prodMap).find(p => p.name === prodName);
-                  const sub = subMap[prod?.sub_id];
-                  const catName = catMap[sub?.category_id] || "Unknown";
-                  catRev.push({ customer: cid, category: catName, value, segment });
-                });
-              });
-              setCategoryRevenueByCustomer(catRev);
-
-              // repeat vs new
-              let customerTypeByMonth = {};
-              Object.entries(customerOrders).forEach(([cid, data]) => {
-                const months = data.orders.sort();
-                months.forEach((month, index) => {
-                  if (!customerTypeByMonth[month]) customerTypeByMonth[month] = { new: 0, repeat: 0 };
-                  if (index === 0) customerTypeByMonth[month].new += 1;
-                  else customerTypeByMonth[month].repeat += 1;
-                });
-              });
-              setRepeatVsNew(Object.entries(customerTypeByMonth).sort((a, b) => a[0].localeCompare(b[0])).map(([month, counts]) => ({ month, ...counts })));
-
-              // تحديث باقي البيانات
-              setKpis({ totalSales, totalItems, totalOrders, avgOrderValue: totalSales / totalOrders });
-              setSalesByMonth(Object.entries(salesMap).map(([month, value]) => ({ month, value })));
-              setQtyByMonth(Object.entries(qtyMap).map(([month, value]) => ({ month, value })));
-              setSalesByYear(Object.entries(salesMap).map(([year, value]) => ({ year, value })));
-              setTopProducts(Object.entries(productSalesMap).map(([id, value]) => ({ name: prodMap[id]?.name || "Unknown", value })).sort((a, b) => b.value - a.value).slice(0, 10));
-              setTopCategories(Object.entries(categoryMap).map(([cat, val]) => ({ name: cat, value: val })));
-              setPaymentData(Object.entries(paymentMap).map(([name, value]) => ({ name, value })));
-
-              setLoading(null);
-            }
-          });
+          if (!customerRevenue[order.customer_id]) customerRevenue[order.customer_id] = {};
+          customerRevenue[order.customer_id][prod.name] = (customerRevenue[order.customer_id][prod.name] || 0) + total;
         }
-      });
-    });
-  }, [selectedYear]); // إعادة التحميل عند تغيير السنة
 
-  // اختيار السنة
+        paymentMap[order.payment] = (paymentMap[order.payment] || 0) + total;
+
+        totalSales += total;
+        totalItems += qty;
+        totalOrders += 1;
+
+        if (!customerOrders[order.customer_id]) customerOrders[order.customer_id] = { orders: [], total: 0 };
+        customerOrders[order.customer_id].orders.push(month);
+        customerOrders[order.customer_id].total += total;
+
+        if (!monthlyOrderTotals[month]) monthlyOrderTotals[month] = { total: 0, orders: new Set() };
+        monthlyOrderTotals[month].total += total;
+        monthlyOrderTotals[month].orders.add(item.order_id);
+      });
+
+      
+
+      // Avg Order Value & Total Orders
+      setAvgOrderValueByMonth(Object.entries(monthlyOrderTotals).map(([month, data]) => ({ month, avg: data.total / data.orders.size })));
+      setTotalOrdersByMonth(Object.entries(monthlyOrderTotals).map(([month, data]) => ({ month, totalOrders: data.orders.size })));
+
+      // Customers by Month
+      let customersByMonthMap = {};
+      Object.entries(customerOrders).forEach(([cid, data]) => {
+        data.orders.forEach(m => {
+          if (!customersByMonthMap[m]) customersByMonthMap[m] = new Set();
+          customersByMonthMap[m].add(cid);
+        });
+      });
+      setCustomersByMonth(Object.entries(customersByMonthMap).sort((a, b) => a[0].localeCompare(b[0])).map(([month, set]) => ({ month, count: set.size })));
+
+      // Treemap Data
+      const colors = ["#007bff", "#6c757d", "#17a2b8", "#ffc107", "#28a745"];
+      const treemap = Object.entries(categoryMap).map(([catName, catTotal], index) => {
+        const mainColor = colors[index % colors.length];
+        const subCats = Object.entries(subMap)
+          .filter(([subId, sub]) => catMap[sub.category_id] === catName)
+          .map(([subId, sub]) => {
+            let subTotal = Object.entries(prodMap).reduce((sum, [prodId, prod]) => prod.sub_id === subId ? sum + (productSalesMap[prodId] || 0) : sum, 0);
+            return { name: sub.name, value: subTotal, itemStyle: { color: `${mainColor}80` } };
+          });
+        return { name: catName, value: catTotal, children: subCats, itemStyle: { color: mainColor + "cc" } };
+      });
+      setTreemapData(treemap);
+
+      // Customer Segments
+      let segmentsCount = { Champions: 0, Loyal: 0, Regular: 0, "At Risk": 0 };
+      let salesSegments = { Champions: 0, Loyal: 0, Regular: 0, "At Risk": 0 };
+      const totals = Object.values(customerOrders).map(c => c.total);
+      const threshold = totals.sort((a, b) => b - a)[Math.floor(totals.length * 0.2)] || 0;
+      Object.entries(customerOrders).forEach(([cid, data]) => {
+        const orderCount = data.orders.length;
+        const revenue = data.total;
+        let type = revenue >= threshold ? "Champions" : orderCount >= 3 ? "Loyal" : orderCount === 2 ? "Regular" : "At Risk";
+        segmentsCount[type]++;
+        salesSegments[type] += revenue;
+      });
+      setCustomerSegments(Object.entries(segmentsCount).map(([name, value]) => ({ name, value })));
+      setSalesBySegment(Object.entries(salesSegments).map(([name, value]) => ({ name, value })));
+
+      // Category Revenue by Customer Segment
+      let catRev = [];
+      Object.entries(customerRevenue).forEach(([cid, products]) => {
+        const orderCount = customerOrders[cid].orders.length;
+        const revenue = customerOrders[cid].total;
+        const segment = revenue >= threshold ? "Champions"
+          : orderCount >= 3 ? "Loyal"
+            : orderCount === 2 ? "Regular"
+              : "At Risk";
+        Object.entries(products).forEach(([prodName, value]) => {
+          const prod = Object.values(prodMap).find(p => p.name === prodName);
+          const sub = subMap[prod?.sub_id];
+          const catName = catMap[sub?.category_id] || "Unknown";
+          catRev.push({ customer: cid, category: catName, value, segment });
+        });
+      });
+      setCategoryRevenueByCustomer(catRev);
+
+      // Repeat vs New Customers
+      let customerTypeByMonth = {};
+      Object.entries(customerOrders).forEach(([cid, data]) => {
+        const months = data.orders.sort();
+        months.forEach((month, index) => {
+          if (!customerTypeByMonth[month]) customerTypeByMonth[month] = { new: 0, repeat: 0 };
+          if (index === 0) customerTypeByMonth[month].new += 1;
+          else customerTypeByMonth[month].repeat += 1;
+        });
+      });
+      setRepeatVsNew(Object.entries(customerTypeByMonth).sort((a, b) => a[0].localeCompare(b[0])).map(([month, counts]) => ({ month, ...counts })));
+
+      setKpis({ totalSales, totalItems, totalOrders, avgOrderValue: totalSales / totalOrders });
+      setSalesByMonth(Object.entries(salesMap).map(([month, value]) => ({ month, value })));
+      setQtyByMonth(Object.entries(qtyMap).map(([month, value]) => ({ month, value })));
+      setSalesByYear(Object.entries(salesMap).map(([year, value]) => ({ year, value })));
+      setTopProducts(Object.entries(productSalesMap).map(([id, value]) => ({ name: prodMap[id]?.name || "Unknown", value })).sort((a, b) => b.value - a.value).slice(0, 10));
+      setTopCategories(Object.entries(categoryMap).map(([cat, val]) => ({ name: cat, value: val })));
+      setPaymentData(Object.entries(paymentMap).map(([name, value]) => ({ name, value })));
+
+      setLoading(false);
+    });
+  }, [selectedYear]);
+
   const handleYearChange = (e) => setSelectedYear(e.target.value);
 
-  // باقي الـ charts تبقى مثل ما هي، بس كل البيانات مرتبطة بـ selectedYear
 
-  // تحديد الكاتيجوريز والـ segments
   const categories = [...new Set(categoryRevenueByCustomer.map(d => d.category))];
   const segments = ["Champions", "Loyal", "Regular", "At Risk"];
   const series = segments.map(seg => ({
@@ -276,7 +226,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-bg p-4">
-       <h1 className="mt-5 mb-3 text-white text-center text-white">Sales Analytics Dashboard</h1>
+      <h1 className="mt-5 mb-3 text-white text-center text-white">Sales Analytics Dashboard</h1>
 
       <p className="mb-4 text-center text-white">Comprehensive overview of your business performance</p>
       <Row className="mb-4 align-items-center">
@@ -317,7 +267,7 @@ export default function Dashboard() {
               fontWeight: "500",
               fontSize: "16px",
               cursor: "pointer",
-              textDecoration:"none"
+              textDecoration: "none"
             }}
 
           >
@@ -327,8 +277,12 @@ export default function Dashboard() {
       </Row>
 
 
-      {loading && <p>{loading}</p>}
-      {!loading && (
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+          <PropagateLoader color="#007bff" size={15} />
+          <p style={{ color: '#fff', marginTop: 20, fontSize: 18, textAlign: 'center', maxWidth: 400 }}>Personalizing your insights…</p>
+        </div>
+      ) : (
         <>
 
 
@@ -386,9 +340,9 @@ export default function Dashboard() {
 
           <div className='cardd'>
             <Row className="my-5">
-              <Col md={12}> {/* بدل md={6}، هيبقى أعرض */}
+              <Col md={12}> 
                 <ReactECharts
-                  style={{ height: 400, width: '100%', marginBottom: 30 }} // full width للعمود
+                  style={{ height: 400, width: '100%', marginBottom: 30 }} 
                   option={{
 
                     title: {
@@ -396,7 +350,7 @@ export default function Dashboard() {
                       left: "center",
                       top: 10,
                       textStyle: {
-                        color: "#fff", // العنوان أبيض
+                        color: "#fff",
                       },
                     },
                     tooltip: { trigger: "axis" },
@@ -404,14 +358,14 @@ export default function Dashboard() {
                       data: ["Total Sales", "Total Quantity"],
                       top: 50,
                       textStyle: {
-                        color: "#fff", // العنوان أبيض
+                        color: "#fff",
                       },
                     },
                     textStyle: {
-                      color: "#fff", // الكتابة في legend أبيض
+                      color: "#fff",
                     },
                     grid: {
-                      left: '5%',   // خلى الجراف يستغل مساحة أكبر
+                      left: '5%',  
                       right: '5%',
                       bottom: '10%',
                       top: '20%',
@@ -428,24 +382,24 @@ export default function Dashboard() {
                       axisLabel: { rotate: 0 },
                       axisLine: { lineStyle: { color: "#333" } },
                       splitLine: { show: false },
-                      axisLabel: { color: "#fff" }, // الأرقام / النصوص على المحور X
-                      axisLine: { lineStyle: { color: "#fff" } }, // لون خط المحور
+                      axisLabel: { color: "#fff" },
+                      axisLine: { lineStyle: { color: "#fff" } },
                     },
                     yAxis: [
                       {
                         type: "value",
                         name: "Sales (JOD)",
                         splitLine: { show: false },
-                        axisLabel: { color: "#fff" }, // الأرقام / النصوص على المحور X
-                        axisLine: { lineStyle: { color: "#fff" } }, // لون خط المحور
+                        axisLabel: { color: "#fff" }, 
+                        axisLine: { lineStyle: { color: "#fff" } }, 
 
                       },
                       {
                         type: "value",
                         name: "Quantity",
                         splitLine: { show: true },
-                        axisLabel: { color: "#fff" }, // الأرقام / النصوص على المحور X
-                        axisLine: { lineStyle: { color: "#fff" } }, // لون خط المحور
+                        axisLabel: { color: "#fff" }, 
+                        axisLine: { lineStyle: { color: "#fff" } }, 
 
                       },
 
@@ -480,18 +434,18 @@ export default function Dashboard() {
               {/* Top Categories - Vertical Bar */}
               <Col md={9}>
                 <ReactECharts
-                  style={{ height: 500, marginBottom: 30 }} // زيادة الارتفاع
+                  style={{ height: 500, marginBottom: 30 }}
                   option={{
                     title: {
                       text: "Top 10 Categories in Sales",
                       left: "center",
                       textStyle: {
-                        color: "#fff", // العنوان أبيض
+                        color: "#fff",
                       },
                     },
                     tooltip: { trigger: "axis" },
                     grid: {
-                      bottom: 80,   // أقل شويه من قبل
+                      bottom: 80,  
                       left: '10%',
                       right: '5%',
                       containLabel: true,
@@ -505,14 +459,14 @@ export default function Dashboard() {
                         rotate: 45,
                         fontSize: 12,
                         interval: 0,
-                        color: "#fff", // الأرقام / النصوص على المحور X
-                        lineStyle: { color: "#fff" }, // لون خط المحور
+                        color: "#fff",
+                        lineStyle: { color: "#fff" },
                       },
                     },
                     yAxis: {
                       type: "value",
-                      axisLabel: { color: "#fff" }, // الأرقام / النصوص على المحور X
-                      axisLine: { lineStyle: { color: "#fff" } }, // لون خط المحور
+                      axisLabel: { color: "#fff" },
+                      axisLine: { lineStyle: { color: "#fff" } },
                     },
                     series: [
                       {
@@ -551,7 +505,7 @@ export default function Dashboard() {
                     },
                     tooltip: { trigger: "item" },
                     legend: { bottom: 55, textStyle: { color: "#fff" } },
-                    color: ["#FFA500", "#3498db"], // Cash برتقالي، Bank أزرق فاتح
+                    color: ["#FFA500", "#3498db"],
                     series: [
                       {
                         name: "Sales",
@@ -560,12 +514,12 @@ export default function Dashboard() {
                         data: paymentData,
                         label: {
                           show: true,
-                          position: "inside", // داخل الـ slice
+                          position: "inside",
                           fontSize: 14,
                           fontWeight: "bold",
                           color: "#fff",
                           formatter: (params) => {
-                            // الاسم فوق القيمة والنسبة
+                            
                             return `${params.name}`;
                           },
                         },
@@ -634,7 +588,7 @@ export default function Dashboard() {
                 <ReactECharts
                   style={{ height: 400 }}
                   option={{
-                    title: { text: "Customer Retention", left: "center", textStyle: { color: "#fff" } },
+                    title: { text: "Customer Retention", left: "center",top: "5%", textStyle: { color: "#fff"} },
                     tooltip: { trigger: "axis" },
                     legend: { data: ["New", "Repeat"], textStyle: { color: "#fff" } },
                     xAxis: { type: "category", data: repeatVsNew.map((d) => d.month), axisLabel: { color: "#fff" } },
@@ -681,7 +635,7 @@ export default function Dashboard() {
                   breadcrumb: { show: false },
                   data: treemapData.map(cat => ({
                     ...cat,
-                    // Label للفئة الرئيسية داخل المربع وفي الوسط
+                    
                     label: {
                       show: true,
                       position: 'inside',
@@ -690,11 +644,11 @@ export default function Dashboard() {
                       fontSize: 15,
                       fontWeight: 'bold',
                       color: '#000000ff',
-                      formatter: '{b}', // اسم الفئة الرئيسي كامل
+                      formatter: '{b}', 
                     },
                     children: cat.children.map(sub => ({
                       ...sub,
-                      // Label للفئات الفرعية
+                    
                       label: {
                         show: true,
                         position: 'inside',
@@ -721,7 +675,7 @@ export default function Dashboard() {
                     }))
                   })),
                   label: {
-                    // fallback عام لو في أي نص بدون children
+                   
 
                     show: true,
                     position: 'inside',
@@ -857,7 +811,14 @@ export default function Dashboard() {
 
 
         </>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
+
+
+
+
+
+
