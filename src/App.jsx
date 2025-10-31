@@ -13,15 +13,23 @@ import { userContext } from './context/userContext'
 import Dashboard from './Components/Charts/Dashboard'
 import Profile from './Components/Profile/Profile'
 import ResetPassword from './Components/ResetPassword/ResetPassword'
+import Register from './Components/Register/Register'
+import ConfirmEmail from './Components/ConfirmEmail/ConfirmEmail'
+import ChangePassword from './Components/ChangePassword/ChangePassword'
+
 
 let routers = createBrowserRouter([
   {path:"/" , element: <Layout/> ,children : [
-      {index: true , element : <Home/>  } , 
+      {index: true , element :  < Register /> } , 
       {path : "login" , element : <Login /> } ,
+      {path : "register" , element : < Register />  } ,
       {path : "forget-password" , element : <ForgetPassword />  } ,
       {path : "reset-password" , element : <ResetPassword />  } ,
       {path : "dashboard" , element : <Protected><Dashboard /></Protected>  } ,
       {path : "profile" , element : <Protected>< Profile /></Protected>  } ,
+      {path : "/confirm-email" , element : <Protected><ConfirmEmail /></Protected>  } ,
+      {path : "/changepassword" , element : <Protected><ChangePassword /></Protected>  } ,
+      
 
   ]}
 ])

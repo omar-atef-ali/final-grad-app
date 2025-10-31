@@ -33,6 +33,7 @@
   --sidebar-accent-foreground: oklch(0.15 0.03 250);
   --sidebar-border: oklch(0.9 0.005 250);
   --sidebar-ring: oklch(0.35 0.08 250);
+  --main-font: 'DM Mono', monospace;
 }
 
 
@@ -64,4 +65,29 @@
   background-color: var(--secondary);
   border-color: var(--secondary);
   color: var(--secondary-foreground);
+}
+
+.custom-popup {
+  border: 2px solid #012d9b0c; /* لون البوردر */
+  border-radius: 20px; /* تخليها ناعمة */
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 93, 200, 0.053);
+}
+
+.custom-title {
+  font-weight: bold;
+  background: linear-gradient(to right, white, #bcbcbc);
+  -webkit-background-clip: text;   /* يخلّي الخلفية داخل النص */
+  -webkit-text-fill-color: transparent; /* يخفي اللون العادي للنص */
+}
+
+.custom-text {
+  font-size: 15px;
+  opacity: .6;
+}
+
+.custom-btn {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  padding: 8px 20px !important;
 }

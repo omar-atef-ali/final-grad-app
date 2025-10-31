@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-// import profileImage from "../../assets/images/ChatGPT Image 8 أكتوبر 2025، 08_55_40 م.png";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import "./profile.css";
-import api from "../../api" ;
+import style from "./Profile.module.css";
+import api from "../../api";
 import Swal from "sweetalert2";
 import { userContext } from "../../context/userContext";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
   const [isEditable, setIsEditable] = useState(false);
@@ -26,20 +24,38 @@ export default function Profile() {
           },
         }
       );
-      console.log(response.data);
+      // console.log(response.data);
       Swal.fire({
         icon: "success",
         title: "Profile updated!",
         text: "Your information has been saved successfully.",
+        background: "#0d1117",
+        color: "#ffffff",
+        confirmButtonColor: "rgba(0, 71, 171, 0.2)",
+        customClass: {
+          popup: "custom-popup",
+          title: "custom-title",
+          confirmButton: "custom-btn",
+          htmlContainer: "custom-text",
+        },
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       Swal.fire({
         icon: "error",
         title: "Update failed!",
         text:
           error.response?.data?.message ||
           "Something went wrong while saving your profile.",
+        background: "#0d1117",
+        color: "#ffffff",
+        confirmButtonColor: "rgba(0, 71, 171, 0.2)",
+        customClass: {
+          popup: "custom-popup",
+          title: "custom-title",
+          confirmButton: "custom-btn",
+          htmlContainer: "custom-text",
+        },
       });
     }
   }
@@ -90,232 +106,128 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
-  let validationChangePass = yup.object({
-    currentPassword: yup.string().required("Current Password is required"),
-    newPassword: yup
-      .string()
-      .required("New Password is required")
-      .min(8, "Password must be at least 8 characters")
-      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-      .matches(/[0-9]/, "Password must contain at least one number")
-      .matches(
-        /[@$!%*?&]/,
-        "Password must contain at least one special character"
-      ),
-    confirmNewPassword: yup
-      .string()
-      .required("Confirm Password is required")
-      .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
-  });
-  async function handleChangePassword(values) {
-    const { confirmNewPassword, ...dataToSend } = values;
-    try {
-      let response = await api.put(
-        `/Account/change-password`,
-        dataToSend,
-
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      console.log(response.data);
-      Swal.fire({
-        icon: "success",
-        title: "Password changed!",
-        text: "Your password has been updated successfully.",
-      });
-    } catch (error) {
-      console.log(error);
-      Swal.fire({
-        icon: "error",
-        title: "Password change failed!",
-        text:
-          error.response?.data?.message ||
-          "Something went wrong while changing your password.",
-      });
-    }
-  }
-  let formik2 = useFormik({
-    initialValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    },
-    onSubmit: handleChangePassword,
-    validationSchema: validationChangePass,
-  });
-
   return (
-    <div className="col-md-12 d-flex align-items-center justify-content-center bg-body h-100 mt-5">
-      <div className="w-50">
-        <h2
-          className="text-center fw-bold mt-1 mb-5"
-          style={{ color: "var(--secondary)" }}
-        >
-          <FontAwesomeIcon icon={faUser} /> Your Profile
-        </h2>
+    <div className={`${style.Profilepage}`}>
+      <div className="container">
+        <div className="row min-vh-100 align-items-center py-4">
+          <div className="col-12 col-md-6">
+            <div
+              className="card shadow mb-5 p-4 py-5 my-5"
+              style={{
+                width: "100%", // العرض النسبي
+                maxWidth: "700px", // أقصى عرض للكارد
+                minHeight: "450px",
+                maxHeight: "890px",
+                overflow: "hidden", // تكبير الارتفاع شوية
+                background: `
+                              radial-gradient(
+                                circle at 2% 50%,       /* مكان النقطة المضيئة: شمال الكارد */
+                                rgba(5, 53, 121, 0.6) 0%,  /* لون الإضاءة الأزرق */
+                                rgba(0, 71, 171, 0.2) 20%, /* تدرج ناعم */
+                                rgba(0, 0, 0, 0.9) 70%,    /* يتحول للأسود */
+                                rgba(0, 0, 0, 1) 100%      /* أسود كامل */
+                              )
+                            `,
+                backdropFilter: "blur(15px)",
+                borderRadius: "28px",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                boxShadow: "0 0 50px rgba(0, 0, 0, 0.7)",
+              }}
+            >
+              <h5
+                className="fw-semibold mb-5 text-center"
+                style={{
+                  color: "white",
+                  fontSize: "2rem",
+                  background: "linear-gradient(to right, white, #bcbcbcff)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Personal Information
+              </h5>
+              <form onSubmit={formik1.handleSubmit}>
+                <div className="mb-3">
+                  <label
+                    htmlFor="firstName"
+                    className="form-label fw-medium text-white"
+                    style={{ color: "white", fontSize: "0.9rem" }}
+                  >
+                    First Name
+                  </label>
+                  <input
+                    disabled={!isEditable}
+                    type="text"
+                    id="firstName"
+                    placeholder="First name"
+                    className={` ${style.customBorder} ${style.custominput} form-control bg-transparent text-light py-1`}
+                    onBlur={formik1.handleBlur}
+                    onChange={formik1.handleChange}
+                    value={formik1.values.firstName}
+                  />
+                  {formik1.touched.firstName && formik1.errors.firstName && (
+                    <div className="text-danger mt-1">
+                      {formik1.errors.firstName}
+                    </div>
+                  )}
+                </div>
+                <div className="mb-3 mt-4">
+                  <label
+                    htmlFor="lastName"
+                    className="form-label fw-medium text-white"
+                    style={{ color: "white", fontSize: "0.9rem" }}
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    disabled={!isEditable}
+                    type="text"
+                    id="lastName"
+                    placeholder="Last name"
+                    className={` ${style.customBorder3} ${style.custominput} form-control bg-transparent text-light py-1`}
+                    onBlur={formik1.handleBlur}
+                    onChange={formik1.handleChange}
+                    value={formik1.values.lastName}
+                  />
+                  {formik1.touched.lastName && formik1.errors.lastName && (
+                    <div className="text-danger mt-1">
+                      {formik1.errors.lastName}
+                    </div>
+                  )}
+                </div>
+                <div className="d-flex justify-content-end gap-2 mt-5">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditable(true)}
+                    className={`${style.btn_S} px-4 py-2`}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    disabled={!isEditable}
+                    type="submit"
+                    className=" btn-deeb  px-4 py-2"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
 
-        {/* Profile Info Section */}
-        <div className="card shadow mb-5 p-4">
-          <h5
-            className="fw-semibold mb-3 text-center"
-            style={{ color: "var(--secondary)", fontSize: 26 }}
-          >
-            Personal Information
-          </h5>
-          <form onSubmit={formik1.handleSubmit}>
-            <div className="mb-3">
-              <label
-                htmlFor="firstName"
-                className="form-label fw-medium text-secondary"
-              >
-                First Name
-              </label>
-              <input
-                disabled={!isEditable}
-                type="text"
-                id="firstName"
-                placeholder="First name"
-                className="form-control"
-                onBlur={formik1.handleBlur}
-                onChange={formik1.handleChange}
-                value={formik1.values.firstName}
-              />
-              {formik1.touched.firstName && formik1.errors.firstName && (
-                <div className="text-danger mt-1">
-                  {formik1.errors.firstName}
-                </div>
-              )}
+          <div className="col-12 col-md-6 d-flex flex-column justify-content-center align-items-center gap-5 mb-5">
+            <div className="row1 text-center">
+              <h2>Account</h2>
+              <p className={`${style.row2_link} mt-3`}>Get help</p>
             </div>
-            <div className="mb-3">
-              <label
-                htmlFor="lastName"
-                className="form-label fw-medium text-secondary"
-              >
-                Last Name
-              </label>
-              <input
-                disabled={!isEditable}
-                type="text"
-                id="lastName"
-                placeholder="Last name"
-                className="form-control"
-                onBlur={formik1.handleBlur}
-                onChange={formik1.handleChange}
-                value={formik1.values.lastName}
-              />
-              {formik1.touched.lastName && formik1.errors.lastName && (
-                <div className="text-danger mt-1">
-                  {formik1.errors.lastName}
-                </div>
-              )}
-            </div>
-            <div className="d-flex justify-content-end gap-2">
-              <button
-                type="button"
-                onClick={() => setIsEditable(true)}
-                className="btn btn-success px-4 py-2"
-                style={{borderRadius : "0.625rem"}}
-              >
-                Edit
-              </button>
-              <button
-                disabled={!isEditable}
-                type="submit"
-                className=" btn-deeb  px-4 py-2"
-              >
-                Save
-              </button>
-            </div>
-          </form>
-        </div>
 
-        {/* Change Password Section */}
-        <div className="card shadow mb-5 p-4">
-          <h5
-            className="fw-semibold mb-3 text-center"
-            style={{ color: "var(--secondary)", fontSize: 25 }}
-          >
-            Change Password
-          </h5>
-          <form onSubmit={formik2.handleSubmit}>
-            <div className="mb-3">
-              <label
-                htmlFor="currentPassword"
-                className="form-label fw-medium text-secondary"
-              >
-                Current Password
-              </label>
-              <input
-                type="password"
-                id="currentPassword"
-                placeholder="Current password"
-                className="form-control"
-                onBlur={formik2.handleBlur}
-                onChange={formik2.handleChange}
-                value={formik2.values.currentPassword}
-              />
-              {formik2.touched.currentPassword &&
-                formik2.errors.currentPassword && (
-                  <div className="text-danger mt-1">
-                    {formik2.errors.currentPassword}
-                  </div>
-                )}
+            <div className="row2 text-center">
+              <h3>Change Password</h3>
+              <Link to="/changepassword" className={`${style.row2_link} mt-3`}>
+                Update password now
+              </Link>
             </div>
-            <div className="mb-3">
-              <label
-                htmlFor="newPassword"
-                className="form-label fw-medium text-secondary"
-              >
-                New Password
-              </label>
-              <input
-                type="password"
-                id="newPassword"
-                placeholder="New password"
-                className="form-control"
-                onBlur={formik2.handleBlur}
-                onChange={formik2.handleChange}
-                value={formik2.values.newPassword}
-              />
-              {formik2.touched.newPassword && formik2.errors.newPassword && (
-                <div className="text-danger mt-1">
-                  {formik2.errors.newPassword}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <label
-                htmlFor="confirmNewPassword"
-                className="form-label fw-medium text-secondary"
-              >
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                id="confirmNewPassword"
-                placeholder="Confirm new password"
-                className="form-control"
-                onBlur={formik2.handleBlur}
-                onChange={formik2.handleChange}
-                value={formik2.values.confirmNewPassword}
-              />
-              {formik2.touched.confirmNewPassword &&
-                formik2.errors.confirmNewPassword && (
-                  <div className="text-danger mt-1">
-                    {formik2.errors.confirmNewPassword}
-                  </div>
-                )}
-            </div>
-            <div className="d-flex justify-content-end">
-              <button type="submit" className="btn-deeb px-4 py-2">
-                Save
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
