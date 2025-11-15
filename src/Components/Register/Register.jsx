@@ -4,6 +4,8 @@ import api from "../../api";
 import style from "./Register.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Swal from "sweetalert2";
+
 
 
 export default function Register() {
@@ -14,9 +16,26 @@ export default function Register() {
     try {
       let response = await api.post(`/Auth/register`, values);
       console.log(response);
-      navigate("/login");
+
+      navigate("/check-email");
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "registration failed!",
+        text:
+          error.response?.data?.errors[1] ||
+          "Something went wrong while registration.",
+        background: "#0d1117",
+        color: "#ffffff",
+        confirmButtonColor: "rgba(0, 71, 171, 0.2)",
+        customClass: {
+          popup: "custom-popup",
+          title: "custom-title",
+          confirmButton: "custom-btn",
+          htmlContainer: "custom-text",
+        },
+      });
     }
   }
 
@@ -106,7 +125,7 @@ export default function Register() {
               className="fw-bold mb-1"
               style={{
                 fontSize: "2rem",
-                
+
                 background: "linear-gradient(to right, white, #bcbcbcff)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
