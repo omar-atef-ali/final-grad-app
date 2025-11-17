@@ -6,40 +6,64 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import api from "../../api";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 export default function ForgetPassword() {
+  let [loading, setLoading] = useState(false);
+
   async function submit(values) {
     try {
+      setLoading(true);
       const response = await api.post("/Auth/forget-password", values);
       // console.log(response);
       Swal.fire({
         icon: "success",
         title: "Email Sent!",
         text: "We've sent you a link to reset your password. Please check your inbox.",
-        background: "#0d1117", 
-        color: "#ffffff", 
+        background: "#0d1117",
+        color: "#ffffff",
         confirmButtonColor: "rgba(0, 71, 171, 0.2)",
         customClass: {
           popup: "custom-popup",
           title: "custom-title",
           confirmButton: "custom-btn",
-          htmlContainer: "custom-text", 
+          htmlContainer: "custom-text",
         },
       });
     } catch (error) {
-      // console.error("forgetPassword Error:", error);
+      setLoading(false);
       Swal.fire({
         icon: "error",
         title: "Email Not Confirmed!",
         text: "You need to register or confirm your email address before performing any actions on your account.",
-        background: "#0d1117", 
-        color: "#ffffff", 
-        confirmButtonColor: "rgba(0, 71, 171, 0.2)", 
+        background: "#0d1117",
+        color: "#ffffff",
+        confirmButtonColor: "rgba(0, 71, 171, 0.2)",
         customClass: {
           popup: "custom-popup",
           title: "custom-title",
           confirmButton: "custom-btn",
-          htmlContainer: "custom-text", 
+          htmlContainer: "custom-text",
+        },
+      });
+      toast.error("the selected email is invalid", {
+        position: "top-center", // يظهر من اليمين
+        duration: 4000,
+        style: {
+          background:
+            "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          padding: "16px 20px",
+          color: "#ffffff",
+          fontSize: "0.95rem",
+          borderRadius: "5px",
+          width: "300px",
+          height: "60px",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+        },
+        iconTheme: {
+          primary: "#FF4D4F",
+          secondary: "#ffffff",
         },
       });
     }
@@ -63,69 +87,82 @@ export default function ForgetPassword() {
 
   return (
     <>
-      <div className={`container-fluid p-0  ${style.loginpage} `}>
+      <div className={`container-fluid p-0 ${style.loginpage}`}>
         <div
-          className="px-4 shadow-lg my-5 py-5 d-flex flex-column  "
+          className="px-4 shadow-lg my-5 py-5 d-flex flex-column"
           style={{
             width: "100%",
             maxWidth: "450px",
-            minHeight: "400px",
-            maxHeight: "470px",
+            minHeight: "420px",
+            maxHeight: "500px",
             overflow: "hidden",
             background: `
-                          radial-gradient(
-                            circle at 2% 50%,       
-                            rgba(5, 53, 121, 0.6) 0%, 
-                            rgba(0, 71, 171, 0.2) 20%, 
-                            rgba(0, 0, 0, 0.9) 70%,    
-                            rgba(13, 13, 13, 1) 100%        
-                          )
-                        `,
+        radial-gradient(
+          circle at 2% 50%,       
+          rgba(5, 53, 121, 0.6) 0%, 
+          rgba(0, 71, 171, 0.2) 20%, 
+          rgba(0, 0, 0, 0.9) 70%,    
+          rgba(13, 13, 13, 1) 100%        
+        )
+      `,
             backdropFilter: "blur(15px)",
             borderRadius: "28px",
             border: "1px solid rgba(255, 255, 255, 0.08)",
             boxShadow: "0 0 50px rgba(0, 0, 0, 0.7)",
           }}
         >
-          <div className="mb-4">
+          {/* Back Link */}
+          <div className="mb-3">
             <Link
               to="/login"
-              className="d-inline-flex align-items-center  text-decoration-none mb-4 small"
-              style={{ color: "var(--accent)" }}
+              className={`${style.Free} totalFont d-inline-flex align-items-center text-decoration-none mb-3 small`}
+              style={{
+                color: "var(--accent)",
+                fontSize: "0.85rem",
+                gap: "4px",
+              }}
             >
               <i
-                className="fa-solid fa-arrow-left mb-1 mx-1"
-                style={{ fontSize: "10px", marginTop: "3px" }}
-              ></i>{" "}
+                className={` fa-solid fa-arrow-left`}
+                style={{ fontSize: "12px", marginTop: "2px" }}
+              ></i>
               Back to Login
             </Link>
           </div>
-          <div className="text-center mb-4">
+
+          {/* Header */}
+          <div className="text-center mb-3">
             <h2
-              className="fw-bold"
+              className="fw-bold totalFont"
               style={{
                 color: "white",
-                fontSize: "2rem",
+                fontSize: "2.1rem",
+                lineHeight: "1.2",
                 background: "linear-gradient(to right, white, #bcbcbcff)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
+                marginBottom: "0.5rem",
               }}
             >
               Forgot Your Password
             </h2>
-            <p className="text-white-50" style={{ fontSize: ".7rem" }}>
+            <p
+              className="text-white-50 totalFont"
+              style={{ fontSize: "0.85rem", lineHeight: "1.4" }}
+            >
               Enter your email address and we'll send you a link to reset your
               password.
             </p>
           </div>
 
+          {/* Form */}
           <form onSubmit={formik.handleSubmit}>
-            <div className="mb-3">
+            <div className="mb-4">
               <label
-                className="form-label fw-medium"
-                style={{ color: "white", fontSize: "0.9rem" }}
+                className="form-label totalFont"
+                style={{ color: "white", fontSize: "0.95rem", fontWeight: 500 }}
               >
-                Email address
+                Email address*
               </label>
               <input
                 name="email"
@@ -133,19 +170,44 @@ export default function ForgetPassword() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 type="email"
-                placeholder="you@Example.com"
-                className={` ${style.customBorder} ${style.custominput} form-control bg-transparent text-light py-1`}
+                placeholder="example@gmail.com"
+                className={`${style.custominput} totalFont form-control bg-transparent text-light py-2`}
               />
-              {formik.touched.email && formik.errors.email ? (
+              {formik.touched.email && formik.errors.email && (
                 <div className="text-danger small mt-1">
                   {formik.errors.email}
                 </div>
-              ) : null}
+              )}
             </div>
 
-            <button type="submit" className="btn-deeb w-100 mt-3">
-              Send Email
-            </button>
+            <div className="text-center">
+              {loading == !true ? (
+                <button
+                  disabled={!(formik.isValid && formik.dirty)}
+                  type="submit"
+                  className="btn-deeb totalFont w-100 py-2 mt-2"
+                >
+                  Send email
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="btn  btn-lg"
+                  style={{
+                    opacity: 0.5,
+                    pointerEvents: "none",
+                    cursor: "not-allowed",
+                  }}
+                >
+                  <span
+                    className="spinner-border spinner-border-sm text-light"
+                    role="status"
+                  />
+                </button>
+              )}
+
+              
+            </div>
           </form>
         </div>
       </div>

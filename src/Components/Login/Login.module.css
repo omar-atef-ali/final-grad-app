@@ -1,9 +1,9 @@
 .Free {
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .Free:hover {
-  text-decoration: underline;
+  text-decoration: underline !important;
 }
 .loginpage {
   margin: 0;
@@ -18,27 +18,47 @@
 
 
 .custominput::placeholder {
-  color: #ffffff !important; /* غيّر اللون اللي يعجبك */
-  opacity: .5 !important;  /* خليه واضح */
+  color: #ffffff !important; 
+  opacity: .5 !important; 
+  font-size: 13px;
 }
 
-.customBorder {
-  border: none !important;
-  border-top: 2px solid rgba(255, 255, 255, 0.721) !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.674)!important;
-  border-right: 1px solid rgb(144, 143, 143)!important;
-  border-bottom: 1px solid rgba(255,255,255,0.2)!important;
-  
-}
-.customBorder2 {
-  border: none !important;
-  border-top: 2px solid rgba(184, 184, 184, 0.721) !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.674)!important;
-  border-right: 1px solid rgb(144, 143, 143)!important;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.721)!important;
-  
+
+
+
+.btn_deeb {
+  display: inline-block;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: var(--radius);
+  transition: all 0.2s ease-in-out;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+   font-size: 0.95rem;
+  height: 42px;
+  padding: 0 1rem;
+  border-radius: 6px;
 }
 
+.btn_deeb:disabled {
+  opacity: 0.6;       /* يخلي اللون باهت */
+  pointer-events: none;
+  cursor: not-allowed; /* مؤشر الماوس */
+
+}
+
+.btn_deeb:hover {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--secondary-foreground);
+}
 
 
 
