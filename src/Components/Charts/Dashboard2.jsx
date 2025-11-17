@@ -47,11 +47,11 @@ export default function Dashboard2() {
           padding: "20px",
         }}
       >
-        <h1 className="mt-3 mb-2 text-white text-center">
+        <h1 className="mt-3 mb-2 text-white text-center totalFont">
           Sales Analytics Dashboard
         </h1>
 
-        <p className="mb-4 text-center text-white">
+        <p className="mb-4 text-center text-white-50 totalFont">
           Comprehensive overview of your business performance
         </p>
 

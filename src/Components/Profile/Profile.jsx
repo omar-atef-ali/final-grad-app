@@ -9,13 +9,15 @@ import { Link } from "react-router-dom";
 
 export default function Profile() {
   const [isEditable, setIsEditable] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   let { userToken } = useContext(userContext);
 
   async function handleProfileSubmit(values) {
+    setIsSaving(true);
     try {
       let response = await api.put(
-        `/Account/info`,
+        `Accounts/info`,
         values,
 
         {
@@ -39,6 +41,7 @@ export default function Profile() {
           htmlContainer: "custom-text",
         },
       });
+      setIsEditable(false);
     } catch (error) {
       // console.log(error);
       Swal.fire({
@@ -57,6 +60,8 @@ export default function Profile() {
           htmlContainer: "custom-text",
         },
       });
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -64,18 +69,16 @@ export default function Profile() {
     firstName: yup
       .string()
       .required("First Name required")
-      .matches(
-        /^[A-Za-z][A-Za-z0-9]*$/,
-        "First Name must start with a letter and contain only letters and numbers"
-      ),
+      .min(3, "First Name must be at least 3 characters")   // الحد الأدنى 3
+      .max(100, "First Name must be at most 100 characters"),
+    // .matches(/^[A-Za-z0-9]+$/, "First Name can only contain letters and numbers")
 
     lastName: yup
       .string()
       .required("Last Name required")
-      .matches(
-        /^[A-Za-z][A-Za-z0-9]*$/,
-        "Last Name must start with a letter and contain only letters and numbers"
-      ),
+      .min(3, "Last Name must be at least 3 characters")   // الحد الأدنى 3
+      .max(100, "Last Name must be at most 100 characters"),
+    // .matches(/^[A-Za-z0-9]+$/, "Last Name can only contain letters and numbers")
   });
   let formik1 = useFormik({
     initialValues: {
@@ -89,7 +92,7 @@ export default function Profile() {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        let response = await api.get(`/Account`, {
+        let response = await api.get(`/accounts`, {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
@@ -99,6 +102,7 @@ export default function Profile() {
           firstName: response.data.firstName,
           lastName: response.data.lastName,
         });
+        console.log(response)
       } catch (error) {
         console.log(error);
       }
@@ -135,10 +139,11 @@ export default function Profile() {
               }}
             >
               <h5
-                className="fw-semibold mb-5 text-center"
+                className={`fw-semibold mb-5 text-center totalFont`}
                 style={{
                   color: "white",
-                  fontSize: "2rem",
+                  fontSize: "2.2rem",
+                  lineHeight: "1.2",
                   background: "linear-gradient(to right, white, #bcbcbcff)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
@@ -150,23 +155,24 @@ export default function Profile() {
                 <div className="mb-3">
                   <label
                     htmlFor="firstName"
-                    className="form-label fw-medium text-white"
-                    style={{ color: "white", fontSize: "0.9rem" }}
+                    className={`form-label fw-medium text-white totalFont`}
+                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    First Name
+                    First Name*
                   </label>
                   <input
                     disabled={!isEditable}
                     type="text"
                     id="firstName"
                     placeholder="First name"
-                    className={` ${style.customBorder} ${style.custominput} form-control bg-transparent text-light py-1`}
+                    className={`${style.custominput} totalFont form-control bg-transparent text-light py-1`}
                     onBlur={formik1.handleBlur}
                     onChange={formik1.handleChange}
                     value={formik1.values.firstName}
                   />
                   {formik1.touched.firstName && formik1.errors.firstName && (
-                    <div className="text-danger mt-1">
+                    <div className="text-danger mt-1"
+                     style={{ fontSize: "0.8rem" }}>
                       {formik1.errors.firstName}
                     </div>
                   )}
@@ -174,23 +180,24 @@ export default function Profile() {
                 <div className="mb-3 mt-4">
                   <label
                     htmlFor="lastName"
-                    className="form-label fw-medium text-white"
-                    style={{ color: "white", fontSize: "0.9rem" }}
+                    className={`form-label fw-medium text-white totalFont`}
+                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    Last Name
+                    Last Name*
                   </label>
                   <input
                     disabled={!isEditable}
                     type="text"
                     id="lastName"
                     placeholder="Last name"
-                    className={` ${style.customBorder3} ${style.custominput} form-control bg-transparent text-light py-1`}
+                    className={`${style.custominput}  totalFont  form-control bg-transparent text-light py-1`}
                     onBlur={formik1.handleBlur}
                     onChange={formik1.handleChange}
                     value={formik1.values.lastName}
                   />
                   {formik1.touched.lastName && formik1.errors.lastName && (
-                    <div className="text-danger mt-1">
+                    <div className="text-danger mt-1"
+                     style={{ fontSize: "0.8rem" }}>
                       {formik1.errors.lastName}
                     </div>
                   )}
@@ -199,17 +206,22 @@ export default function Profile() {
                   <button
                     type="button"
                     onClick={() => setIsEditable(true)}
-                    className={`${style.btn_S} px-4 py-2`}
+                    className={`${style.btn_S} totalFont px-4 py-2`}
                   >
                     Edit
                   </button>
                   <button
-                    disabled={!isEditable}
+                    disabled={!isEditable || isSaving} // معطل لو مش Editable أو أثناء الحفظ
                     type="submit"
-                    className=" btn-deeb  px-4 py-2"
+                    className={`${style.btn_deeb} px-4 py-2 totalFont`}
                   >
-                    Save
+                    {isSaving ? (
+                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    ) : (
+                      "Save"
+                    )}
                   </button>
+
                 </div>
               </form>
             </div>
@@ -217,13 +229,29 @@ export default function Profile() {
 
           <div className="col-12 col-md-6 d-flex flex-column justify-content-center align-items-center gap-5 mb-5">
             <div className="row1 text-center">
-              <h2>Account</h2>
-              <p className={`${style.row2_link} mt-3`}>Get help</p>
+              <h3 className="totalFont" 
+                  style={{
+                fontSize: "2.25rem",
+                lineHeight: "1.2",
+                background: "linear-gradient(to right, white, #bcbcbcff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+
+              }}>Account</h3>
+              <p className={`${style.row2_link} totalFont mt-3`}>Get help</p>
             </div>
 
             <div className="row2 text-center">
-              <h3>Change Password</h3>
-              <Link to="/changepassword" className={`${style.row2_link} mt-3`}>
+              <h4 className="totalFont"
+               style={{
+                fontSize: "2.1rem",
+                lineHeight: "1.2",
+                background: "linear-gradient(to right, white, #bcbcbcff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+
+              }}>Change Password</h4>
+              <Link to="/changepassword" className={`${style.row2_link} totalFont mt-3`}>
                 Update password now
               </Link>
             </div>

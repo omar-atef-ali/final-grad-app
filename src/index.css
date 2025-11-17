@@ -44,12 +44,7 @@
   font-style: normal;
 }
 
-/* @font-face {
-  font-family: "Inter";
-  src: url("./assets/fonts/Inter-Italic-VariableFont_opsz,wght.ttf") format("truetype");
-  font-weight: 100 900;
-  font-style: italic;
-} */
+
 
 
 .bg-body {
@@ -71,6 +66,10 @@
   background-color: var(--primary);
   color: var(--primary-foreground);
   border-color: var(--primary);
+  font-size: 0.95rem;
+  height: 42px;
+  padding: 0 1rem;
+  border-radius: 6px;
 }
 
 .btn-deeb:hover {
@@ -112,4 +111,3 @@
 .totalFont{
    font-family: 'Inter', sans-serif;
 }
-

@@ -8,12 +8,15 @@ import Swal from "sweetalert2";
 import { userContext } from "../../context/userContext";
 import style from "./ChangePassword.module.css";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function ChangePassword() {
   let navigate = useNavigate();
   let { userToken } = useContext(userContext);
 
   let [showPassword, setShowPassword] = useState(false);
+  let [isSaving, setIsSaving] = useState(false);
+
 
   let validationChangePass = yup.object({
     currentPassword: yup.string().required("Current Password is required"),
@@ -35,9 +38,10 @@ export default function ChangePassword() {
   });
   async function handleChangePassword(values) {
     const { confirmNewPassword, ...dataToSend } = values;
+    setIsSaving(true);
     try {
       let response = await api.put(
-        `/Account/change-password`,
+        `/Accounts/change-password`,
         dataToSend,
 
         {
@@ -65,23 +69,33 @@ export default function ChangePassword() {
       navigate("/login");
     } catch (error) {
       //   console.log(error);
-
-      Swal.fire({
-        icon: "error",
-        title: "Password change failed!",
-        text:
-          error.response?.data?.message ||
-          "Something went wrong while changing your password.",
-        background: "#0d1117",
-        color: "#ffffff",
-        confirmButtonColor: "rgba(0, 71, 171, 0.2)",
-        customClass: {
-          popup: "custom-popup",
-          title: "custom-title",
-          confirmButton: "custom-btn",
-          htmlContainer: "custom-text",
-        },
-      });
+      toast.error(
+        error.response?.data?.message ||
+        "Something went wrong while changing your password.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        }
+      );
+      
+    } finally {
+      setIsSaving(false);
     }
   }
   let formik2 = useFormik({
@@ -123,13 +137,15 @@ export default function ChangePassword() {
               }}
             >
               <h5
-                className="fw-semibold mb-3 text-center"
+                className={`fw-semibold mb-3 text-center  totalFont`}
                 style={{
-                  fontSize: "2rem",
-
+                  fontSize: "2.2rem",
+                  lineHeight: "1.2",
                   background: "linear-gradient(to right, white, #bcbcbcff)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
+                  paddingBottom:"20px"
+
                 }}
               >
                 Change Password
@@ -138,22 +154,25 @@ export default function ChangePassword() {
                 <div className="mb-3">
                   <label
                     htmlFor="currentPassword"
-                    className="form-label fw-medium text-white"
+                    className={`form-label fw-medium text-white  totalFont`}
+                     style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    Current Password
+                    Current Password*
                   </label>
                   <input
                     type="password"
                     id="currentPassword"
                     placeholder="Current password"
-                    className={` ${style.customBorder} form-control bg-transparent text-light py-1 ${style.custominput} `}
+                    className={`form-control bg-transparent text-light py-1 ${style.custominput}  totalFont `}
                     onBlur={formik2.handleBlur}
                     onChange={formik2.handleChange}
                     value={formik2.values.currentPassword}
                   />
                   {formik2.touched.currentPassword &&
                     formik2.errors.currentPassword && (
-                      <div className="text-danger mt-1">
+                      <div className="text-danger mt-1"
+                         style={{ fontSize: "0.8rem" }}
+                      >
                         {formik2.errors.currentPassword}
                       </div>
                     )}
@@ -161,16 +180,17 @@ export default function ChangePassword() {
                 <div className="mb-3">
                   <label
                     htmlFor="newPassword"
-                    className="form-label fw-medium text-white"
+                    className={`form-label fw-medium text-white  totalFont`}
+                     style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    New Password
+                    New Password*
                   </label>
                   <div className="position-relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       id="newPassword"
                       placeholder="New password"
-                      className={`${style.customBorder2} ${style.custominput} form-control pe-5 bg-transparent text-light`}
+                      className={`${style.custominput}  totalFont form-control pe-5 bg-transparent text-light`}
                       onBlur={formik2.handleBlur}
                       onChange={formik2.handleChange}
                       value={formik2.values.newPassword}
@@ -190,7 +210,9 @@ export default function ChangePassword() {
                   </div>
                   {formik2.touched.newPassword &&
                     formik2.errors.newPassword && (
-                      <div className="text-danger mt-1">
+                      <div className="text-danger mt-1"
+                         style={{ fontSize: "0.8rem" }}
+                      >
                         {formik2.errors.newPassword}
                       </div>
                     )}
@@ -199,17 +221,17 @@ export default function ChangePassword() {
                 <div className="mb-3">
                   <label
                     htmlFor="confirmNewPassword"
-                    className="form-label mb-0 fw-medium"
-                    style={{ color: "white", fontSize: "0.9rem" }}
+                    className={`form-label fw-medium text-white  totalFont`}
+                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    Confirm New Password
+                    Confirm New Password*
                   </label>
 
                   <input
                     type="password"
                     id="confirmNewPassword"
                     placeholder="Confirm new password"
-                    className={`${style.customBorder3} ${style.custominput} form-control pe-5 bg-transparent text-light`}
+                    className={`${style.custominput}  totalFont form-control pe-5 bg-transparent text-light`}
                     onBlur={formik2.handleBlur}
                     onChange={formik2.handleChange}
                     value={formik2.values.confirmNewPassword}
@@ -217,16 +239,32 @@ export default function ChangePassword() {
                 </div>
                 {formik2.touched.confirmNewPassword &&
                   formik2.errors.confirmNewPassword && (
-                    <div className="text-danger mt-1">
+                    <div className="text-danger mt-1"
+                      style={{ fontSize: "0.8rem" }}
+                    >
                       {formik2.errors.confirmNewPassword}
                     </div>
                   )}
 
                 <div className="d-flex justify-content-end">
-                  <button type="submit" className="btn-deeb px-4 py-2">
-                    Save
+                  <button
+                    type="submit"
+                    className={`${style.btn_deeb} px-4 py-2`}
+                    // disabled={isSaving}
+                    disabled={!(formik2.isValid && formik2.dirty) || isSaving}
+                  >
+                    {isSaving ? (
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
+
               </form>
             </div>
           </div>
