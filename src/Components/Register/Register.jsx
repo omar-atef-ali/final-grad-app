@@ -9,8 +9,10 @@ import { userContext } from "../../context/userContext";
 
 
 
+
+
 export default function Register() {
-  const {setemail}=useContext(userContext)
+  const { setemail } = useContext(userContext)
   let [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,7 +23,7 @@ export default function Register() {
       let response = await api.post(`/Auth/register`, values);
       console.log(response);
       console.log(values.email)
-      localStorage.setItem('email',values.email)
+      localStorage.setItem('email', values.email)
       setemail(values.email)
       navigate("/confirm-email");
     } catch (error) {
@@ -52,7 +54,7 @@ export default function Register() {
       );
 
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -141,8 +143,10 @@ export default function Register() {
             <h3
               className={`fw-bold mb-1 totalFont`}
               style={{
+
                 fontSize: "2.25rem",
                 lineHeight: "1.2",
+
                 background: "linear-gradient(to right, white, #bcbcbcff)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -313,7 +317,7 @@ export default function Register() {
               disabled={!(formik.isValid && formik.dirty) || isLoading}
             >
               {isLoading ? (
-                <span className="spinner-border spinner-border-sm text-light"role="status"/>
+                <span className="spinner-border spinner-border-sm text-light" role="status" />
               ) : (
                 "Create"
               )}
@@ -336,3 +340,4 @@ export default function Register() {
     </>
   );
 }
+

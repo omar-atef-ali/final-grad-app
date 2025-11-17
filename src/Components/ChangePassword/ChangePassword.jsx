@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { userContext } from "../../context/userContext";
 import style from "./ChangePassword.module.css";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function ChangePassword() {
   let navigate = useNavigate();
@@ -68,23 +69,31 @@ export default function ChangePassword() {
       navigate("/login");
     } catch (error) {
       //   console.log(error);
-
-      Swal.fire({
-        icon: "error",
-        title: "Password change failed!",
-        text:
-          error.response?.data?.message ||
-          "Something went wrong while changing your password.",
-        background: "#0d1117",
-        color: "#ffffff",
-        confirmButtonColor: "rgba(0, 71, 171, 0.2)",
-        customClass: {
-          popup: "custom-popup",
-          title: "custom-title",
-          confirmButton: "custom-btn",
-          htmlContainer: "custom-text",
-        },
-      });
+      toast.error(
+        error.response?.data?.message ||
+        "Something went wrong while changing your password.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        }
+      );
+      
     } finally {
       setIsSaving(false);
     }
