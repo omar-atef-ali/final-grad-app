@@ -3,44 +3,79 @@ import * as yup from "yup";
 import api from "../../api";
 import style from "./Register.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import toast from "react-hot-toast";
+import { userContext } from "../../context/userContext";
+
 
 
 export default function Register() {
+  const {setemail}=useContext(userContext)
   let [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   async function handleRegisterSubmit(values) {
+    setIsLoading(true);
     try {
       let response = await api.post(`/Auth/register`, values);
       console.log(response);
-      navigate("/login");
+      console.log(values.email)
+      localStorage.setItem('email',values.email)
+      setemail(values.email)
+      navigate("/confirm-email");
     } catch (error) {
       console.log(error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while registration.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        }
+      );
+
+    } finally {
+      setIsLoading(false);
     }
   }
+
 
   let validationRegister = yup.object({
     firstName: yup
       .string()
       .required("First Name required")
-      .matches(
-        /^[A-Za-z][A-Za-z0-9]*$/,
-        "First Name must start with a letter and contain only letters and numbers"
-      ),
+      .min(3, "First Name must be at least 3 characters")   // الحد الأدنى 3
+      .max(100, "First Name must be at most 100 characters"),
+    // .matches(/^[A-Za-z0-9]+$/, "First Name can only contain letters and numbers")
 
     lastName: yup
       .string()
       .required("Last Name required")
-      .matches(
-        /^[A-Za-z][A-Za-z0-9]*$/,
-        "Last Name must start with a letter and contain only letters and numbers"
-      ),
+      .min(3, "Last Name must be at least 3 characters")   // الحد الأدنى 3
+      .max(100, "Last Name must be at most 100 characters"),
+    // .matches(/^[A-Za-z0-9]+$/, "Last Name can only contain letters and numbers")
 
     email: yup
       .string()
       .required("Email is required")
-      .email("Please enter a valid email address")
+      .email("Invalid email address.")
       .min(5, "Email must be at least 5 characters long"),
 
     password: yup
@@ -75,6 +110,7 @@ export default function Register() {
     },
     onSubmit: handleRegisterSubmit,
     validationSchema: validationRegister,
+    validateOnMount: true,
   });
 
   return (
@@ -103,18 +139,21 @@ export default function Register() {
         >
           <div className="text-center mb-3">
             <h3
-              className="fw-bold mb-1"
+              className={`fw-bold mb-1 totalFont`}
               style={{
-                fontSize: "2rem",
-                
+                fontSize: "2.25rem",
+                lineHeight: "1.2",
                 background: "linear-gradient(to right, white, #bcbcbcff)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
+
               }}
             >
               Create an account
             </h3>
-            <p className="text-white-50 mb-2" style={{ fontSize: ".7rem" }}>
+            <p className={`text-white-50 mb-2 totalFont`}
+              style={{ fontSize: "0.875rem", marginTop: "0.25rem" }}
+            >
               Sign Up Now
             </p>
           </div>
@@ -123,16 +162,16 @@ export default function Register() {
             <div className="mb-2">
               <label
                 htmlFor="firstName"
-                className="form-label fw-medium text-white"
-                style={{ fontSize: "0.9rem" }}
+                className={`form-label fw-medium text-white totalFont`}
+                style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                First Name
+                First Name*
               </label>
               <input
                 type="text"
                 id="firstName"
                 placeholder="First name"
-                className={` ${style.customBorder} form-control bg-transparent text-light py-1 ${style.custominput} `}
+                className={`form-control bg-transparent text-light py-1 ${style.custominput} totalFont `}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.firstName}
@@ -150,16 +189,16 @@ export default function Register() {
             <div className="mb-2">
               <label
                 htmlFor="lastName"
-                className="form-label fw-medium text-white"
-                style={{ fontSize: "0.9rem" }}
+                className={`form-label fw-medium text-white totalFont`}
+                style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                Last Name
+                Last Name*
               </label>
               <input
                 type="text"
                 id="lastName"
                 placeholder="Last name"
-                className={`${style.customBorder2} ${style.custominput} form-control bg-transparent text-light py-1`}
+                className={`${style.custominput} totalFont form-control bg-transparent text-light py-1`}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.lastName}
@@ -177,16 +216,16 @@ export default function Register() {
             <div className="mb-2">
               <label
                 htmlFor="email"
-                className="form-label fw-medium text-white"
-                style={{ fontSize: "0.9rem" }}
+                className={`form-label fw-medium text-white totalFont`}
+                style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                Email address
+                Email address*
               </label>
               <input
                 type="email"
                 id="email"
-                placeholder="email"
-                className={`${style.customBorder3} ${style.custominput} form-control bg-transparent text-light py-1`}
+                placeholder="example@gmail.com"
+                className={`${style.custominput} totalFont form-control bg-transparent text-light py-1`}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.email}
@@ -204,17 +243,17 @@ export default function Register() {
             <div className="mb-2">
               <label
                 htmlFor="password"
-                className="form-label fw-medium text-white"
-                style={{ fontSize: "0.9rem" }}
+                className={`form-label fw-medium text-white totalFont`}
+                style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                Password
+                Password*
               </label>
               <div className="position-relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="Enter your password"
-                  className={`${style.customBorder2} ${style.custominput} form-control bg-transparent text-light py-1`}
+                  className={`${style.custominput} totalFont form-control bg-transparent text-light py-1`}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                   value={formik.values.password}
@@ -242,8 +281,8 @@ export default function Register() {
             <div className="mb-3">
               <label
                 htmlFor="businessName"
-                className="form-label fw-medium text-white"
-                style={{ fontSize: "0.9rem" }}
+                className={`form-label fw-medium text-white totalFont`}
+                style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
                 Business Name
               </label>
@@ -251,7 +290,7 @@ export default function Register() {
                 type="text"
                 id="businessName"
                 placeholder="business name"
-                className={`${style.customBorder3} ${style.custominput} form-control bg-transparent text-light py-1`}
+                className={`${style.custominput} totalFont form-control bg-transparent text-light py-1`}
                 style={{ fontSize: "0.9rem" }}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
@@ -269,15 +308,25 @@ export default function Register() {
 
             <button
               type="submit"
-              className="btn-deeb w-100 mt-2 py-1"
-              style={{ fontSize: "0.95rem" }}
+              className={`${style.btn_deeb} w-100 mt-2 py-1 totalFont`}
+              style={{ fontSize: "0.95rem", marginBottom: "5px" }}
+              disabled={!(formik.isValid && formik.dirty) || isLoading}
             >
-              Create
+              {isLoading ? (
+                <span className="spinner-border spinner-border-sm text-light"role="status"/>
+              ) : (
+                "Create"
+              )}
             </button>
 
-            <p className="mt-2 text-center" style={{ fontSize: "0.85rem" }}>
+
+
+
+            <p className={`mt-2 text-center totalFont`}
+              style={{ fontSize: "0.875rem" }}
+            >
               Already have an account?
-              <Link className="ms-1" to={"/login"}>
+              <Link className={`ms-1 totalFont ${style.Free}`} to={"/login"}>
                 Login
               </Link>
             </p>

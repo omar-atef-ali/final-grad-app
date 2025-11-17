@@ -38,6 +38,7 @@ export default function CheckEmail() {
                     We've sent a confirmation email to your email address. <br />
                     Please click the link in the email to verify your account.
                 </p>
+               
             </div>
         </div>
     )

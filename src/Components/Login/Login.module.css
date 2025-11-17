@@ -17,27 +17,7 @@
 }
 
 
-.custominput::placeholder {
-  color: #ffffff !important; /* غيّر اللون اللي يعجبك */
-  opacity: .5 !important;  /* خليه واضح */
-}
 
-.customBorder {
-  border: none !important;
-  border-top: 2px solid rgba(255, 255, 255, 0.721) !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.674)!important;
-  border-right: 1px solid rgb(144, 143, 143)!important;
-  border-bottom: 1px solid rgba(255,255,255,0.2)!important;
-  
-}
-.customBorder2 {
-  border: none !important;
-  border-top: 2px solid rgba(184, 184, 184, 0.721) !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.674)!important;
-  border-right: 1px solid rgb(144, 143, 143)!important;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.721)!important;
-  
-}
 
 
 

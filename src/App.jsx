@@ -1,9 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useContext, useEffect } from 'react'
 import './App.css'
 import { createBrowserRouter , RouterProvider } from 'react-router-dom'
-import Home from "./Components/Home/Home"
 import Login from "./Components/Login/Login"
 import Layout from "./Components/Layout/Layout"
 import ForgetPassword from './Components/ForgetPassword/ForgetPassword'
@@ -27,7 +24,7 @@ let routers = createBrowserRouter([
       {path : "reset-password" , element : <ResetPassword />  } ,
       {path : "dashboard" , element : <Protected><Dashboard /></Protected>  } ,
       {path : "profile" , element : <Protected>< Profile /></Protected>  } ,
-      {path : "/confirm-email" , element : <Protected><ConfirmEmail /></Protected>  } ,
+      {path : "/confirm-email" , element : <ConfirmEmail />  } ,
       {path : "/changepassword" , element : <Protected><ChangePassword /></Protected>  } ,
       
 

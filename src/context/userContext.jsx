@@ -8,6 +8,7 @@ export let userContext = createContext();
 export default function UserContextProvider(props) {
   let [userToken, setUserToken] = useState(null);
   let [loading, setLoading] = useState(true);
+  let [email,setemail]=useState('')
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -21,7 +22,7 @@ export default function UserContextProvider(props) {
 
   return (
     <>
-      <userContext.Provider value={{ userToken, setUserToken  ,loading}}>
+      <userContext.Provider value={{ userToken, setUserToken ,loading ,email,setemail}}>
         {props.children}
       </userContext.Provider>
     </>

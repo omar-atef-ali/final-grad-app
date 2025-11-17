@@ -1,1 +1,15 @@
-.ConfirmEmail {}
+.checkemailpage {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+  background: radial-gradient(circle at bottom, #001f3f, #000000 70%);
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+}
+.locki{
+    font-size: 60px;
+    color: gray;
+    opacity: .6;
+}
