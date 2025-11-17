@@ -1,59 +1,54 @@
-
-import { useContext, useEffect, useState } from 'react'
-import style from "./ConfirmEmail.module.css"
-
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from "react";
+import style from "./ConfirmEmail.module.css";
+import api from "../../api";
+import { useNavigate, useSearchParams } from "react-router-dom";
 // import { userContext } from '../../context/userContext';
 
 export default function ConfirmEmail() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // const {email}=useContext(userContext)
-  const email = localStorage.getItem('email')
+  const email = localStorage.getItem("email");
   const [noEmail, setNoEmail] = useState(false);
   const [counter, setCounter] = useState(60);
   const [showResend, setShowResend] = useState(false);
 
-
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
   const UserId = searchParams.get("UserId") ?? "";
   const Code = searchParams.get("Code") ?? "";
 
   console.log("UserId =>", UserId);
   console.log("Code =>", Code);
-  console.log(email)
+  console.log(email);
   async function confirmEmail() {
     console.log("confirmEmail() started");
     if (!UserId || !Code) {
-    console.log("Missing params → UserId or Code is empty");
-    return;
-  }
+      console.log("Missing params → UserId or Code is empty");
+      return;
+    }
     try {
       const response = await api.post("/Auth/confirm-email", { UserId, Code });
       if (response.status === 200) {
-        console.log("sucessful")
+        console.log("sucessful");
         navigate("/login");
       }
-      
-
     } catch (error) {
       console.error("Error exist:", error);
-
     }
   }
   const handleResend = async () => {
     if (!email) {
-      alert("Email address not found. Please login again to resend confirmation email.");
+      alert(
+        "Email address not found. Please login again to resend confirmation email."
+      );
       return;
     }
 
     try {
-
-
       const response = await api.post("/Auth/resend-confirm-email", { email });
       if (response.status === 200) {
-        setCounter(30);          // نبدأ العد من جديد
+        setCounter(30);
         setShowResend(false);
-        console.log("successful")
+        console.log("successful");
       } else {
         console.log("Failed to resend email. Please try again later.");
       }
@@ -62,36 +57,34 @@ export default function ConfirmEmail() {
     }
   };
 
-useEffect(() => {
-  confirmEmail();
-}, []);
+  useEffect(() => {
+    // إذا UserId و Code موجودين نفذ confirmEmail
+    if (UserId && Code) {
+      const callConfirm = async () => {
+        console.log("Calling confirmEmail...");
+        await confirmEmail();
+      };
+      callConfirm();
+    }
+  }, [UserId, Code]); // depend على UserId و Code
 
   useEffect(() => {
-  if (counter === 0) {
-    setShowResend(true);
-    return;
-  }
-  const timer = setInterval(() => setCounter(prev => prev - 1), 1000);
-  return () => clearInterval(timer);
-}, [counter]);
+    if (counter === 0) {
+      setShowResend(true);
+      return;
+    }
+    const timer = setInterval(() => setCounter((prev) => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [counter]);
   useEffect(() => {
     if (!email) {
       setNoEmail(true);
     }
-  }, [email]);
-
-  // const handleResend = () => {
-  //   console.log("Resend Email Triggered");
+  }, []);
 
 
-  //   setCounter(30);
-  //   setShowResend(false);
-  // };
   return (
     <div className={`container-fluid  ${style.checkemailpage} `}>
-
-
-
       <div
         className="px-4 shadow-lg py-2 d-flex flex-column"
         style={{
@@ -119,42 +112,44 @@ useEffect(() => {
           {/* <FontAwesomeIcon className={style.locki} icon={faVoicemail} /> */}
           <i className={`fa-regular fa-envelope-open ${style.locki}`}></i>
           <h2
-            className='my-4 totalFont'
+            className="my-4 totalFont"
             style={{
-              color: "white", fontSize: "2rem", background: "linear-gradient(to right, white, #bcbcbcff)",
+              color: "white",
+              fontSize: "2rem",
+              background: "linear-gradient(to right, white, #bcbcbcff)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
-              fontWeight: 'bold'
+              fontWeight: "bold",
             }}
-
-          >Check Your Email</h2>
-          <p className='totalFont text-white-50'
-            style={{ fontSize: "17px" }}
           >
-            Please Check the email address {email} for instructions to confirm your email
-
+            Check Your Email
+          </h2>
+          <p className="totalFont text-white-50" style={{ fontSize: "17px" }}>
+            Please Check the email address {email} for instructions to confirm
+            your email
           </p>
 
-          <div className='mt-5'>
+          <div className="mt-5">
             {noEmail ? (
-              <p className='text-warning'>
-                Email address not found. Please Create Account to resend confirmation email.
+              <p className="text-warning">
+                Email address not found. Please Create Account to resend
+                confirmation email.
               </p>
             ) : !showResend ? (
               <button disabled className="btn btn-secondary w-100 totalFont">
                 Wait {counter}s
               </button>
             ) : (
-              <button className="btn-deeb w-100 totalFont" onClick={handleResend}>
+              <button
+                className="btn-deeb w-100 totalFont"
+                onClick={handleResend}
+              >
                 Resend Check Email
               </button>
             )}
           </div>
-
-
-
         </div>
       </div>
     </div>
-  )
+  );
 }
