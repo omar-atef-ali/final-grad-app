@@ -22,16 +22,18 @@ export default function ConfirmEmail() {
   console.log("Code =>", Code);
   console.log(email)
   async function confirmEmail() {
-
+    console.log("confirmEmail() started");
+    if (!UserId || !Code) {
+    console.log("Missing params → UserId or Code is empty");
+    return;
+  }
     try {
       const response = await api.post("/Auth/confirm-email", { UserId, Code });
       if (response.status === 200) {
         console.log("sucessful")
         navigate("/login");
       }
-      else {
-        console.log("noooo")
-      }
+      
 
     } catch (error) {
       console.error("Error exist:", error);
@@ -60,10 +62,9 @@ export default function ConfirmEmail() {
     }
   };
 
-  useEffect(() => {
-    if (!UserId || !Code) return;
-    confirmEmail()
-  }, [UserId, Code])
+useEffect(() => {
+  confirmEmail();
+}, []);
 
   useEffect(() => {
   if (counter === 0) {
