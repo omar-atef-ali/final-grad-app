@@ -1,8 +1,11 @@
 body {
   background: radial-gradient(circle at bottom, #001f3f, #0a0f1f 70%);
 }
-.homeBody {
-  height: 3500px;
+
+.homeBody{
+  height: 4500px;
+
+
 }
 .home_bg {
   width: 100%;
@@ -43,7 +46,9 @@ body {
   gap: 18px;
   margin-top: 30px;
 }
-.card {
+
+.customCard{
+
   width: 31% !important;
   height: 350px;
   display: flex;
@@ -52,12 +57,12 @@ body {
   background: linear-gradient(
     80deg,
     rgba(133, 133, 133, 0.744) ,
-    #5f5c5ca8 ,
+    #696565bb ,
 
-    #323946bd ,
+    #323946c0 ,
 
     #1c2336 ,
-    #11193486 
+    #1119349d 
   );
   border: 1px solid rgb(22, 25, 37);
   border-radius: 11px;
@@ -68,14 +73,9 @@ body {
   display: flex;
   flex-direction: column;
   margin-top: 50px;
+   gap: 70px;
 }
-.cardd {
-  width: 95% !important;
-  height: 150px;
-  background-color: #a9b8c7 !important;
-  border: 1px solid black;
-  border-radius: 11px;
-}
+
 .hrStyle {
   width: 70px;
   height: 3px;
@@ -83,3 +83,50 @@ body {
   background-color: rgb(0, 75, 128);
   margin: auto;
 }
+
+ 
+
+
+.customCard2{
+  width: 95% !important;
+  height: 200px;
+ background-color: #a9b8c7 !important;
+  border: 1px solid black;
+  border-radius: 11px;
+}
+
+.parent_card3{
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 50px;
+
+}
+.customCard3{
+   width: 40% !important;
+  height: 200px;
+ background-color: #3d6083;
+  border: 1px solid black;
+  border-radius: 11px;
+  margin-left: 5% !important;
+}
+.parent_card4{
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 300px;
+
+}
+.customCard4{
+   width:40% !important;
+  height: 200px;
+ background-color: #3d6083;
+  border: 1px solid black;
+  border-radius: 11px;
+  margin-left: 30% !important;
+}
+
