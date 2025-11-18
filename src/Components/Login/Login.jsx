@@ -22,9 +22,9 @@ export default function Login() {
       const { data } = await api.post("/Auth", values);
       localStorage.setItem("token", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
-
       setUserToken(data.token);
       navigate("/dashboard");
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error("Login Error:", error);
@@ -81,8 +81,9 @@ export default function Login() {
     <>
       <div className={`container-fluid p-0  ${style.loginpage}`}>
         <div
-          className="px-4 shadow-lg my-5 py-5 d-flex flex-column justify-content-center"
+          className="px-4 shadow-lg d-flex flex-column py-5"
           style={{
+            marginTop :"120px",
             width: "100%",
             maxWidth: "470px",
             minHeight: "450px",
@@ -221,34 +222,7 @@ export default function Login() {
                 "login"
               )}
             </button>
-            {/* <div className="text-center">
-              {loading == !true ? (
-                <button
-                  disabled={!(formik.isValid && formik.dirty)}
-                  type="submit"
-                  className="btn-deeb totalFont w-100 py-2 mt-2"
-                >
-                  login
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="btn  btn-lg"
-                  style={{
-                    opacity: 0.5,
-                    pointerEvents: "none",
-                    cursor: "not-allowed",
-                  }}
-                >
-                  <span
-                    className="spinner-border spinner-border-sm text-light"
-                    role="status"
-                  />
-                </button>
-              )}
-
-              <div id="formFeedback" className="mt-3"></div>
-            </div> */}
+            
 
             {/* Signup link */}
             <p

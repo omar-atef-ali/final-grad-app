@@ -1,7 +1,6 @@
-.dashboard-bg {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
+.dashboardbg {
+
+  height: 1300px ;
   width: 100%;
   background: linear-gradient(to right, #11273e, #370106);
   background-attachment: fixed;

@@ -29,7 +29,9 @@ export default function ForgetPassword() {
           confirmButton: "custom-btn",
           htmlContainer: "custom-text",
         },
+        
       });
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       Swal.fire({
@@ -89,10 +91,11 @@ export default function ForgetPassword() {
     <>
       <div className={`container-fluid p-0 ${style.loginpage}`}>
         <div
-          className="px-4 shadow-lg my-5 py-5 d-flex flex-column"
+          className="px-4 shadow-lg  py-5 d-flex flex-column"
           style={{
+            marginTop: "120px",
             width: "100%",
-            maxWidth: "450px",
+            maxWidth: "470px",
             minHeight: "420px",
             maxHeight: "500px",
             overflow: "hidden",
@@ -180,34 +183,21 @@ export default function ForgetPassword() {
               )}
             </div>
 
-            <div className="text-center">
-              {loading == !true ? (
-                <button
-                  disabled={!(formik.isValid && formik.dirty)}
-                  type="submit"
-                  className="btn-deeb totalFont w-100 py-2 mt-2"
-                >
-                  Send email
-                </button>
+            <button
+              type="submit"
+              className={`${style.btn_deeb} w-100 mt-2 py-1 totalFont`}
+              style={{ fontSize: "0.95rem", marginBottom: "5px" }}
+              disabled={!(formik.isValid && formik.dirty) || loading}
+            >
+              {loading ? (
+                <span
+                  className="spinner-border spinner-border-sm text-light"
+                  role="status"
+                />
               ) : (
-                <button
-                  type="submit"
-                  className="btn  btn-lg"
-                  style={{
-                    opacity: 0.5,
-                    pointerEvents: "none",
-                    cursor: "not-allowed",
-                  }}
-                >
-                  <span
-                    className="spinner-border spinner-border-sm text-light"
-                    role="status"
-                  />
-                </button>
+                "login"
               )}
-
-              
-            </div>
+            </button>
           </form>
         </div>
       </div>

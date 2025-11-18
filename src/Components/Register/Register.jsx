@@ -119,8 +119,9 @@ export default function Register() {
     <>
       <div className={`container-fluid   ${style.Registerpage} `}>
         <div
-          className="px-4  shadow-lg d-flex flex-column justify-content-center"
+          className="px-4 py-5  shadow-lg d-flex flex-column justify-content-center"
           style={{
+            
             width: "100%",
             maxWidth: "470px",
             maxHeight: "670px",
@@ -134,9 +135,9 @@ export default function Register() {
                         )
                     `,
             backdropFilter: "blur(15px)",
-            borderRadius: "24px",
+            borderRadius: "28px",
             border: "1px solid rgba(255, 255, 255, 0.08)",
-            boxShadow: "0 0 35px rgba(0, 0, 0, 0.6)",
+            boxShadow: "0 0 50px rgba(0, 0, 0, 0.6)",
             paddingTop:"10px"
           }}
         >

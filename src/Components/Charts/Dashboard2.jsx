@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-
+import style from "./Dashboard2.module.css";
 export default function Dashboard2() {
   const ref = useRef(null);
 
@@ -35,9 +35,10 @@ export default function Dashboard2() {
   }, []);
 
   return (
-    <div className="dashboard-bg">
+    <div className={`${style.dashboardbg}`}>
       <div
         style={{
+          marginTop:"80px",
           width: "100%",
           minHeight: "100vh",
           display: "flex",
