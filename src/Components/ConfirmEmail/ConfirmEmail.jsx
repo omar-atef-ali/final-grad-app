@@ -2,11 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import style from "./ConfirmEmail.module.css";
 import api from "../../api";
 import { useNavigate, useSearchParams } from "react-router-dom";
-// import { userContext } from '../../context/userContext';
 
 export default function ConfirmEmail() {
   const navigate = useNavigate();
-  // const {email}=useContext(userContext)
   const email = localStorage.getItem("email");
   const [noEmail, setNoEmail] = useState(false);
   const [counter, setCounter] = useState(60);
@@ -16,9 +14,9 @@ export default function ConfirmEmail() {
   const UserId = searchParams.get("UserId") ?? "";
   const Code = searchParams.get("Code") ?? "";
 
-  console.log("UserId =>", UserId);
-  console.log("Code =>", Code);
-  console.log(email);
+  // console.log("UserId =>", UserId);
+  // console.log("Code =>", Code);
+  // console.log(email);
   async function confirmEmail() {
     console.log("confirmEmail() started");
     if (!UserId || !Code) {
@@ -54,11 +52,35 @@ export default function ConfirmEmail() {
       }
     } catch (error) {
       console.error("Error exist:", error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+          "Something went wrong while resend confirmation",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        }
+      );
     }
   };
 
   useEffect(() => {
-    // إذا UserId و Code موجودين نفذ confirmEmail
+    
     if (UserId && Code) {
       const callConfirm = async () => {
         console.log("Calling confirmEmail...");
@@ -66,7 +88,7 @@ export default function ConfirmEmail() {
       };
       callConfirm();
     }
-  }, [UserId, Code]); // depend على UserId و Code
+  }, [UserId, Code]); 
 
   useEffect(() => {
     if (counter === 0) {
@@ -81,7 +103,6 @@ export default function ConfirmEmail() {
       setNoEmail(true);
     }
   }, []);
-
 
   return (
     <div className={`container-fluid  ${style.checkemailpage} `}>
@@ -109,7 +130,7 @@ export default function ConfirmEmail() {
         }}
       >
         <div className="p-5 text-center">
-          {/* <FontAwesomeIcon className={style.locki} icon={faVoicemail} /> */}
+          
           <i className={`fa-regular fa-envelope-open ${style.locki}`}></i>
           <h2
             className="my-4 totalFont"

@@ -4,7 +4,7 @@ import style from "./Footer.module.css";
 export default function Footer() {
   return (
     <>
-      <footer className="mt-auto">
+      <footer className={`mt-auto ${style.footer}`}>
         <div className="container">
           <div className="row">
             <div className="col-md-4 mb-3">

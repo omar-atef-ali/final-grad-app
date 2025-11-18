@@ -1,12 +1,13 @@
 .Registerpage {
-  margin: 0;
-  
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
+  padding-top: 100px;
   background: radial-gradient(circle at bottom, #001f3f, #000000 70%);
-  font-family: "Poppins", sans-serif;
   color: #fff;
+  
+  width: 100% !important;
+  height: 1100px;
 }
 a{
  color: white !important; 

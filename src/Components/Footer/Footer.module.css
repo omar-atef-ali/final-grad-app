@@ -2,6 +2,11 @@ footer {
     background-color: #343a40;
     color: #fff;
     padding: 3rem 0;
+    bottom: 0;
+    left: 5%;
+    position: absolute;
+    width: 85%;
+
   }
 
   .social-icons a {
