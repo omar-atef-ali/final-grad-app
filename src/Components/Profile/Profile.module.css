@@ -1,5 +1,5 @@
 .Profilepage {
-  margin: 0;
+  /* margin: 0;
 
   background: radial-gradient(circle at bottom, #001f3f, #000000 70%);
   font-family: "Poppins", sans-serif;
@@ -7,7 +7,19 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: center; */
+
+  
+  display: flex;
   justify-content: center;
+  /* align-items: center; */
+  padding-top: 100px;
+  background: radial-gradient(circle at bottom, #001f3f, #000000 70%);
+  color: #fff;
+
+  
+  width: 100% !important;
+  height: 1100px;
 }
 
 .row2_link {

@@ -117,13 +117,13 @@ export default function Register() {
 
   return (
     <>
-      <div className={`container-fluid p-0  ${style.Registerpage} `}>
+      <div className={`container-fluid   ${style.Registerpage} `}>
         <div
-          className="px-4 py-5 m-3 shadow-lg d-flex flex-column justify-content-center"
+          className="px-4  shadow-lg d-flex flex-column justify-content-center"
           style={{
             width: "100%",
             maxWidth: "470px",
-            minHeight: "420px",
+            maxHeight: "670px",
             background: `
                         radial-gradient(
                         circle at 2% 50%,
@@ -137,6 +137,7 @@ export default function Register() {
             borderRadius: "24px",
             border: "1px solid rgba(255, 255, 255, 0.08)",
             boxShadow: "0 0 35px rgba(0, 0, 0, 0.6)",
+            paddingTop:"10px"
           }}
         >
           <div className="text-center mb-3">

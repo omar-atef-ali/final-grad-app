@@ -11,14 +11,15 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (error.response?.status === 401 && !originalRequest._retry && refreshToken) {
       console.log("⛔ Token expired or invalid. Trying to refresh...");
 
       originalRequest._retry = true;
 
       try {
         const oldAccessToken = localStorage.getItem("token");
-        const refreshToken = localStorage.getItem("refreshToken");
 
         console.log("🔑 Old Access Token:", oldAccessToken);
         console.log("🔄 Sending refresh request with Refresh Token:", refreshToken);
@@ -38,11 +39,9 @@ api.interceptors.response.use(
         console.log("💾 New tokens saved to localStorage.");
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
         console.log("📦 Retrying original request with new token:", originalRequest.url);
 
         return api(originalRequest);
-
       } catch (refreshError) {
         console.error("❌ Refresh token failed:", refreshError);
         localStorage.clear();
