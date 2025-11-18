@@ -1,13 +1,14 @@
 .Registerpage {
   margin: 0;
-  
   display: flex;
   justify-content: center;
   align-items: center;
   background: radial-gradient(circle at bottom, #001f3f, #000000 70%);
   font-family: "Poppins", sans-serif;
   color: #fff;
+  min-height: 100vh;
 }
+
 a{
  color: white !important; 
  opacity: 0.7 !important; 
