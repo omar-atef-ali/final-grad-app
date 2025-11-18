@@ -39,7 +39,6 @@
 body{
   padding: 0px !important;
   position: relative !important;
-  min-height: 1000px;
 }
 
 @font-face {

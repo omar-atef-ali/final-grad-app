@@ -79,7 +79,7 @@ export default function Login() {
 
   return (
     <>
-      <div className={`container-fluid p-0 vh-100 ${style.loginpage}`}>
+      <div className={`container-fluid p-0  ${style.loginpage}`}>
         <div
           className="px-4 shadow-lg my-5 py-5 d-flex flex-column"
           style={{
