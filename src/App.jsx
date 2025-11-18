@@ -14,16 +14,16 @@ import ResetPassword from './Components/ResetPassword/ResetPassword'
 import Register from './Components/Register/Register'
 import ConfirmEmail from './Components/ConfirmEmail/ConfirmEmail'
 import ChangePassword from './Components/ChangePassword/ChangePassword'
-
-
+import Home from './Components/Home/Home'
 let routers = createBrowserRouter([
   {path:"/" , element: <Layout/> ,children : [
       {index: true , element :  < Register /> } , 
+      {path : "home" , element : <Home/> } ,
       {path : "login" , element : <Login /> } ,
       {path : "register" , element : < Register />  } ,
       {path : "forget-password" , element : <ForgetPassword />  } ,
       {path : "reset-password" , element : <ResetPassword />  } ,
-
+      
       {path : "dashboard" , element : <Protected><Dashboard /></Protected>} ,
       {path : "dashboard2" , element : <Protected><Dashboard2 /></Protected>} ,
       {path : "profile" , element : <Protected>< Profile /> </Protected>} ,

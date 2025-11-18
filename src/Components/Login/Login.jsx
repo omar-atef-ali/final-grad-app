@@ -81,7 +81,7 @@ export default function Login() {
     <>
       <div className={`container-fluid p-0  ${style.loginpage}`}>
         <div
-          className="px-4 shadow-lg my-5 py-5 d-flex flex-column"
+          className="px-4 shadow-lg my-5 py-5 d-flex flex-column justify-content-center"
           style={{
             width: "100%",
             maxWidth: "470px",

@@ -1,5 +1,6 @@
 import React from "react";
 import style from "./Footer.module.css";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -8,38 +9,38 @@ export default function Footer() {
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-4">
-              <a className={`totalFont ${style.footerLogo}`}
-               href="#">
+              <Link className={`totalFont ${style.footerLogo}`}
+               to={'#'}>
                 DeebAI
-              </a>
+              </Link>
             </div>
             <div className="col-12 col-md-4 mb-3">
               <h5 className="totalFont">Explore</h5>
               <ul className="list-unstyled">
                 <li>
-                  <a href="#" className={`totalFont  ${style.footerLinks}`}>
+                  <Link to={'/home'} className={`totalFont  ${style.footerLinks}`}>
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className={`totalFont ${style.footerLinks}`}>
+                  <Link to={'#'} className={`totalFont ${style.footerLinks}`}>
                     Demos
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className={`totalFont ${style.footerLinks}`}>
+                  <Link to={'#'} className={`totalFont ${style.footerLinks}`}>
                     Features
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#"className={`totalFont ${style.footerLinks}`}>
+                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
                     Contact Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#"className={`totalFont ${style.footerLinks}`}>
+                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
                     Pricing
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -47,19 +48,19 @@ export default function Footer() {
               <h5 className="totalFont">Support</h5>
                <ul className="list-unstyled">
                 <li>
-                  <a href="#"className={`totalFont ${style.footerLinks}`}>
+                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
                     Terms & Conditions
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#"className={`totalFont ${style.footerLinks}`}>
+                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#"className={`totalFont ${style.footerLinks}`}>
+                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
                     Refund Policy
-                  </a>
+                  </Link>
                 </li>
                 
               </ul>
