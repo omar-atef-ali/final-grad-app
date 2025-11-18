@@ -3,7 +3,7 @@ body{
  
 }
 .homeBody{
-  height: 3500px;
+  height: 4500px;
 
 }
 .home_bg{
@@ -42,7 +42,7 @@ body{
   gap: 18px;
   margin-top: 50px;
 }
-.card{
+.customCard{
   width: 31% !important;
   height: 350px;
  background-color: #3d6083;
@@ -55,12 +55,48 @@ body{
   display: flex;
   flex-direction: column;
   margin-top: 50px;
+  gap: 70px;
 
 }
-.cardd{
+.customCard2{
   width: 95% !important;
-  height: 150px;
+  height: 200px;
  background-color: #a9b8c7 !important;
   border: 1px solid black;
   border-radius: 11px;
+}
+
+.parent_card3{
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 50px;
+
+}
+.customCard3{
+   width: 40% !important;
+  height: 200px;
+ background-color: #3d6083;
+  border: 1px solid black;
+  border-radius: 11px;
+  margin-left: 5% !important;
+}
+.parent_card4{
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 300px;
+
+}
+.customCard4{
+   width:40% !important;
+  height: 200px;
+ background-color: #3d6083;
+  border: 1px solid black;
+  border-radius: 11px;
+  margin-left: 30% !important;
 }
