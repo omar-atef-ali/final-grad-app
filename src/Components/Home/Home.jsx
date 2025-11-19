@@ -15,7 +15,7 @@ export default function Home() {
           </div>
         </div>
 
-        <h4 className={`${style.why_deep_h4} ${style.why_deep_h4_2} totalFont  `}>Why is DeepAi a great business intelligence tool for you?</h4>
+        <h4 className={`${style.why_deep_h4}  totalFont text-center  `}>Why is DeepAi a great business intelligence tool for you?</h4>
         <div className={`${style.hrStyle}`}></div>
         <div className="container">
           <div className={`${style.parent_cards} col-12 col-md-4`}>
