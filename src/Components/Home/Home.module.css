@@ -3,8 +3,10 @@ body {
 }
 
 .homeBody{
-  height: 4500px;
-
+  /* height: 4500px; */
+  min-height: 100vh;
+  height: auto !important;
+   padding-bottom: 550px;
 
 }
 .home_bg {
@@ -129,4 +131,40 @@ body {
   border-radius: 11px;
   margin-left: 30% !important;
 }
+@media (max-width: 768px) {
+  .customCard {
+    width: 100% !important;
+  }
+
+  .customCard3,
+  .customCard4 {
+    width: 100% !important;
+    margin-left: 0 !important;
+
+  }
+  .homeBody{
+  
+   padding-bottom: 50px;
+
+}
+.parent_card2 {
+  
+   gap: 18px;
+}
+.parent_card4{
+  margin-top: 6px;
+}
+.info p {
+  font-size: 0.8rem;
+}
+.why_deep_h4{
+  font-size: 15px;
+}
+.why_deep_h4_2{
+  margin-left: 40px !important;
+}
+
+}
+
+
 
