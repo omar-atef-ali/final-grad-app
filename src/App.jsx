@@ -16,12 +16,13 @@ import ConfirmEmail from './Components/ConfirmEmail/ConfirmEmail'
 import ChangePassword from './Components/ChangePassword/ChangePassword'
 import Home from './Components/Home/Home'
 import Features from "./Components/Features/Features"
-
+import Pricing  from "./Components/Pricing/Pricing"
 
 let routers = createBrowserRouter([
   {path:"/" , element: <Layout/> ,children : [
       {index: true , element :  < Register /> } , 
       {path : "home" , element : <Home/> } ,
+      {path : "pricing" , element : <Pricing/> } ,
       {path : "features" , element : <Features/> } ,
       {path : "login" , element : <Login /> } ,
       {path : "register" , element : < Register />  } ,
