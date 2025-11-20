@@ -1,5 +1,7 @@
-.features_page{
-    padding-bottom: 400px;
+.features_page {
+  padding-bottom: 400px;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .features_bg {
@@ -11,7 +13,6 @@
   background-size: cover;
   display: flex;
   justify-content: center;
-  
 }
 .features_bg::before {
   content: "";
@@ -94,7 +95,7 @@
   border-radius: 11px;
 }
 .CommingSoon {
-  margin: 25px 0;
+  margin: 25px 25px;
   font-size: 22px;
   color: white;
   font-weight: 700;
@@ -118,7 +119,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-
 }
 .customCard2 h3 {
   font-size: 900;
@@ -143,7 +143,7 @@
   width: 100%;
   height: 2px;
   opacity: 0.5;
-  margin: 6px 0px 0px 0px ;
+  margin: 6px 0px 0px 0px;
   background-color: rgb(255, 255, 255);
 }
 
@@ -151,31 +151,36 @@
   .customCard {
     width: 100% !important;
   }
-
+  .header{
+    font-size: 35px !important;
+  }
   .customCard3,
   .customCard4 {
     width: 100% !important;
     margin-left: 0 !important;
   }
   .customCard2 {
-  height: 400PX !important;
-}
-  .homeBody {
-    padding-bottom: 50px;
+    height: 400px !important;
+  }
+  .features_page {
+    padding-bottom: 50px !important;
   }
   .parent_card2 {
-    gap: 18px;
+    gap: 18px !important;
   }
   .parent_card4 {
-    margin-top: 6px;
+    margin-top: 6px !important;
   }
   .info p {
-    font-size: 0.8rem;
+    font-size: 0.8rem !important;
   }
   .why_deep_h4 {
-    font-size: 15px;
+    font-size: 15px !important;
   }
-  /* .why_deep_h4_2{
-  margin-left: 40px !important;
-} */
+  .CommingSoon{
+    display: flex;
+    justify-content: center;
+    margin-left: 0px;
+  }
+
 }

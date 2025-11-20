@@ -24,7 +24,7 @@ export default function Features() {
           </div>
         </div>
         <h4
-          className={`${style.why_deep_h4} ${style.why_deep_h4_2} totalFont text-center`}
+          className={`${style.why_deep_h4} totalFont text-center`}
         >
           Why is DeepAi a great business intelligence tool for you?
         </h4>

@@ -45,7 +45,7 @@ export default function NavBar() {
                 <li className="nav-item mx-2">
                   <Link
                     className={`nav-link totalFont mx-3 ${style.mainbtns}`}
-                    to={"/#"}
+                    to={"/dashboard2"}
                   >
                     Demo
                   </Link>
@@ -54,7 +54,7 @@ export default function NavBar() {
                 <li className="nav-item mx-2">
                   <Link
                     className={`nav-link totalFont mx-3 mx-lg-2 ${style.mainbtns}`}
-                    to={"#"}
+                    to={"/features"}
                   >
                     Features
                   </Link>
@@ -63,7 +63,7 @@ export default function NavBar() {
                 <li className="nav-item mx-2">
                   <Link
                     className={`nav-link totalFont mx-3 ${style.mainbtns}`}
-                    to={"#"}
+                    to={"/pricing"}
                   >
                     Pricing
                   </Link>
