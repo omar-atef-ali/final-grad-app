@@ -225,8 +225,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="dashboard-bg p-4">
-      <h1 className="mt-5 mb-3 text-white text-center text-white">Sales Analytics Dashboard</h1>
+    <div className="dashboard-bg px-4">
+      <h1 className=" mb-3 text-white text-center text-white" style={{marginTop :"120px"}}>Sales Analytics Dashboard</h1>
 
       <p className="mb-4 text-center text-white">Comprehensive overview of your business performance</p>
       <Row className="mb-4 align-items-center">
