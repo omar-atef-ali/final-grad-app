@@ -1,18 +1,16 @@
 import React, { useEffect, useRef } from "react";
-import style from "./Dashboard2.module.css";
-export default function Dashboard2() {
+import style from "./Tableau.module.css"
+export default function Tableau() {
   const ref = useRef(null);
 
   useEffect(() => {
     const container = ref.current;
     const objectEl = container.getElementsByTagName("object")[0];
 
-    // دالة تحسب الارتفاع حسب حجم الشاشة (Responsive)
     const resizeViz = () => {
       const width = container.offsetWidth;
 
-      // احسب الارتفاع بناءً على نسبة العرض الأصلية للداشبورد
-      const height = width * 0.60; // نفس نسبة 1100x650
+      const height = width * 0.60; 
 
       objectEl.style.width = width + "px";
       objectEl.style.height = height + "px";

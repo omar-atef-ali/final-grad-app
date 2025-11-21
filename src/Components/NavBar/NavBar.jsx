@@ -45,7 +45,7 @@ export default function NavBar() {
                 <li className="nav-item mx-2">
                   <Link
                     className={`nav-link totalFont mx-3 ${style.mainbtns}`}
-                    to={"/dashboard2"}
+                    to={"/tableau"}
                   >
                     Demo
                   </Link>

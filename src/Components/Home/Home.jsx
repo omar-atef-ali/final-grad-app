@@ -7,7 +7,7 @@ export default function Home() {
       <div className={`${style.homeBody} container-fluid`}>
         <div className={style.home_bg}>
           <div className={`${style.info}`}>
-            <h1 className="totalFont text-white mb-2">DeepAI</h1>
+            <h1 className="totalFont text-white mb-2">DeebAI</h1>
             <p className={` totalFont text-white-50`}>
               The Future of Business Growth is AI-Powered
             </p>
@@ -15,7 +15,7 @@ export default function Home() {
         </div>
 
         <h4 className={`${style.why_deep_h4}  totalFont text-center  `}>
-          Why is DeepAi a great business intelligence tool for you?
+          Why is DeebAi a great business intelligence tool for you?
         </h4>
         <div className={`${style.hrStyle}`}></div>
         <div className="container">
