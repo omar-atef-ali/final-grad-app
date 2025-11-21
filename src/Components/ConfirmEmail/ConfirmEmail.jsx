@@ -105,10 +105,11 @@ export default function ConfirmEmail() {
   }, []);
 
   return (
-    <div className={`container-fluid  ${style.checkemailpage} `}>
+    <div className={`container-fluid p-0  ${style.checkemailpage} `}>
       <div
         className="px-4 shadow-lg py-2 d-flex flex-column"
         style={{
+          marginTop :"120px" ,
           width: "100%",
           maxWidth: "470px",
           minHeight: "400px",
@@ -162,7 +163,7 @@ export default function ConfirmEmail() {
               </button>
             ) : (
               <button
-                className="btn-deeb w-100 totalFont"
+                className="btn_deeb w-100 totalFont"
                 onClick={handleResend}
               >
                 Resend Check Email

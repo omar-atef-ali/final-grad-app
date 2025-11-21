@@ -97,7 +97,7 @@ export default function ForgetPassword() {
             width: "100%",
             maxWidth: "470px",
             minHeight: "420px",
-            maxHeight: "500px",
+            maxHeight: "460px",
             overflow: "hidden",
             background: `
         radial-gradient(

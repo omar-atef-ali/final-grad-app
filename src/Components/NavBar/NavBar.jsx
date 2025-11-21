@@ -100,7 +100,7 @@ export default function NavBar() {
                 <li className="nav-item">
                   <Link
                     className={` ms-2  totalFont ${style.borderbtn} ${style.loginbtn}`}
-                    to={"#"}
+                    to={"/login"}
                   >
                     Login
                   </Link>
