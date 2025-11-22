@@ -14,7 +14,9 @@ export default function ChangePassword() {
   let navigate = useNavigate();
   let { userToken } = useContext(userContext);
 
-  let [showPassword, setShowPassword] = useState(false);
+  let [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  let [showNewPassword, setShowNewPassword] = useState(false);
+  let [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   let [isSaving, setIsSaving] = useState(false);
 
 
@@ -93,7 +95,7 @@ export default function ChangePassword() {
           },
         }
       );
-      
+
     } finally {
       setIsSaving(false);
     }
@@ -144,7 +146,7 @@ export default function ChangePassword() {
                   background: "linear-gradient(to right, white, #bcbcbcff)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
-                  paddingBottom:"20px"
+                  paddingBottom: "20px"
 
                 }}
               >
@@ -155,23 +157,38 @@ export default function ChangePassword() {
                   <label
                     htmlFor="currentPassword"
                     className={`form-label fw-medium text-white  totalFont`}
-                     style={{ fontSize: "0.95rem", fontWeight: "500" }}
+                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
                     Current Password*
                   </label>
-                  <input
-                    type="password"
-                    id="currentPassword"
-                    placeholder="Current password"
-                    className={`form-control bg-transparent text-light py-1 ${style.custominput}  totalFont `}
-                    onBlur={formik2.handleBlur}
-                    onChange={formik2.handleChange}
-                    value={formik2.values.currentPassword}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      id="currentPassword"
+                      placeholder="Current password"
+                      className={`form-control bg-transparent text-light py-1 ${style.custominput}  totalFont `}
+                      onBlur={formik2.handleBlur}
+                      onChange={formik2.handleChange}
+                      value={formik2.values.currentPassword}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 shadow-none"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
+                      {showCurrentPassword ? (
+                        <i className="fa-solid fa-eye-slash"></i>
+                      ) : (
+                        <i className="fa-solid fa-eye"></i>
+                      )}
+                    </button>
+                  </div>
+
                   {formik2.touched.currentPassword &&
                     formik2.errors.currentPassword && (
                       <div className="text-danger mt-1"
-                         style={{ fontSize: "0.8rem" }}
+                        style={{ fontSize: "0.8rem" }}
                       >
                         {formik2.errors.currentPassword}
                       </div>
@@ -181,13 +198,13 @@ export default function ChangePassword() {
                   <label
                     htmlFor="newPassword"
                     className={`form-label fw-medium text-white  totalFont`}
-                     style={{ fontSize: "0.95rem", fontWeight: "500" }}
+                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
                     New Password*
                   </label>
                   <div className="position-relative">
                     <input
-                      type={showPassword ? "text" : "password"}
+                      type={showNewPassword ? "text" : "password"}
                       id="newPassword"
                       placeholder="New password"
                       className={`${style.custominput}  totalFont form-control pe-5 bg-transparent text-light`}
@@ -197,11 +214,11 @@ export default function ChangePassword() {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() => setShowNewPassword(!showNewPassword)}
                       className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 shadow-none"
                       style={{ color: "var(--muted-foreground)" }}
                     >
-                      {showPassword ? (
+                      {showNewPassword ? (
                         <i className="fa-solid fa-eye-slash"></i>
                       ) : (
                         <i className="fa-solid fa-eye"></i>
@@ -211,7 +228,7 @@ export default function ChangePassword() {
                   {formik2.touched.newPassword &&
                     formik2.errors.newPassword && (
                       <div className="text-danger mt-1"
-                         style={{ fontSize: "0.8rem" }}
+                        style={{ fontSize: "0.8rem" }}
                       >
                         {formik2.errors.newPassword}
                       </div>
@@ -227,16 +244,34 @@ export default function ChangePassword() {
                     Confirm New Password*
                   </label>
 
-                  <input
-                    type="password"
-                    id="confirmNewPassword"
-                    placeholder="Confirm new password"
-                    className={`${style.custominput}  totalFont form-control pe-5 bg-transparent text-light`}
-                    onBlur={formik2.handleBlur}
-                    onChange={formik2.handleChange}
-                    value={formik2.values.confirmNewPassword}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showConfirmNewPassword ? "text" : "password"}
+                      id="confirmNewPassword"
+                      placeholder="Confirm new password"
+                      className={`${style.custominput}  totalFont form-control pe-5 bg-transparent text-light`}
+                      onBlur={formik2.handleBlur}
+                      onChange={formik2.handleChange}
+                      value={formik2.values.confirmNewPassword}
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>setShowConfirmNewPassword(!showConfirmNewPassword)}
+                      className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 shadow-none"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
+                      {showConfirmNewPassword ? (
+                        <i className="fa-solid fa-eye-slash"></i>
+                      ) : (
+                        <i className="fa-solid fa-eye"></i>
+                      )}
+                    </button>
+                  </div>
+                    
+
                 </div>
+
+
                 {formik2.touched.confirmNewPassword &&
                   formik2.errors.confirmNewPassword && (
                     <div className="text-danger mt-1"
