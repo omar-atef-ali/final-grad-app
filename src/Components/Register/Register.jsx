@@ -14,16 +14,20 @@ import { userContext } from "../../context/userContext";
 export default function Register() {
   const { setemail } = useContext(userContext)
   let [showPassword, setShowPassword] = useState(false);
+   let [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   async function handleRegisterSubmit(values) {
+    const { confirmPassword, ...dataToSend } = values;
     setIsLoading(true);
     try {
-      let response = await api.post(`/Auth/register`, values);
+      let response = await api.post(`/Auth/register`, dataToSend);
       console.log(response);
       console.log(values.email)
+      console.log(dataToSend)
       localStorage.setItem('email', values.email)
+      
       setemail(values.email)
       navigate("/confirm-email");
     } catch (error) {
@@ -87,6 +91,10 @@ export default function Register() {
         /[!@#$%^&*(),.?":{}|<>]/,
         "Password must contain at least one special character"
       ),
+    confirmPassword: yup
+      .string()
+      .required("Confirm Password is required")
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
     businessName: yup
       .string()
       .notRequired()
@@ -104,6 +112,7 @@ export default function Register() {
       lastName: "",
       email: "",
       password: "",
+      confirmPassword:"",
       businessName: "",
     },
     onSubmit: handleRegisterSubmit,
@@ -113,14 +122,14 @@ export default function Register() {
 
   return (
     <>
-      <div className={`container-fluid   ${style.Registerpage} `}>
+      <div className={`container-fluid  ${style.Registerpage} `}>
         <div
           className="px-4 py-5  shadow-lg d-flex flex-column justify-content-center"
           style={{
-            
+
             width: "100%",
             maxWidth: "470px",
-            maxHeight: "670px",
+            maxHeight: "720px",
             background: `
                         radial-gradient(
                         circle at 2% 50%,
@@ -134,7 +143,7 @@ export default function Register() {
             borderRadius: "28px",
             border: "1px solid rgba(255, 255, 255, 0.08)",
             boxShadow: "0 0 50px rgba(0, 0, 0, 0.6)",
-            paddingTop:"10px"
+            paddingTop: "10px"
           }}
         >
           <div className="text-center mb-3">
@@ -276,6 +285,43 @@ export default function Register() {
               {formik.touched.password && formik.errors.password ? (
                 <div className="text-danger small mt-1">
                   {formik.errors.password}
+                </div>
+              ) : null}
+            </div>
+            <div className="mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className={`form-label fw-medium text-white totalFont`}
+                style={{ fontSize: "0.95rem", fontWeight: "500" }}
+              >
+                confirmPassword*
+              </label>
+              <div className="position-relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  placeholder="confirm your password"
+                  className={`${style.custominput} totalFont form-control bg-transparent text-light py-1`}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.confirmPassword}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 shadow-none"
+                  style={{ color: "#aaa" }}
+                >
+                  {showConfirmPassword ? (
+                    <i className="fa-solid fa-eye-slash"></i>
+                  ) : (
+                    <i className="fa-solid fa-eye"></i>
+                  )}
+                </button>
+              </div>
+              {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+                <div className="text-danger small mt-1">
+                  {formik.errors.confirmPassword}
                 </div>
               ) : null}
             </div>
