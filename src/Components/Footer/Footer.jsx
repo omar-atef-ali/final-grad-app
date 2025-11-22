@@ -69,7 +69,7 @@ export default function Footer() {
           <hr className="mb-4" />
         </div>
         <div className="footer-copyright text-center py-3">
-          © 2025 Copyright:
+          © 2025 Copyright
           <span> DeebAI</span>
         </div>
       </footer>

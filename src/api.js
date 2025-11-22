@@ -24,7 +24,7 @@ api.interceptors.response.use(
         console.log("🔑 Old Access Token:", oldAccessToken);
         console.log("🔄 Sending refresh request with Refresh Token:", refreshToken);
 
-        const res = await axios.post("/api/Auth/refresh", {
+        const res = await api.post("/api/Auth/refresh", {
           token: oldAccessToken,
           refreshToken,
         });
@@ -43,6 +43,7 @@ api.interceptors.response.use(
 
         return api(originalRequest);
       } catch (refreshError) {
+        console.log("🔥 FULL refresh error object:", refreshError); // ← اضيف ده
         console.error("❌ Refresh token failed:", refreshError);
         localStorage.clear();
         window.location.href = "/login";

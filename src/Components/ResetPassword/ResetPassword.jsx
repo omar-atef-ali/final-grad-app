@@ -7,11 +7,14 @@ import * as yup from "yup";
 export default function ResetPassword() {
   let [showPassword, setShowPassword] = useState(false);
   let [showPassword2, setShowPassword2] = useState(false);
+    let [loading, setLoading] = useState(false);
+  
 
   async function submit(values) {
     console.log(values);
-    const { confirmNewPassword, ...dataToSend } = values;    /*   ناقص الكود  */
+    const { confirmNewPassword, ...dataToSend } = values; /*   ناقص الكود  */
     try {
+      setLoading(true);
       let response = await api.put(
         `/Auth/reset-password`,
         dataToSend,
@@ -22,7 +25,7 @@ export default function ResetPassword() {
           },
         }
       );
-      //   console.log(response.data);
+      setLoading(false);
       Swal.fire({
         icon: "success",
         title: "Password changed!",
@@ -40,6 +43,8 @@ export default function ResetPassword() {
 
       navigate("/login");
     } catch (error) {
+      setLoading(false);
+
       //   console.log(error);
 
       Swal.fire({
@@ -96,14 +101,15 @@ export default function ResetPassword() {
 
   return (
     <>
-      <div className={`container-fluid p-0  ${style.loginpage} `}>
+      <div className={`container-fluid p-0  ${style.resetPasswordPage} `}>
         <div
-          className="px-4 shadow-lg my-5 py-5 d-flex flex-column  "
+          className="px-4 shadow-lg  py-5 d-flex flex-column  "
           style={{
+            marginTop: "120px",
             width: "100%",
             maxWidth: "450px",
             minHeight: "400px",
-            maxHeight: "600px",
+            maxHeight: "500px",
             overflow: "hidden",
             background: `
                                 radial-gradient(
@@ -122,10 +128,11 @@ export default function ResetPassword() {
         >
           <div className="text-center mt-2 mb-4">
             <h2
-              className="fw-bold"
+              className="fw-bold totalFont"
               style={{
                 color: "white",
-                fontSize: "2rem",
+                fontSize: "2.25rem",
+                lineHeight: "1.2",
                 background: "linear-gradient(to right, white, #bcbcbcff)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -133,7 +140,10 @@ export default function ResetPassword() {
             >
               Create New Password
             </h2>
-            <p className="text-white-50" style={{ fontSize: ".7rem" }}>
+            <p
+              className="text-white-50 totalFont"
+              style={{ fontSize: "0.835rem", marginTop: "0.25rem" }}
+            >
               Enter a new password below to change your password.
             </p>
           </div>
@@ -141,19 +151,20 @@ export default function ResetPassword() {
           <form onSubmit={formik.handleSubmit}>
             <div className="mb-3">
               <label
-                className="form-label fw-medium"
-                style={{ color: "white", fontSize: "0.9rem" }}
+                className="form-label totalFont"
+                style={{ color: "white", fontSize: "0.95rem", fontWeight: 500 }}
               >
-                Email address
-              </label>
+                Email
+              </label>{" "}
+              <span className={`${style.reqStar}`}>*</span>
               <input
                 name="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 type="email"
-                placeholder="you@Example.com"
-                className={` ${style.customBorder} ${style.custominput} form-control bg-transparent text-light py-1`}
+                placeholder="example@gmail.com"
+                className={` totalFont ${style.custominput} form-control bg-transparent text-light py-1`}
               />
               {formik.touched.email && formik.errors.email ? (
                 <div className="text-danger small mt-1">
@@ -180,7 +191,7 @@ export default function ResetPassword() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   type={showPassword ? "text" : "password"}
-                  className={` ${style.customBorder2} ${style.custominput} form-control bg-transparent text-light py-1`}
+                  className={`  ${style.custominput} form-control bg-transparent text-light py-1`}
                   placeholder="Enter your new password"
                   required
                 />
@@ -223,7 +234,7 @@ export default function ResetPassword() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   type={showPassword2 ? "text" : "password"}
-                  className={` ${style.customBorder3} ${style.custominput} form-control bg-transparent text-light py-1`}
+                  className={`  ${style.custominput} form-control bg-transparent text-light py-1`}
                   placeholder="Enter your new password"
                   required
                 />
@@ -248,8 +259,20 @@ export default function ResetPassword() {
                 )}
             </div>
 
-            <button type="submit" className="btn-deeb w-100 mt-3">
-              Send Email
+            <button
+              type="submit"
+              className={`${style.btn_deeb} w-100 mt-2 py-1 totalFont`}
+              style={{ fontSize: "0.95rem", marginBottom: "5px" }}
+              disabled={!(formik.isValid && formik.dirty) || loading}
+            >
+              {loading ? (
+                <span
+                  className="spinner-border spinner-border-sm text-light"
+                  role="status"
+                />
+              ) : (
+                "login"
+              )}
             </button>
           </form>
         </div>

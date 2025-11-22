@@ -23,7 +23,7 @@ export default function Login() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
       setUserToken(data.token);
-      navigate("/dashboard");
+      navigate("/home");
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -58,13 +58,11 @@ export default function Login() {
   let validationLogin = yup.object({
     email: yup
       .string()
-      .required("Email is required")
       .email("Please enter a valid email address")
       .min(5, "Email must be at least 5 characters long"),
 
     password: yup
       .string()
-      .required("Password is required")
       .min(4, "Password must be at least 4 characters long"),
   });
 
@@ -130,13 +128,13 @@ export default function Login() {
           {/* Form */}
           <form onSubmit={formik.handleSubmit}>
             {/* Email */}
-            <div className="mb-4">
+            <div className="mb-4 position-relative">
               <label
                 className="form-label totalFont"
                 style={{ color: "white", fontSize: "0.95rem", fontWeight: 500 }}
               >
-                Email address*
-              </label>
+                Email 
+              </label> <span className={`${style.reqStar1}`}>*</span>
               <input
                 name="email"
                 value={formik.values.email}
@@ -144,7 +142,7 @@ export default function Login() {
                 onBlur={formik.handleBlur}
                 type="email"
                 placeholder="example@gmail.com"
-                className={`totalFont ${style.custominput} form-control bg-transparent text-light py-2`}
+                className={`totalFont ${style.custominput} form-control bg-transparent text-light py-1`}
               />
               {formik.touched.email && formik.errors.email && (
                 <div className="text-danger small mt-1">
@@ -155,7 +153,7 @@ export default function Login() {
 
             {/* Password */}
             <div className="mb-4">
-              <div className="d-flex justify-content-between align-items-center mb-2">
+              <div className="d-flex justify-content-between position-relative align-items-center mb-2">
                 <label
                   htmlFor="password"
                   className="form-label mb-0 totalFont"
@@ -165,8 +163,8 @@ export default function Login() {
                     fontWeight: 500,
                   }}
                 >
-                  Password*
-                </label>
+                  Password 
+                </label> <span className={`${style.reqStar2}`}>*</span>
                 <Link
                   to={"/forget-password"}
                   className={`text-decoration-none totalFont ${style.Free}`}

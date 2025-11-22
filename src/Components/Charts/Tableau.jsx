@@ -1,5 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import style from "./Tableau.module.css"
+import style from "./Tableau.module.css";
+import { Row , Col} from "react-bootstrap";
+import { Form, Link } from "react-router-dom";
+
+
+
 export default function Tableau() {
   const ref = useRef(null);
 
@@ -10,7 +15,7 @@ export default function Tableau() {
     const resizeViz = () => {
       const width = container.offsetWidth;
 
-      const height = width * 0.60; 
+      const height = width * 0.6;
 
       objectEl.style.width = width + "px";
       objectEl.style.height = height + "px";
@@ -36,7 +41,7 @@ export default function Tableau() {
     <div className={`${style.dashboardbg}`}>
       <div
         style={{
-          marginTop:"80px",
+          marginTop: "80px",
           width: "100%",
           minHeight: "100vh",
           display: "flex",
@@ -54,13 +59,34 @@ export default function Tableau() {
           Comprehensive overview of your business performance
         </p>
 
-        {/* الكونتينر الريسبونسيف */}
+        <Row className="mb-4">
+          <Col md="auto" className="ms-auto totalFont">
+            <Link
+              to={"/profile"}
+              style={{
+                backgroundColor: "#1a1a1aff",
+                color: "#ffffff",
+                border: "1px solid #007bff",
+                borderRadius: "8px",
+                padding: "8px 50px",
+                fontWeight: "500",
+                fontSize: "16px",
+                cursor: "pointer",
+                textDecoration: "none",
+              }}
+            >
+              Profile
+            </Link>
+          </Col>
+        </Row>
+
+
         <div
           ref={ref}
           className="tableauPlaceholder"
           style={{
             width: "100%",
-            maxWidth: "1100px", // الحجم الأساسي
+            maxWidth: "1100px", 
           }}
         >
           <noscript>

@@ -21,15 +21,13 @@ import Pricing  from "./Components/Pricing/Pricing"
 let routers = createBrowserRouter([
   {path:"/" , element: <Layout/> ,children : [
       {index: true , element :  < Register /> } , 
-      {path : "home" , element : <Home/> } ,
-      {path : "pricing" , element : <Pricing/> } ,
-      {path : "features" , element : <Features/> } ,
+      {path : "home" , element : <Protected><Home/></Protected> } ,
+      {path : "pricing" , element : <Protected><Pricing/></Protected> } ,
+      {path : "features" , element :<Protected><Features/></Protected>  } ,
       {path : "login" , element : <Login /> } ,
       {path : "register" , element : < Register />  } ,
       {path : "forget-password" , element : <ForgetPassword />  } ,
       {path : "reset-password" , element : <ResetPassword />  } ,
-      
-      {path : "dashboard" , element : <Protected><Dashboard /></Protected>} ,
       {path : "tableau" , element : <Protected><Tableau /></Protected>} ,
       {path : "profile" , element : <Protected>< Profile /> </Protected>} ,
       {path : "/confirm-email" , element : <ConfirmEmail /> } ,

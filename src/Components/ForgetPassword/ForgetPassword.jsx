@@ -74,7 +74,6 @@ export default function ForgetPassword() {
   let validationforget = yup.object({
     email: yup
       .string()
-      .required("Email is required")
       .email("Please enter a valid email address")
       .min(5, "Email must be at least 5 characters long"),
   });
@@ -165,8 +164,8 @@ export default function ForgetPassword() {
                 className="form-label totalFont"
                 style={{ color: "white", fontSize: "0.95rem", fontWeight: 500 }}
               >
-                Email address*
-              </label>
+                Email address
+              </label> <span className={`${style.reqStar}`}>*</span>
               <input
                 name="email"
                 value={formik.values.email}

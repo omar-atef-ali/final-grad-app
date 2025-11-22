@@ -19,10 +19,9 @@ export default function ChangePassword() {
 
 
   let validationChangePass = yup.object({
-    currentPassword: yup.string().required("Current Password is required"),
+    currentPassword: yup.string().min(4, "Password must be at least 4 characters long"),
     newPassword: yup
       .string()
-      .required("New Password is required")
       .min(8, "Password must be at least 8 characters")
       .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
       .matches(/[a-z]/, "Password must contain at least one lowercase letter")
@@ -33,7 +32,6 @@ export default function ChangePassword() {
       ),
     confirmNewPassword: yup
       .string()
-      .required("Confirm Password is required")
       .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
   });
   async function handleChangePassword(values) {
@@ -111,11 +109,12 @@ export default function ChangePassword() {
   return (
     <div className={`${style.Changepasspage}`}>
       <div className="container">
-        <div className="row py-3">
+        <div className="row">
           <div className="col-12 d-flex align-items-center justify-content-center">
             <div
-              className="card shadow mb-5 p-4 py-5 my-5"
+              className="card shadow mb-5 p-4 py-5 "
               style={{
+                marginTop :"120px" , 
                 width: "100%",
                 maxWidth: "470px",
                 minHeight: "450px",
@@ -157,8 +156,8 @@ export default function ChangePassword() {
                     className={`form-label fw-medium text-white  totalFont`}
                      style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    Current Password*
-                  </label>
+                    Current Password
+                  </label> <span className={`${style.reqStar}`}>*</span>
                   <input
                     type="password"
                     id="currentPassword"
@@ -183,8 +182,8 @@ export default function ChangePassword() {
                     className={`form-label fw-medium text-white  totalFont`}
                      style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    New Password*
-                  </label>
+                    New Password
+                  </label> <span className={`${style.reqStar}`}>*</span>
                   <div className="position-relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -224,8 +223,8 @@ export default function ChangePassword() {
                     className={`form-label fw-medium text-white  totalFont`}
                     style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    Confirm New Password*
-                  </label>
+                    Confirm New Password
+                  </label> <span className={`${style.reqStar}`}>*</span>
 
                   <input
                     type="password"

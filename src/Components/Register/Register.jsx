@@ -62,27 +62,23 @@ export default function Register() {
   let validationRegister = yup.object({
     firstName: yup
       .string()
-      .required("First Name required")
       .min(3, "First Name must be at least 3 characters")   // الحد الأدنى 3
       .max(100, "First Name must be at most 100 characters"),
     // .matches(/^[A-Za-z0-9]+$/, "First Name can only contain letters and numbers")
 
     lastName: yup
       .string()
-      .required("Last Name required")
       .min(3, "Last Name must be at least 3 characters")   // الحد الأدنى 3
       .max(100, "Last Name must be at most 100 characters"),
     // .matches(/^[A-Za-z0-9]+$/, "Last Name can only contain letters and numbers")
 
     email: yup
       .string()
-      .required("Email is required")
       .email("Invalid email address.")
       .min(5, "Email must be at least 5 characters long"),
 
     password: yup
       .string()
-      .required("Password is required")
       .min(8, "Password must be at least 8 characters long")
       .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
       .matches(/[a-z]/, "Password must contain at least one lowercase letter")
@@ -165,14 +161,14 @@ export default function Register() {
           </div>
 
           <form onSubmit={formik.handleSubmit}>
-            <div className="mb-2">
+            <div className="mb-2 ">
               <label
                 htmlFor="firstName"
                 className={`form-label fw-medium text-white totalFont`}
                 style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                First Name*
-              </label>
+                First Name
+              </label> <span className={`${style.reqStar}`}>*</span>
               <input
                 type="text"
                 id="firstName"
@@ -198,8 +194,8 @@ export default function Register() {
                 className={`form-label fw-medium text-white totalFont`}
                 style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                Last Name*
-              </label>
+                Last Name
+              </label><span className={`${style.reqStar}`}>*</span>
               <input
                 type="text"
                 id="lastName"
@@ -225,8 +221,8 @@ export default function Register() {
                 className={`form-label fw-medium text-white totalFont`}
                 style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                Email address*
-              </label>
+                Email 
+              </label><span className={`${style.reqStar}`}>*</span>
               <input
                 type="email"
                 id="email"
@@ -252,8 +248,8 @@ export default function Register() {
                 className={`form-label fw-medium text-white totalFont`}
                 style={{ fontSize: "0.95rem", fontWeight: "500" }}
               >
-                Password*
-              </label>
+                Password
+              </label><span className={`${style.reqStar}`}>*</span>
               <div className="position-relative">
                 <input
                   type={showPassword ? "text" : "password"}

@@ -68,14 +68,12 @@ export default function Profile() {
   let validationProfile = yup.object({
     firstName: yup
       .string()
-      .required("First Name required")
       .min(3, "First Name must be at least 3 characters")   // الحد الأدنى 3
       .max(100, "First Name must be at most 100 characters"),
     // .matches(/^[A-Za-z0-9]+$/, "First Name can only contain letters and numbers")
 
     lastName: yup
       .string()
-      .required("Last Name required")
       .min(3, "Last Name must be at least 3 characters")   // الحد الأدنى 3
       .max(100, "Last Name must be at most 100 characters"),
     // .matches(/^[A-Za-z0-9]+$/, "Last Name can only contain letters and numbers")
@@ -158,8 +156,8 @@ export default function Profile() {
                     className={`form-label fw-medium text-white totalFont`}
                     style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    First Name*
-                  </label>
+                    First Name
+                  </label> <span className={`${style.reqStar}`}>*</span>
                   <input
                     disabled={!isEditable}
                     type="text"
@@ -183,8 +181,8 @@ export default function Profile() {
                     className={`form-label fw-medium text-white totalFont`}
                     style={{ fontSize: "0.95rem", fontWeight: "500" }}
                   >
-                    Last Name*
-                  </label>
+                    Last Name
+                  </label> <span className={`${style.reqStar}`}>*</span>
                   <input
                     disabled={!isEditable}
                     type="text"

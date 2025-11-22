@@ -12,7 +12,7 @@ export default function NavBar() {
           <div className="container px-4">
             <Link
               className={`navbar-brand ${style.logo} totalFont mx-1 `}
-              to={"#"}
+              to={"/home"}
             >
               DeebAI
             </Link>
