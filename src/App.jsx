@@ -7,8 +7,6 @@ import ForgetPassword from './Components/ForgetPassword/ForgetPassword'
 import { Toaster } from 'react-hot-toast'
 import Protected from './Components/Protected/Protected'
 import { userContext } from './context/userContext'
-import Dashboard from './Components/Charts/Dashboard'
-import Tableau from './Components/Charts/Tableau'
 import Profile from './Components/Profile/Profile'
 import ResetPassword from './Components/ResetPassword/ResetPassword'
 import Register from './Components/Register/Register'
@@ -28,7 +26,6 @@ let routers = createBrowserRouter([
       {path : "register" , element : < Register />  } ,
       {path : "forget-password" , element : <ForgetPassword />  } ,
       {path : "reset-password" , element : <ResetPassword />  } ,
-      {path : "tableau" , element : <Protected><Tableau /></Protected>} ,
       {path : "profile" , element : <Protected>< Profile /> </Protected>} ,
       {path : "/confirm-email" , element : <ConfirmEmail /> } ,
       {path : "/changepassword" , element :<Protected> <ChangePassword /></Protected>} ,

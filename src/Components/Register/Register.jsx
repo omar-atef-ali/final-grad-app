@@ -17,7 +17,19 @@ export default function Register() {
    let [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+
+  ///////////////////////////////////////////////
+
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   const navigate = useNavigate();
+  if (token) {
+    // لو فيه توكن، يروح مباشرة على الهوم
+    navigate("/home")
+  }
+
+
+  ////////////////////////////////////////////////////////
+  
   async function handleRegisterSubmit(values) {
     const { confirmPassword, ...dataToSend } = values;
     setIsLoading(true);
