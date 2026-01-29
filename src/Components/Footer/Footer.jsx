@@ -1,78 +1,83 @@
-import React from "react";
-import style from "./Footer.module.css";
-import { Link } from "react-router-dom";
-
+import React from 'react'
+import style from "./Footer.module.css"
 export default function Footer() {
   return (
-    <>
-      <footer className={`mt-auto ${style.footer}`}>
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-4">
-              <Link className={`totalFont ${style.footerLogo}`}
-               to={'#'}>
-                DeebAI
-              </Link>
+   <>
+
+    <footer className={`${style.footer}`}>
+            <div className={`${style.footer_container}`} >
+              
+                <div className={`${style.footer_grid}`} >
+                  
+                    <div className={`${style.footer_column}`} >
+                        <div className={`${style.footer_logo }`} >
+                            <svg width="39" height="30" viewBox="0 0 38.5711 30.0065" fill="none">
+                                <path d="M19.7547 0.00646743C22.2169 0.00646743 24.6792 -0.00686344 27.1404 0.00646743C31.8554 0.0375728 36.1817 3.2281 37.8277 7.88501C38.537 9.89575 38.6911 11.9765 38.4889 14.1128C38.1923 17.25 37.3091 20.1616 35.6358 22.7712C33.0541 26.7993 29.4151 29.0378 24.9087 29.7832C23.381 30.0354 21.8481 30.0054 20.3131 30.0054C19.6761 30.0054 19.3356 29.6965 19.2978 29.1378C19.257 28.539 19.6122 28.0791 20.2408 28.0391C20.9366 27.9935 21.6375 28.0313 22.3364 28.0113C26.5788 27.8891 30.2523 26.3394 33.162 23.0122C35.2009 20.6793 36.234 17.8376 36.584 14.706C36.8271 12.533 36.8009 10.3734 35.991 8.31494C34.7483 5.16552 32.5218 3.23476 29.456 2.33937C28.2657 1.99166 27.0461 1.92611 25.8255 1.91834C21.2687 1.88945 16.7098 1.90723 12.1541 1.90612C11.9624 1.90612 11.7685 1.91389 11.5779 1.89612C11.3592 1.87467 11.155 1.77069 11.0025 1.6031C10.85 1.43551 10.7593 1.21545 10.747 0.982955C10.7438 0.758544 10.8157 0.54019 10.95 0.366695C11.0842 0.193199 11.2722 0.0757983 11.4804 0.0353521C11.6886 0.00479931 11.899 -0.00598319 12.1091 0.00313485H19.7578L19.7547 0.00646743Z" fill="black"/>
+                                <path d="M15.0672 22.9243H6.89462C6.71993 22.9325 6.54491 22.9284 6.37073 22.9121C5.89818 22.8443 5.60062 22.5566 5.55451 22.05C5.50841 21.5434 5.73264 21.1968 6.18318 21.0191C6.46922 20.908 6.76888 20.9313 7.06436 20.9313C12.4405 20.9313 17.8177 20.9402 23.1938 20.9213C25.0798 20.9147 26.708 20.1737 28.002 18.7073C29.1116 17.4498 29.6931 15.93 29.866 14.2192C30.0022 12.8773 29.822 11.643 29.0362 10.5477C28.1623 9.3257 26.9815 8.71248 25.5617 8.70581C20.4821 8.68248 15.3983 8.69692 10.3229 8.68915C9.78333 8.68915 9.24268 8.64249 8.70517 8.58917C8.24101 8.54362 7.9843 8.24701 7.95287 7.75154C7.91829 7.21164 8.17919 6.82283 8.64126 6.7284C8.79599 6.70509 8.95245 6.69728 9.10856 6.70507H25.4538C28.2 6.71062 30.5743 8.47141 31.4398 11.2242C32.0537 13.1783 31.8348 15.148 31.1464 17.042C29.8241 20.678 26.7112 22.9143 23.0272 22.9243C20.3742 22.9321 17.7202 22.9243 15.0672 22.9243ZM2.87955 8.59361C2.25089 8.59361 1.62222 8.6025 0.993558 8.59361C0.469671 8.58361 0.0673265 8.21812 0.00760346 7.72044C-0.0521196 7.22275 0.242305 6.79505 0.80915 6.67285C1.11873 6.61962 1.43237 6.59767 1.74586 6.60731C2.60084 6.59953 3.45687 6.59731 4.31186 6.60731C4.57294 6.6069 4.83317 6.63896 5.08721 6.70285C5.54928 6.82727 5.80179 7.24497 5.7473 7.75265C5.69282 8.26034 5.40364 8.56584 4.91956 8.5825C4.23956 8.60694 3.55746 8.58917 2.87745 8.58917L2.87955 8.59361ZM14.3474 29.8119C13.7544 29.8119 13.1613 29.823 12.5662 29.8119C12.0025 29.7986 11.6232 29.4598 11.5656 28.9598C11.5437 28.6969 11.6208 28.4355 11.78 28.2326C11.9391 28.0297 12.1675 27.9018 12.4153 27.8767C13.6839 27.771 14.9583 27.7691 16.2271 27.8712C16.3468 27.8766 16.4643 27.9079 16.5722 27.9631C16.6801 28.0183 16.7762 28.0963 16.8547 28.1923C16.9332 28.2883 16.9923 28.4003 17.0286 28.5214C17.0648 28.6425 17.0773 28.7701 17.0654 28.8965C17.0266 29.452 16.6578 29.7919 16.0752 29.8164H14.3474V29.8119Z" fill="black"/>
+                            </svg>
+                            <span className={`${style.footer_logo_text}`} >DeebAI</span>
+                        </div>
+                        <p className={`${style.footer_description}`}>AI-powered insights for small and medium businesses</p>
+                    </div>
+
+                    
+                    <div className={`${style.footer_column}`} >
+                        <h3 className={`${style.footer_heading }`} >Product</h3>
+                        <ul className={`${style.footer_links}`} >
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Pricing</a></li>
+                            <li><a href="#">Free Demo</a></li>
+                        </ul>
+                    </div>
+
+                    
+                    <div className={`${style.footer_column}`}>
+                        <h3 className={`${style.footer_heading }`} >Resources</h3>
+                        <ul className={`${style.footer_links}`} >
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">Support</a></li>
+                        </ul>
+                    </div>
+
+                   
+                    <div className={`${style.page_container}`}>
+                        <h3 className={`${style.footer_heading2 }`} >Connect</h3>
+                        <div className={`${style.social_links}`}>
+                            <a href="#"  className={`${style.social_icon }`}>
+                                <svg width="18" height="18" viewBox="0 0 14 13" fill="none">
+                                    <path d="M10.9038 0H13.0273L8.38879 5.374L13.8462 12.688H9.57363L6.22483 8.253L2.39736 12.688H0.271978L5.23286 6.938L0 0.000999987H4.38132L7.40374 4.054L10.9038 0ZM10.1571 11.4H11.3341L3.73846 1.221H2.47648L10.1571 11.4Z" fill="#717182"/>
+                                </svg>
+                            </a>
+                            <a href="#" className={`${style.social_icon }`} >
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                    <path d="M16.5 5.25L9.75675 9.54525C9.52792 9.67816 9.268 9.74817 9.00338 9.74817C8.73875 9.74817 8.47883 9.67816 8.25 9.54525L1.5 5.25" stroke="#717182" strokeWidth="1.5"/>
+                                    <path d="M12.2498 16V13C12.3542 12.0605 12.0848 11.1176 11.4998 10.375C13.7498 10.375 15.9998 8.875 15.9998 6.25C16.0598 5.3125 15.7973 4.39 15.2498 3.625C15.4598 2.7625 15.4598 1.8625 15.2498 1C15.2498 1 14.4998 1 12.9998 2.125C11.0198 1.75 8.97984 1.75 6.99984 2.125C5.49984 1 4.74984 1 4.74984 1C4.52484 1.8625 4.52484 2.7625 4.74984 3.625C4.20375 4.38691 3.9387 5.31459 3.99984 6.25C3.99984 8.875 6.24984 10.375 8.49984 10.375C8.20734 10.7425 7.98984 11.1625 7.86234 11.6125C7.73484 12.0625 7.69734 12.535 7.74984 13V16" stroke="#717182"strokeWidth="1.5"/>
+                                    <path d="M7.75 13C4.3675 14.5 4 11.5 2.5 11.5" stroke="#717182" strokeWidth="1.5"/>
+                                </svg>
+                            </a>
+                            <a href="#" className={`${style.social_icon }`} >
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                    <path d="M11.5 6.5C12.6935 6.5 13.8381 6.97411 14.682 7.81802C15.5259 8.66193 16 9.80653 16 11V16.25H13V11C13 10.6022 12.842 10.2206 12.5607 9.93934C12.2794 9.65804 11.8978 9.5 11.5 9.5C11.1022 9.5 10.7206 9.65804 10.4393 9.93934C10.158 10.2206 10 10.6022 10 11V16.25H7V11C7 9.80653 7.47411 8.66193 8.31802 7.81802C9.16193 6.97411 10.3065 6.5 11.5 6.5Z" stroke="#717182"strokeWidth="1.5"/>
+                                    <path d="M2.5 5C3.32843 5 4 4.32843 4 3.5C4 2.67157 3.32843 2 2.5 2C1.67157 2 1 2.67157 1 3.5C1 4.32843 1.67157 5 2.5 5Z" stroke="#717182" strokeWidth="1.5"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div className={`${style.footer_bottom}`} >
+                    <p className={`${style.copyright}`} >© 2026 DeebAI. All rights reserved.</p>
+                    <div className={`${style.footer_legal}`} >
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
             </div>
-            <div className="col-12 col-md-4 mb-3">
-              <h5 className="totalFont">Explore</h5>
-              <ul className="list-unstyled">
-                <li>
-                  <Link to={'/home'} className={`totalFont  ${style.footerLinks}`}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'#'} className={`totalFont ${style.footerLinks}`}>
-                    Demos
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'#'} className={`totalFont ${style.footerLinks}`}>
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
-                    Contact Us
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
-                    Pricing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="col-12 col-md-4 mb-3">
-              <h5 className="totalFont">Support</h5>
-               <ul className="list-unstyled">
-                <li>
-                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
-                    Terms & Conditions
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'#'}className={`totalFont ${style.footerLinks}`}>
-                    Refund Policy
-                  </Link>
-                </li>
-                
-              </ul>
-            </div>
-          </div>
-          <hr className="mb-4" />
-        </div>
-        <div className="footer-copyright text-center py-3">
-          © 2025 Copyright
-          <span> DeebAI</span>
-        </div>
-      </footer>
-    </>
-  );
+        </footer>
+   
+   
+   
+   </>
+  )
 }

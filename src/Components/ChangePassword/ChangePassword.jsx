@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faUser } from "@fortawesome/free-solid-svg-icons";
 import api from "../../api";
 import Swal from "sweetalert2";
 import { userContext } from "../../context/userContext";
@@ -10,303 +10,255 @@ import style from "./ChangePassword.module.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+import imghero from "../../assets/images/heroimage.jpeg"
 export default function ChangePassword() {
-  let navigate = useNavigate();
-  let { userToken } = useContext(userContext);
+    let navigate = useNavigate();
+    let { userToken } = useContext(userContext);
 
-  let [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  let [showNewPassword, setShowNewPassword] = useState(false);
-  let [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-  let [isSaving, setIsSaving] = useState(false);
+    // let [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    let [showNewPassword, setShowNewPassword] = useState(false);
+    let [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-  let validationChangePass = yup.object({
-    currentPassword: yup
-      .string()
-      .min(4, "Password must be at least 4 characters long"),
-    newPassword: yup
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-      .matches(/[0-9]/, "Password must contain at least one number")
-      .matches(
-        /[@$!%*?&]/,
-        "Password must contain at least one special character"
-      ),
-    confirmNewPassword: yup
-      .string()
-      .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
-  });
-  async function handleChangePassword(values) {
-    const { confirmNewPassword, ...dataToSend } = values;
-    setIsSaving(true);
-    try {
-      let response = await api.put(
-        `/Accounts/change-password`,
-        dataToSend,
+    let validationChangePass = yup.object({
+        newPassword: yup
+            .string()
+            .required("required")
+            .min(8, "Password must be at least 8 characters")
+            .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+            .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+            .matches(/[0-9]/, "Password must contain at least one number")
+            .matches(
+                /[@$!%*?&]/,
+                "Password must contain at least one special character"
+            ),
+        confirmNewPassword: yup
+            .string()
+             .required("required")
+            .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
+    });
+    async function handleChangePassword(values) {
+        const { confirmNewPassword, ...dataToSend } = values;
+        setIsLoading(true)
+        try {
+            let response = await api.put(
+                `/Accounts/change-password`,
+                dataToSend,
 
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
+                {
+                    headers: {
+                        Authorization: `Bearer ${userToken}`,
+                    },
+                }
+            );
+            //   console.log(response.data);
+            Swal.fire({
+                icon: "success",
+                title: "Password changed!",
+                text: "Your password has been updated successfully.",
+                background: "#0d1117",
+                color: "#ffffff",
+                confirmButtonColor: "rgba(0, 71, 171, 0.2)",
+                customClass: {
+                    popup: "custom-popup",
+                    title: "custom-title",
+                    confirmButton: "custom-btn",
+                    htmlContainer: "custom-text",
+                },
+            });
+
+            navigate("/login");
+        } catch (error) {
+            //   console.log(error);
+            toast.error(
+                error.response?.data?.message ||
+                "Something went wrong while changing your password.",
+                {
+                    position: "top-center",
+                    duration: 4000,
+                    style: {
+                        background:
+                            "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        padding: "16px 20px",
+                        color: "#ffffff",
+                        fontSize: "0.95rem",
+                        borderRadius: "5px",
+                        width: "300px",
+                        height: "60px",
+                        boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+                    },
+                    iconTheme: {
+                        primary: "#FF4D4F",
+                        secondary: "#ffffff",
+                    },
+                }
+            );
+        } finally {
+            setIsLoading(false);
         }
-      );
-      //   console.log(response.data);
-      Swal.fire({
-        icon: "success",
-        title: "Password changed!",
-        text: "Your password has been updated successfully.",
-        background: "#0d1117",
-        color: "#ffffff",
-        confirmButtonColor: "rgba(0, 71, 171, 0.2)",
-        customClass: {
-          popup: "custom-popup",
-          title: "custom-title",
-          confirmButton: "custom-btn",
-          htmlContainer: "custom-text",
-        },
-      });
-
-      navigate("/login");
-    } catch (error) {
-      //   console.log(error);
-      toast.error(
-        error.response?.data?.message ||
-          "Something went wrong while changing your password.",
-        {
-          position: "top-center",
-          duration: 4000,
-          style: {
-            background:
-              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            padding: "16px 20px",
-            color: "#ffffff",
-            fontSize: "0.95rem",
-            borderRadius: "5px",
-            width: "300px",
-            height: "60px",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
-          },
-          iconTheme: {
-            primary: "#FF4D4F",
-            secondary: "#ffffff",
-          },
-        }
-      );
-    } finally {
-      setIsSaving(false);
     }
-  }
-  let formik2 = useFormik({
-    initialValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    },
-    onSubmit: handleChangePassword,
-    validationSchema: validationChangePass,
-  });
+    let formik = useFormik({
+        initialValues: {
+            newPassword: "",
+            confirmNewPassword: "",
+        },
+        onSubmit: handleChangePassword,
+        validationSchema: validationChangePass,
+    });
 
-  return (
-    <div className={`${style.Changepasspage}`}>
-      <div className="container">
-        <div className="row">
-          <div className="col-12 d-flex align-items-center justify-content-center">
-            <div
-              className="card shadow mb-5 p-4 py-5 "
-              style={{
-                marginTop: "120px",
-                width: "100%",
-                maxWidth: "470px",
-                minHeight: "450px",
-                maxHeight: "890px",
-                overflow: "hidden",
-                background: `
-                              radial-gradient(
-                                circle at 2% 50%,       
-                                rgba(5, 53, 121, 0.6) 0%,  
-                                rgba(0, 71, 171, 0.2) 20%, 
-                                rgba(0, 0, 0, 0.9) 70%,    
-                                rgba(0, 0, 0, 1) 100%      
-                              )
-                            `,
-                backdropFilter: "blur(15px)",
-                borderRadius: "28px",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
-                boxShadow: "0 0 50px rgba(0, 0, 0, 0.7)",
-              }}
-            >
-              <h5
-                className={`fw-semibold mb-3 text-center  totalFont`}
-                style={{
-                  fontSize: "2.2rem",
-                  lineHeight: "1.2",
-                  background: "linear-gradient(to right, white, #bcbcbcff)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  paddingBottom: "20px",
-                }}
-              >
-                Change Password
-              </h5>
-              <form onSubmit={formik2.handleSubmit}>
-                <div className="mb-3">
-                  <label
-                    htmlFor="currentPassword"
-                    className={`form-label fw-medium text-white  totalFont`}
-                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
-                  >
-                    Current Password
-                  </label> <span className={`${style.reqStar}`}>*</span>
-                  <div className="position-relative">
-                    <input
-                      type={showCurrentPassword ? "text" : "password"}
-                      id="currentPassword"
-                      placeholder="Current password"
-                      className={`form-control bg-transparent text-light py-1 ${style.custominput}  totalFont `}
-                      onBlur={formik2.handleBlur}
-                      onChange={formik2.handleChange}
-                      value={formik2.values.currentPassword}
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowCurrentPassword(!showCurrentPassword)
-                      }
-                      className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 shadow-none"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
-                      {showCurrentPassword ? (
-                        <i className="fa-solid fa-eye-slash"></i>
-                      ) : (
-                        <i className="fa-solid fa-eye"></i>
-                      )}
-                    </button>
-                  </div>
+    return (
+        <>
 
-                  {formik2.touched.currentPassword &&
-                    formik2.errors.currentPassword && (
-                      <div
-                        className="text-danger mt-1"
-                        style={{ fontSize: "0.8rem" }}
-                      >
-                        {formik2.errors.currentPassword}
-                      </div>
-                    )}
-                </div>
-                <div className="mb-3">
-                  <label
-                    htmlFor="newPassword"
-                    className={`form-label fw-medium text-white  totalFont`}
-                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
-                  >
-                    New Password
-                  </label>{" "}
-                  <span className={`${style.reqStar}`}>*</span>
-                  <div className="position-relative">
-                    <input
-                      type={showNewPassword ? "text" : "password"}
-                      id="newPassword"
-                      placeholder="New password"
-                      className={`${style.custominput}  totalFont form-control pe-5 bg-transparent text-light`}
-                      onBlur={formik2.handleBlur}
-                      onChange={formik2.handleChange}
-                      value={formik2.values.newPassword}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 shadow-none"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
-                      {showNewPassword ? (
-                        <i className="fa-solid fa-eye-slash"></i>
-                      ) : (
-                        <i className="fa-solid fa-eye"></i>
-                      )}
-                    </button>
-                  </div>
-                  {formik2.touched.newPassword &&
-                    formik2.errors.newPassword && (
-                      <div
-                        className="text-danger mt-1"
-                        style={{ fontSize: "0.8rem" }}
-                      >
-                        {formik2.errors.newPassword}
-                      </div>
-                    )}
-                </div>
+            <div className={`${style.page_container}`}>
 
-                <div className="mb-3">
-                  <label
-                    htmlFor="confirmNewPassword"
-                    className={`form-label fw-medium text-white  totalFont`}
-                    style={{ fontSize: "0.95rem", fontWeight: "500" }}
-                  >
-                    Confirm New Password
-                  </label>{" "}
-                  <span className={`${style.reqStar}`}>*</span>
-                  <div className="position-relative">
-                    <input
-                      type={showConfirmNewPassword ? "text" : "password"}
-                      id="confirmNewPassword"
-                      placeholder="Confirm new password"
-                      className={`${style.custominput}  totalFont form-control pe-5 bg-transparent text-light`}
-                      onBlur={formik2.handleBlur}
-                      onChange={formik2.handleChange}
-                      value={formik2.values.confirmNewPassword}
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmNewPassword(!showConfirmNewPassword)
-                      }
-                      className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 shadow-none"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
-                      {showConfirmNewPassword ? (
-                        <i className="fa-solid fa-eye-slash"></i>
-                      ) : (
-                        <i className="fa-solid fa-eye"></i>
-                      )}
-                    </button>
-                  </div>
-                </div>
+                <div className={`${style.hero_section}`}>
+                    <div className={`${style.logo_container}`}>
 
-                {formik2.touched.confirmNewPassword &&
-                  formik2.errors.confirmNewPassword && (
-                    <div
-                      className="text-danger mt-1"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      {formik2.errors.confirmNewPassword}
+                        <svg className={`${style.logo_icon}`} width="58" height="45" viewBox="0 0 58.4871 44.9604" fill="none">
+                            <path d="M29.9536 0.00969049C33.6875 0.00969049 37.4213 -0.0102839 41.1536 0.00969049C48.3035 0.0562973 54.864 4.83682 57.3601 11.8145C58.4358 14.8273 58.6694 17.945 58.3627 21.1459C57.9131 25.8465 56.5736 30.2092 54.0362 34.1192C50.1212 40.1548 44.6031 43.5088 37.7693 44.6257C35.4527 45.0036 33.1282 44.9586 30.8005 44.9586C29.8345 44.9586 29.3181 44.4959 29.2609 43.6586C29.1989 42.7614 29.7376 42.0723 30.6909 42.0124C31.7459 41.9442 32.8089 42.0008 33.8686 41.9708C40.302 41.7877 45.8726 39.4657 50.2849 34.4804C53.3768 30.9849 54.9434 26.727 55.4741 22.0347C55.8427 18.7789 55.803 15.5431 54.5748 12.4587C52.6904 7.73976 49.3141 4.84681 44.665 3.5052C42.8601 2.9842 41.0106 2.886 39.1596 2.87435C32.2496 2.83107 25.3364 2.8577 18.428 2.85604C18.1372 2.85604 17.8433 2.86769 17.5541 2.84106C17.2224 2.80891 16.9128 2.65311 16.6816 2.402C16.4504 2.1509 16.3129 1.82117 16.2941 1.47281C16.2892 1.13657 16.3983 0.809396 16.6019 0.549438C16.8056 0.289481 17.0906 0.113573 17.4063 0.0529699C17.7221 0.00719106 18.0411 -0.00896493 18.3596 0.00469711H29.9584L29.9536 0.00969049Z" fill="white" />
+                            <path d="M22.8484 34.3485H10.4552C10.1903 34.3608 9.9249 34.3547 9.66076 34.3302C8.94418 34.2287 8.49294 33.7976 8.42303 33.0385C8.35312 32.2795 8.69314 31.7602 9.37635 31.4938C9.81012 31.3274 10.2645 31.3623 10.7126 31.3623C18.8651 31.3623 27.0192 31.3757 35.1717 31.3474C38.0317 31.3374 40.5008 30.2271 42.4631 28.03C44.1457 26.1457 45.0275 23.8686 45.2897 21.3053C45.4962 19.2945 45.2229 17.4452 44.0313 15.804C42.7062 13.973 40.9155 13.0542 38.7626 13.0442C31.0597 13.0093 23.3505 13.0309 15.654 13.0192C14.8357 13.0192 14.0159 12.9493 13.2008 12.8694C12.4969 12.8012 12.1076 12.3568 12.06 11.6144C12.0075 10.8054 12.4032 10.2228 13.1039 10.0814C13.3385 10.0464 13.5758 10.0347 13.8125 10.0464H38.5989C42.7634 10.0547 46.3638 12.693 47.6762 16.8177C48.6072 19.7456 48.2752 22.6968 47.2313 25.5348C45.2261 30.9828 40.5056 34.3335 34.9191 34.3485C30.8961 34.3602 26.8714 34.3485 22.8484 34.3485ZM4.36663 12.8761C3.41331 12.8761 2.45998 12.8894 1.50666 12.8761C0.712223 12.8611 0.102096 12.3135 0.0115301 11.5678C-0.0790357 10.8221 0.367438 10.1812 1.22702 9.99813C1.69647 9.91836 2.17209 9.88548 2.64747 9.89992C3.94399 9.88827 5.2421 9.88494 6.53862 9.89992C6.93454 9.8993 7.32916 9.94735 7.71439 10.0431C8.41508 10.2295 8.798 10.8554 8.71538 11.6161C8.63276 12.3767 8.19423 12.8345 7.46017 12.8595C6.42899 12.8961 5.39463 12.8694 4.36346 12.8694L4.36663 12.8761ZM21.7569 44.6686C20.8576 44.6686 19.9583 44.6852 19.0558 44.6686C18.201 44.6486 17.6258 44.1409 17.5384 43.3919C17.5052 42.998 17.6221 42.6063 17.8635 42.3023C18.1049 41.9983 18.4512 41.8066 18.827 41.769C20.7507 41.6106 22.6832 41.6078 24.6073 41.7607C24.7888 41.7688 24.9669 41.8156 25.1305 41.8984C25.2941 41.9811 25.4399 42.098 25.5589 42.2418C25.678 42.3857 25.7677 42.5534 25.8226 42.7349C25.8775 42.9163 25.8965 43.1076 25.8784 43.297C25.8196 44.1293 25.2603 44.6386 24.3769 44.6752H21.7569V44.6686Z" fill="white" />
+                        </svg>
+                        <p className={`${style.logo_text}`} >DeebAI</p>
                     </div>
-                  )}
 
-                <div className="d-flex justify-content-end">
-                  <button
-                    type="submit"
-                    className={`${style.btn_deeb} px-4 py-2`}
-                    // disabled={isSaving}
-                    disabled={!(formik2.isValid && formik2.dirty) || isSaving}
-                  >
-                    {isSaving ? (
-                      <span
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                    ) : (
-                      "Save"
-                    )}
-                  </button>
+
+                    {/* <img className={`${style.background_image}`} src={imghero} alt="Background" /> */}
+                    <div className={`${style.hero_background}`}>
+                        <img src={imghero} alt="" />
+                    </div>
+
+
+
+                    <div className={`${style.form_card}`} >
+                        <div className={`${style.form_content}`} >
+
+                            <div className={`${style.form_header}`} >
+                                <h1 className={`${style.form_title}`} >Create new password</h1>
+                                <p className={`${style.form_subtitle}`} >Create your new password</p>
+                            </div>
+
+                            <form onSubmit={formik.handleSubmit}>
+                                
+
+                                <div className={`${style.form_field} ${style.full_width}`}>
+                                    <label htmlFor="newPassword" className={`${style.form_label}`}> New Password</label>
+                                    <div className={`${style.input_wrapper}`}>
+                                        <svg className={`${style.input_icon}`} viewBox="0 0 18 19" fill="none">
+                                            <path d="M5.25 8.75V5.75C5.25 4.75544 5.64509 3.80161 6.34835 3.09835C7.05161 2.39509 8.00544 2 9 2C9.99456 2 10.9484 2.39509 11.6517 3.09835C12.3549 3.80161 12.75 4.75544 12.75 5.75V8.75" stroke="#717182" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M14.25 8.75H3.75C2.92157 8.75 2.25 9.42157 2.25 10.25V15.5C2.25 16.3284 2.92157 17 3.75 17H14.25C15.0784 17 15.75 16.3284 15.75 15.5V10.25C15.75 9.42157 15.0784 8.75 14.25 8.75Z" stroke="#717182" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                        <input id="newPassword"
+                                              name="newPassword"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.newPassword}
+                                            className={`${style.form_input}`}
+                                            type={showNewPassword ? "text" : "password"}
+                                            placeholder="Enter your password" />
+                                        <button onClick={() => setShowNewPassword(!showNewPassword)} className={`${style.eye_button}`} type="button">
+                                            {showNewPassword ? (
+                                                <i className="fa-solid fa-eye-slash"></i>
+                                            ) : (
+                                                <i className="fa-solid fa-eye"></i>
+                                            )}
+                                        </button>
+                                    </div>
+                                    <div className={`${style.error_placeholder}`}>
+                                        {formik.touched.newPassword && formik.errors.newPassword && (
+                                            <div
+                                                className="text-danger mt-1"
+                                                style={{ fontSize: "0.8rem" }}
+                                            >
+                                                {formik.errors.newPassword !== "required" ? formik.errors.newPassword : ""}
+                                                {/* {formik.errors.newPassword} */}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <p className={`${style.password_hint}`}>Use at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character (e.g. ! @ # $ % ^ & *).</p>
+
+                                </div>
+
+
+                                <div className={`${style.form_field} ${style.full_width}`}>
+                                    <label htmlFor="confirmNewPassword" className={`${style.form_label}`}>Confirm New Password</label>
+                                    <div className={`${style.input_wrapper}`} >
+                                        <svg className={`${style.input_icon}`} viewBox="0 0 18 19" fill="none">
+                                            <path d="M5.25 8.75V5.75C5.25 4.75544 5.64509 3.80161 6.34835 3.09835C7.05161 2.39509 8.00544 2 9 2C9.99456 2 10.9484 2.39509 11.6517 3.09835C12.3549 3.80161 12.75 4.75544 12.75 5.75V8.75" stroke="#717182" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M14.25 8.75H3.75C2.92157 8.75 2.25 9.42157 2.25 10.25V15.5C2.25 16.3284 2.92157 17 3.75 17H14.25C15.0784 17 15.75 16.3284 15.75 15.5V10.25C15.75 9.42157 15.0784 8.75 14.25 8.75Z" stroke="#717182" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                        <input id="confirmNewPassword"
+                                             name="confirmNewPassword"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.confirmNewPassword}
+                                            className={`${style.form_input}`}
+                                            type={showConfirmNewPassword ? "text" : "password"}
+
+                                            placeholder="Confirm your New password" />
+                                        <button onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)} className={`${style.eye_button}`} type="button">
+                                            {showConfirmNewPassword ? (
+                                                <i className="fa-solid fa-eye-slash"></i>
+                                            ) : (
+                                                <i className="fa-solid fa-eye"></i>
+                                            )}
+                                        </button>
+                                    </div>
+
+                                    <div className={`${style.error_placeholder}`}>
+                                        {formik.touched.confirmNewPassword && formik.errors.confirmNewPassword && (
+                                            <div
+                                                className="text-danger mt-1"
+                                                style={{ fontSize: "0.8rem" }}
+                                            >
+                                                {formik.errors.confirmNewPassword !== "required" ? formik.errors.confirmNewPassword : ""}
+                                                {/* {formik.errors.confirmNewPassword} */}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+
+                               
+
+
+                                <button
+                                    type="submit"
+                                    className={`${style.signup_button}`}
+                                    disabled={!(formik.isValid && formik.dirty) || isLoading}>
+                                    {isLoading ? (
+                                        <span
+                                            className="spinner-border spinner-border-sm text-light"
+                                            role="status"
+                                        />
+                                    ) : (
+                                        "Confirm"
+                                    )}
+                                </button>
+                                
+
+
+                                
+
+                            </form>
+
+
+
+
+
+
+                        </div>
+                    </div>
+
                 </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+
+
+            </div >
+
+            <script src="script.js"></script>
+
+
+        </>
+    );
 }
