@@ -99,14 +99,24 @@ export default function Register() {
             .oneOf([yup.ref("password"), null], "Passwords must match"),
         businessName: yup
             .string()
-            .required("required")
-            .trim()
-            .min(3, "Business name must be at least 3 characters long")
-            .max(50, "Business name must be at most 50 characters long")
+            .notRequired()
+            // .trim()
+            // .min(3, "Business name must be at least 3 characters long")
+            .max(200, "Business name must be at most 50 characters long")
+        // .matches(
+        //     /^[a-zA-Z0-9\s]*$/,
+        //     "Business name can only contain letters and numbers"
+        // )
+        ,
+        phoneNumber: yup
+            .string()
+            .nullable()
             .matches(
-                /^[a-zA-Z0-9\s]*$/,
-                "Business name can only contain letters and numbers"
-            ),
+                /^01[0-2,5]\d{8}$/,
+                "not valid number"
+            )
+            .notRequired()
+
     });
     let formik = useFormik({
         initialValues: {
@@ -116,6 +126,7 @@ export default function Register() {
             password: "",
             confirmPassword: "",
             businessName: "",
+            phoneNumber: "",
         },
         onSubmit: handleRegisterSubmit,
         validationSchema: validationRegister,
@@ -197,9 +208,9 @@ export default function Register() {
                                                 <div
                                                     className="text-danger mt-1"
                                                     style={{ fontSize: "0.8rem" }}
-                                                >  
-                                                 {formik.errors.lastName !== "required" ? formik.errors.lastName : ""}
-                                                   
+                                                >
+                                                    {formik.errors.lastName !== "required" ? formik.errors.lastName : ""}
+
                                                 </div>
                                             )}
                                         </div>
@@ -229,9 +240,9 @@ export default function Register() {
                                             <div
                                                 className="text-danger mt-1"
                                                 style={{ fontSize: "0.8rem" }}
-                                            >  
-                                            {formik.errors.email !== "required" ? formik.errors.email : ""}
-                                                
+                                            >
+                                                {formik.errors.email !== "required" ? formik.errors.email : ""}
+
                                             </div>
                                         )}
                                     </div>
@@ -258,7 +269,7 @@ export default function Register() {
                                             onBlur={formik.handleBlur}
                                             onChange={formik.handleChange}
                                             value={formik.values.businessName}
-                                            className={`${style.form_input}`} type="text" placeholder="Your company name" />
+                                            className={`${style.form_input}`} type="text" placeholder="Your company name (Optional)" />
 
 
                                     </div>
@@ -268,7 +279,7 @@ export default function Register() {
                                                 className="text-danger mt-1"
                                                 style={{ fontSize: "0.8rem" }}
                                             >
-                                                 {formik.errors.businessName !== "required" ? formik.errors.businessName : ""}
+                                                {formik.errors.businessName}
                                             </div>
                                         )}
                                     </div>
@@ -277,13 +288,25 @@ export default function Register() {
 
 
                                 <div className={`${style.form_field} ${style.full_width}`}>
-                                    <label className={`${style.form_label}`}>Phone Number</label>
+                                    <label htmlFor="phoneNumber" className={`${style.form_label}`}>Phone Number</label>
                                     <div className={`${style.input_wrapper}`}>
                                         <svg className={`${style.input_icon}`} viewBox="0 0 18 18" fill="none">
                                             <path fillRule="evenodd" clipRule="evenodd" d="M4.29975 1.53225C5.2125 0.62475 6.7155 0.786 7.47975 1.8075L8.42625 3.0705C9.04875 3.9015 8.99325 5.0625 8.2545 5.79675L8.076 5.97525C8.05576 6.05018 8.0537 6.12886 8.07 6.20475C8.11725 6.51075 8.373 7.15875 9.444 8.22375C10.515 9.28875 11.1675 9.54375 11.478 9.59175C11.5562 9.60749 11.637 9.60518 11.7143 9.585L12.0203 9.2805C12.6773 8.628 13.6852 8.50575 14.4982 8.9475L15.9307 9.7275C17.1585 10.3935 17.4682 12.0615 16.4632 13.0613L15.3975 14.1203C15.0615 14.454 14.61 14.7323 14.0595 14.784C12.702 14.9108 9.53925 14.7488 6.2145 11.4435C3.11175 8.358 2.51625 5.667 2.4405 4.341C2.403 3.6705 2.7195 3.1035 3.123 2.703L4.29975 1.53225Z" fill="#717182" />
                                         </svg>
-                                        <input className={`${style.form_input}`} type="tel" placeholder="Your phone number" />
+                                        <input  id="phoneNumber"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.phoneNumber}
+                                         className={`${style.form_input}`} type="tel" placeholder="Your phone number (Optional)" />
                                     </div>
+                                    {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+                                            <div
+                                                className="text-danger mt-1"
+                                                style={{ fontSize: "0.8rem" }}
+                                            >
+                                                {formik.errors.phoneNumber}
+                                            </div>
+                                        )}
                                 </div>
 
 
@@ -355,7 +378,7 @@ export default function Register() {
                                                 className="text-danger mt-1"
                                                 style={{ fontSize: "0.8rem" }}
                                             >
-                                                 {formik.errors.confirmPassword !== "required" ? formik.errors.confirmPassword : ""}
+                                                {formik.errors.confirmPassword !== "required" ? formik.errors.confirmPassword : ""}
                                                 {/* {formik.errors.confirmPassword} */}
                                             </div>
                                         )}

@@ -4,7 +4,7 @@ import { createBrowserRouter , RouterProvider } from 'react-router-dom'
 import Login from "./Components/Login/Login"
 import Layout from "./Components/Layout/Layout"
 // import ForgetPassword from './Components/ForgetPassword/ForgetPassword'
-// import { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 // import Protected from './Components/Protected/Protected'
 // import { userContext } from './context/userContext'
 // import Profile from './Components/Profile/Profile'
@@ -50,7 +50,7 @@ function App() {
   return (
     <>
           <RouterProvider router={routers}></RouterProvider>
-          {/* <Toaster /> */}
+          <Toaster />
     </>
   )
 }
