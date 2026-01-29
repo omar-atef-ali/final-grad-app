@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import style from "./GoogleCallback.module.css";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api";
+import { userContext } from "../../context/userContext";
+
 export default function GoogleCallback() {
   const navigate = useNavigate();
+  const { setUserToken } = useContext(userContext);
 
   useEffect(() => {
     const handleGoogleCallback = async () => {
@@ -12,22 +16,27 @@ export default function GoogleCallback() {
       if (!code) return;
 
       console.log(code);
-      
-      // const res = await fetch("https://deebai.runasp.net/api/auth/google", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     code,
-      //     redirectUri: "https://finalgradapp.netlify.app/auth/google/callback",
-      //   }),
-      // });
 
-      // const data = await res.json();
+      try {
+        const res = await api.post("/auth/google", {
+          code,
+          redirectUri: "https://finalgradapp.netlify.app/auth/google/callback",
+        });
 
-      // if (data.token) {
-      //   localStorage.setItem("jwt", data.token);
-      //   navigate("/home");
-      // }
+        const data = res.data;
+
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          if (data.refreshToken) {
+            localStorage.setItem("refreshToken", data.refreshToken);
+          }
+
+          setUserToken(data.token);
+          navigate("/home");
+        }
+      } catch (error) {
+        console.error("Google login error:", error);
+      }
     };
 
     handleGoogleCallback();
