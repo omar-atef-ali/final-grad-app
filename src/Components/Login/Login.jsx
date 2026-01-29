@@ -21,17 +21,6 @@ export default function Login() {
 
   const [rememberMe, setRememberMe] = useState(false);
 
-  useEffect(() => {
-    // نحاول نجيب التوكن من أي مكان
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (token) {
-      setUserToken(token); // نحط التوكن في الـ context
-      navigate("/home"); // نروح للصفحة الرئيسية مباشرة
-    }
-  }, [navigate, setUserToken]);
-
   async function submit(values) {
     try {
       setLoading(true);
@@ -52,7 +41,7 @@ export default function Login() {
       console.error("Login Error:", error);
       toast.error(
         error.response?.data?.errors[1] ||
-          "Something went wrong while registration.",
+        "Something went wrong while registration.",
         {
           position: "top-center",
           duration: 4000,
@@ -99,6 +88,26 @@ export default function Login() {
     validationSchema: validationLogin,
     onSubmit: submit,
   });
+
+  ////////////////////////////////////////////
+
+  const loginWithGoogle = () => {
+    const clientId =
+      "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
+    const redirectUri = `https://finalgradapp.netlify.app/auth/google/callback`;
+    const scope = "openid email profile";
+    const responseType = "code";
+
+    const authUrl =
+      "https://accounts.google.com/o/oauth2/v2/auth?" +
+      `client_id=${encodeURIComponent(clientId)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=${encodeURIComponent(responseType)}` +
+      `&scope=${encodeURIComponent(scope)}`;
+
+    window.location.href = authUrl;
+  };
+  //////////////////////////////////////////////////
 
   return (
     <>
@@ -329,19 +338,30 @@ export default function Login() {
                   </div>
 
                   {/* <!-- Google Login Button --> */}
-                  <GoogleLogin
-                    onSuccess={(response) => {
-                      console.log(response);
-                    }}
-                    onError={() => {
-                      console.log("Login Failed");
-                    }}
-                  />
+                  <button
+                    className={`${style.socialBtn}`}
+                    onClick={() => loginWithGoogle()}
+                    type="button"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 26 26" fill="none">
+                      <path
+                        d="M24.5355 10.59H12.9943V15.03H19.7475C19.6249 16.11 18.8875 17.79 17.2916 18.87C16.3089 19.59 14.8356 20.07 12.9943 20.07C8.88902 20.07 5.62773 16.6407 5.62773 12.63C5.62773 8.73267 9.07435 5.31 12.9943 5.31C15.3276 5.31 16.8009 6.27 17.7822 7.11L21.2208 3.75C19.1329 1.95 16.3089 0.75 12.9943 0.75C8.20636 0.75 4.03175 3.39 2.06645 7.35C1.20148 9.01858 0.75 10.8705 0.75 12.75C0.75 14.6295 1.20148 16.4814 2.06645 18.15C4.03175 22.11 8.20636 24.75 12.9943 24.75C16.3089 24.75 19.1329 23.67 21.0982 21.87C24.2981 19.07 25.2248 14.634 24.5355 10.59Z"
+                        stroke="black"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />{" "}
+                    </svg>
+                    <span className={`${style.socialText}`}>
+                      {" "}
+                      Login with Google{" "}
+                    </span>{" "}
+                  </button>
 
                   {/* <!-- Sign Up Footer --> */}
                   <p className={`${style.signupText}`}>
                     <span>Don’t have an account? </span>
-                    <a href="#" className={`${style.signupLink}`}>
+                    <a href="/register" className={`${style.signupLink}`}>
                       Sign Up
                     </a>
                   </p>

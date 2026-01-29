@@ -1,38 +1,41 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import './App.css'
 import { createBrowserRouter , RouterProvider } from 'react-router-dom'
 import Login from "./Components/Login/Login"
 import Layout from "./Components/Layout/Layout"
-import ForgetPassword from './Components/ForgetPassword/ForgetPassword'
-import { Toaster } from 'react-hot-toast'
-import Protected from './Components/Protected/Protected'
+
+// import ForgetPassword from './Components/ForgetPassword/ForgetPassword'
+// import { Toaster } from 'react-hot-toast'
+// import Protected from './Components/Protected/Protected'
 import { userContext } from './context/userContext'
-import Profile from './Components/Profile/Profile'
+// import Profile from './Components/Profile/Profile'
 import ResetPassword from './Components/ResetPassword/ResetPassword'
 import Register from './Components/Register/Register'
-import ConfirmEmail from './Components/ConfirmEmail/ConfirmEmail'
+// import ConfirmEmail from './Components/ConfirmEmail/ConfirmEmail'
 import ChangePassword from './Components/ChangePassword/ChangePassword'
+// import Pricing  from "./Components/Pricing/Pricing"
 import Home from './Components/Home/Home'
-import Features from "./Components/Features/Features"
-import Pricing  from "./Components/Pricing/Pricing"
+import GoogleCallback from "./Components/GoogleCallback/GoogleCallback";
+
+import { useContext } from 'react'
 
 let routers = createBrowserRouter([
   {path:"/" , element: <Layout/> ,children : [
       {index: true , element :  < Register /> } , 
-      {path : "home" , element : <Protected><Home/></Protected> } ,
-      {path : "pricing" , element : <Protected><Pricing/></Protected> } ,
-      {path : "features" , element :<Protected><Features/></Protected>  } ,
+      {path : "home" , element : <Home/> } ,
+      // {path : "pricing" , element : <Pricing/> } ,
+      // {path : "features" , element :<Features/>  } ,
       {path : "login" , element : <Login /> } ,
       {path : "register" , element : < Register />  } ,
-      {path : "forget-password" , element : <ForgetPassword />  } ,
+      { path: "auth/google/callback", element: <GoogleCallback /> },
+      // {path : "forget-password" , element : <ForgetPassword />  } ,
       {path : "reset-password" , element : <ResetPassword />  } ,
-      {path : "profile" , element : <Protected>< Profile /> </Protected>} ,
-      {path : "/confirm-email" , element : <ConfirmEmail /> } ,
-      {path : "/changepassword" , element :<Protected> <ChangePassword /></Protected>} ,
-
-      
+      // {path : "profile" , element : < Profile /> } ,
+      // {path : "/confirm-email" , element : <ConfirmEmail /> } ,
+      {path : "/changepassword" , element : <ChangePassword />} ,
 
   ]}
+//   {path:"/",element:<ResetPassword/>}
 ])
 
 
@@ -52,7 +55,7 @@ function App() {
   return (
     <>
           <RouterProvider router={routers}></RouterProvider>
-          <Toaster />
+          {/* <Toaster /> */}
     </>
   )
 }
