@@ -26,20 +26,19 @@ export default function GoogleCallback() {
         const data = res.data;
         console.log(data);
         
-
-      //   if (data.token) {
-      //     localStorage.setItem("token", data.token);
-      //     if (data.refreshToken) {
-      //       localStorage.setItem("refreshToken", data.refreshToken);
-      //     }
-      //     console.log(data.token);
+        // if (data.token) {
+        //   localStorage.setItem("token", data.token);
+        //   if (data.refreshToken) {
+        //     localStorage.setItem("refreshToken", data.refreshToken);
+        //   }
+        //   console.log(data.token);
           
-      //     setUserToken(data.token);
-      //     navigate("/home");
-      //   }
-      // } catch (error) {
-      //   console.error("Google login error:", error);
-       }
+        //   setUserToken(data.token);
+        //   navigate("/home");
+        // }
+      } catch (error) {
+        console.error("Google login error:", error);
+      }
     };
 
     handleGoogleCallback();
