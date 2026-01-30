@@ -27,7 +27,7 @@ let routers = createBrowserRouter([
       // {path : "features" , element :<Features/>  } ,
       {path : "login" , element : <Login /> } ,
       {path : "register" , element : < Register />  } ,
-      { path: "auth/google/callback", element: <GoogleCallback /> },
+      { path: "google/callback", element: <GoogleCallback /> },
       // {path : "forget-password" , element : <ForgetPassword />  } ,
       {path : "reset-password" , element : <ResetPassword />  } ,
       // {path : "profile" , element : < Profile /> } ,

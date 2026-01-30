@@ -30,7 +30,8 @@ export default function GoogleCallback() {
           if (data.refreshToken) {
             localStorage.setItem("refreshToken", data.refreshToken);
           }
-
+          console.log(data.token);
+          
           setUserToken(data.token);
           navigate("/home");
         }
