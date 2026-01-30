@@ -18,7 +18,7 @@ export default function GoogleCallback() {
       console.log(code);
 
       try {
-        const res = await api.post("/auth/google", {
+        const res = await api.post("/Auth/google", {
           code,
           redirectUri: "https://finalgradapp.netlify.app/auth/google/callback",
         });
