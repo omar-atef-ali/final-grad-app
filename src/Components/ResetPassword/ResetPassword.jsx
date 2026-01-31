@@ -96,12 +96,18 @@ export default function ResetPassword() {
                         <div className={`${style.reset_card}`} >
                             <div className={`${style.card_inner}`} >
 
-                                {/* <p>
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                        <path d="M15 18L9 12L15 6" stroke="#717182" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className={style.back_link} onClick={() => navigate("/login")}>
+                                    <svg style={{marginTop:"3px"}} width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                        <path d="M15 18L9 12L15 6"
+                                            stroke="#6A6A6A"
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
                                     </svg>
-                                    <span></span>
-                                </p> */}
+                                    <span>Back to login</span>
+                                </div>
+
 
                                 <div className={`${style.card_header}`}  >
                                     <h1 className={`${style.main_title}`} >Reset your password</h1>
@@ -114,7 +120,7 @@ export default function ResetPassword() {
                                     <div className={`${style.form_group}`}>
                                         <label htmlFor="email" className={`${style.form_label}`} >Email</label>
                                         <div className={`${style.input_wrapper}`} >
-                                            <svg className={`${style.input_icon}`} width="18" height="18"  viewBox="0 0 18 15" fill="none">
+                                            <svg className={`${style.input_icon}`} width="18" height="18" viewBox="0 0 18 15" fill="none">
                                                 <path d="M16.5 5.25L9.75675 9.54525C9.52792 9.67816 9.268 9.74817 9.00338 9.74817C8.73875 9.74817 8.47883 9.67816 8.25 9.54525L1.5 5.25" stroke="#717182" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                                 <path d="M15 3H3C2.17157 3 1.5 3.67157 1.5 4.5V13.5C1.5 14.3284 2.17157 15 3 15H15C15.8284 15 16.5 14.3284 16.5 13.5V4.5C16.5 3.67157 15.8284 3 15 3Z" stroke="#717182" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
