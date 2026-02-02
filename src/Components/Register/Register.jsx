@@ -143,7 +143,7 @@ export default function Register() {
             <svg
               className={`${style.logo_icon}`}
               width="58"
-              height="45"
+              height="35"
               viewBox="0 0 58.4871 44.9604"
               fill="none"
             >

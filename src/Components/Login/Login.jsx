@@ -127,7 +127,7 @@ export default function Login() {
               <div className={`${style.logoContainer}`}>
                 <svg
                   width="58"
-                  height="45"
+                  height="35"
                   viewBox="0 0 59 46"
                   fill="none"
                   preserveAspectRatio="xMidYMid meet"
@@ -141,7 +141,7 @@ export default function Login() {
                     fill="currentColor"
                   />
                 </svg>
-                <span className={`${style.logoText}`}>DeebAI</span>
+                <span className={`${style.logoText}`}>Namaa</span>
               </div>
 
               {/* <!-- Headline Text --> */}

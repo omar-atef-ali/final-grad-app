@@ -28,7 +28,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
+    padding: 23px 20px;
     /* امسح min-height أو height */
 }
 
@@ -57,8 +57,8 @@ body {
 /* Logo */
 .logo_container {
     position: absolute;
-    top: 64px;
-    left: 72px;
+    top: 51px;
+    left: 80px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -83,7 +83,7 @@ body {
     /* position: absolute; */
     top: 3px;
     left: 25%;
-    margin-left: 24px;
+    /* margin-left: 24px; */
     background: #f9f9f9;
     border-radius: 40px;
     /* padding: 168px 32px; */
