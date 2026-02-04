@@ -94,7 +94,7 @@ export default function Login() {
   const loginWithGoogle = () => {
     const clientId =
       "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
-    const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    const redirectUri = `http://localhost:5173/google/callback`;
     const scope = "openid email profile";
     const responseType = "code";
 
@@ -103,7 +103,8 @@ export default function Login() {
       `client_id=${encodeURIComponent(clientId)}` +
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&response_type=${encodeURIComponent(responseType)}` +
-      `&scope=${encodeURIComponent(scope)}`;
+      `&scope=${encodeURIComponent(scope)}` +
+      `&state=login`;
 
     window.location.href = authUrl;
   };

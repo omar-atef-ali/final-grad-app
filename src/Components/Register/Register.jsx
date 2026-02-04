@@ -135,6 +135,27 @@ export default function Register() {
     validateOnMount: true,
   });
 
+  ///////////////////////////////////////////////////////////
+
+  const registerWithGoogle = () => {
+    const clientId =
+      "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
+    const redirectUri = `http://localhost:5173/google/callback`;
+    const scope = "openid email profile";
+    const responseType = "code";
+
+    const authUrl =
+      "https://accounts.google.com/o/oauth2/v2/auth?" +
+      `client_id=${encodeURIComponent(clientId)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=${encodeURIComponent(responseType)}` +
+      `&scope=${encodeURIComponent(scope)}` +
+      `&state=register`;
+      ;
+
+    window.location.href = authUrl;
+  };
+
   return (
     <>
       <div className={`${style.page_container}`}>
@@ -533,8 +554,6 @@ export default function Register() {
                             fillOpacity="0.75"
                           />
                         </svg>
-                        
-                
                       ) : (
                         <svg
                           width="24"
@@ -688,7 +707,11 @@ export default function Register() {
                   <div className={`${style.divider_line}`}></div>
                 </div>
 
-                <button className={`${style.google_button}`} type="button">
+                <button
+                  className={`${style.google_button}`}
+                  onClick={() => registerWithGoogle()}
+                  type="button"
+                >
                   <svg
                     className={`${style.google_icon}`}
                     viewBox="0 0 25.4994 25.5"
@@ -713,8 +736,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-
-      
     </>
   );
 }
