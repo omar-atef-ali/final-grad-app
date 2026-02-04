@@ -9,7 +9,7 @@ export default function NavBar() {
   return (
     <>
       <div className={`${style.NavBar}`}>
-              <div className="flex-md-row justify-content-between align-items-center">
+              <div className=" flex-md-row justify-content-between align-items-center">
                 <div
                   className=" w-100 d-flex align-items-center gap-0 gap-md-5"
                   style={{ width: "100%", justifyContent: "space-between" }}
@@ -112,7 +112,9 @@ export default function NavBar() {
                   </div>
                 </div>
               </div>
+
       </div>
+
     </>
   );
 }
