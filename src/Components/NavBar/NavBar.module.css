@@ -1,0 +1,187 @@
+.NavBar {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 16px 24px;
+  position: relative;
+  /* Needed for absolute positioning of NavLinks */
+}
+
+@media (max-width: 768px) {
+  .NavBar {
+    padding: 15px 10px;
+
+  }
+
+}
+
+.LogoContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.LogoIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid black;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LogoDot {
+  width: 16px;
+  height: 16px;
+  border: 1px solid black;
+  border-radius: 50%;
+  position: absolute;
+}
+
+
+
+.LogoText {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+
+
+.MenuToggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+}
+
+@media (min-width: 768px) {
+  .MenuToggle {
+    display: none;
+  }
+}
+
+.MenuToggle span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #0a0a0a;
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+.MenuToggle.Active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.MenuToggle.Active span:nth-child(2) {
+  opacity: 0;
+}
+
+.MenuToggle.Active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+.NavLinks {
+  display: flex;
+  /* Always display but hide visually */
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+
+  flex-direction: column;
+  gap: 16px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.NavLinks.Show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.NavLinks a {
+  text-decoration: none;
+  color: #717182;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.NavLinks a:hover {
+  color: #0a0a0a;
+}
+
+@media (min-width: 768px) {
+  .NavLinks {
+    position: static;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+
+    flex-direction: row;
+  }
+}
+
+.HeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  
+.HeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+}
+
+.IconBtn {
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #717182;
+}
+
+.IconBtn:hover {
+  background-color: #f9fafb;
+  color: #0a0a0a;
+}
+
+.UserAvatarSmall {
+  width: 40px;
+  height: 40px;
+  background-color: #3F1C6E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: none;
+}

@@ -15,17 +15,21 @@ import Register from './Components/Register/Register'
 import ChangePassword from './Components/ChangePassword/ChangePassword'
 // import Pricing  from "./Components/Pricing/Pricing"
 import Home from './Components/Home/Home'
+
+import Biling from './Components/Biling/Biling'
 import GoogleCallback from "./Components/GoogleCallback/GoogleCallback";
 
 import { useContext } from 'react'
 
 let routers = createBrowserRouter([
+  {index: true , element :  < Register /> } , 
+  {path : "/login" , element : <Login /> } ,
   {path:"/" , element: <Layout/> ,children : [
-      {index: true , element :  < Register /> } , 
+      
       {path : "home" , element : <Home/> } ,
       // {path : "pricing" , element : <Pricing/> } ,
       // {path : "features" , element :<Features/>  } ,
-      {path : "login" , element : <Login /> } ,
+      
       {path : "register" , element : < Register />  } ,
       { path: "google/callback", element: <GoogleCallback /> },
       // {path : "forget-password" , element : <ForgetPassword />  } ,
@@ -33,6 +37,7 @@ let routers = createBrowserRouter([
       // {path : "profile" , element : < Profile /> } ,
       // {path : "/confirm-email" , element : <ConfirmEmail /> } ,
       {path : "/changepassword" , element : <ChangePassword />} ,
+       {path : "/biling" , element : <Biling />} ,
 
   ]}
 //   {path:"/",element:<ResetPassword/>}
