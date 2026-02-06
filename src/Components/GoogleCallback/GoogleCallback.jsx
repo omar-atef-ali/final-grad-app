@@ -40,14 +40,14 @@ export default function GoogleCallback() {
           console.log(data.token);
 
           setUserToken(data.token);
-          // navigate("/home");
+          navigate("/home");
           // setPageLaoding(false)
         }
       } catch (error) {
         // console.error("Google login error:", error.response?.data?.errors[1]);
         toast.error(
           error.response?.data?.errors[1] ||
-            "Something went wrong while login.",
+            "Something went wrong.",
           {
             position: "top-center",
             duration: 4000,
@@ -71,7 +71,7 @@ export default function GoogleCallback() {
           { id: "google-login-error" },
         );
         setTimeout(() => {
-          navigate("/register");
+          navigate("/");
         }, 1000);
       }
     };

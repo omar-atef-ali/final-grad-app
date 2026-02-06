@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./ProfileLayout.module.css";
 import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
+import { userContext } from "../../context/userContext";
+import api from "../../api";
+
+
 
 export default function ProfileLayout() {
 
@@ -10,6 +14,31 @@ export default function ProfileLayout() {
   if (location.pathname === "/profile") {
     return <Navigate to="/profile/info" replace />;
   }
+
+
+  ///////////////////////////user data////////////////////////////////////
+
+  let { userToken, loading } = useContext(userContext);
+  const [userData, setUserData] = useState(null)
+  useEffect(() => {
+    if (loading || !userToken) return;
+
+    const fetchProfile = async () => {
+      try {
+        const { data } = await api.get("/Users/profile", {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        setUserData(data)
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, [userToken, loading]);
 
 
   return (
@@ -58,7 +87,7 @@ export default function ProfileLayout() {
                     </svg>
                   </span>
                 </div>
-                <h3 className={`${style.profile_name}`}>Sara Hesham</h3>
+                <h3 className={`${style.profile_name}`}>{userData?.firstName} {userData?.lastName}</h3>
                 <p className={`${style.profile_role}`}>CEO</p>
                 <p className={`${style.profile_company}`}>TechVenture Inc.</p>
 

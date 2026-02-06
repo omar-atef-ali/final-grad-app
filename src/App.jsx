@@ -24,15 +24,15 @@ let routers = createBrowserRouter([
   { index: true, element: < Register /> },
   { path: "login", element: <Login /> },
   {
-    
+
     path: "/", element: <Layout />, children: [
-     
+
       { path: "home", element: <Home /> },
-    
+
 
       { path: "google/callback", element: <GoogleCallback /> },
       { path: "reset-password", element: <ResetPassword /> },
-      {path : "/changepassword" , element : <ChangePassword />} ,
+      { path: "/changepassword", element: <ChangePassword /> },
       {
         path: "profile",
         element: <ProfileLayout />,
@@ -41,7 +41,7 @@ let routers = createBrowserRouter([
           { path: "info", element: <ProfileInfo /> }, // /profile/info
           { path: "security", element: <ProfileSecurity /> }, // /profile/security
           { path: "subscription", element: <ProfileSubscription /> }, // /profile/subscription
-          { path: "billing", element: <ProfileBilling/> }, // /profile/subscription
+          { path: "billing", element: <ProfileBilling /> }, // /profile/billing
         ],
       },
 

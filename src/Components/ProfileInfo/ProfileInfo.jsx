@@ -1,14 +1,99 @@
 
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import style from "./ProfileInfo.module.css"
+import { userContext } from '../../context/userContext';
+import api from '../../api';
+import toast from 'react-hot-toast';
 
 export default function ProfileInfo() {
+
+  /////////////////////user data////////////////////////////////////
+
+  let { userToken, loading } = useContext(userContext);
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    companyName: '',
+    email: '',
+    position: '',
+    phoneNumber: '',
+    businessAddress: ''
+  })
+  const [isDisabled, setIsDisabled] = useState(true)
+  const [save, setSave] = useState(false)
+
+  useEffect(() => {
+    if (loading || !userToken) return;
+
+    const fetchProfile = async () => {
+      try {
+        const { data } = await api.get("/Users/profile", {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        // Ensure we don't set null values for controlled inputs
+        setUserData({
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          companyName: data.companyName || '',
+          email: data.email || '',
+          position: data.position || '',
+          phoneNumber: data.phoneNumber || '',
+          businessAddress: data.businessAddress || ''
+        })
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, [userToken, loading]);
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEditToggle = async () => {
+    if (save) {
+      // Logic to save data
+      try {
+        const formData = new FormData();
+        for (const key in userData) {
+          formData.append(key, userData[key]);
+        }
+
+        await api.put("/Users/profile", formData, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        toast.success("Profile updated successfully!");
+        setSave(false);
+        setIsDisabled(true);
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        toast.error("Failed to update profile.");
+      }
+    } else {
+      // Enable edit mode
+      setIsDisabled(false);
+      setSave(true);
+    }
+  };
+
+
   return <>
 
     <div className={style.FormSection}>
       <div className={style.SectionHeader}>
         <h3 className={style.SectionTitle}>Personal Information</h3>
-        <button className={style.BtnGradient}>
+        <button className={style.BtnGradient} onClick={handleEditToggle}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <g id="mynaui:edit">
               <path
@@ -19,7 +104,7 @@ export default function ProfileInfo() {
               />
             </g>
           </svg>
-          Edit Profile
+          {save ? "Save" : "Edit Profile"}
         </button>
       </div>
 
@@ -48,8 +133,13 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="firstName"
               className={style.FormInput}
               placeholder="First Name"
+              value={userData.firstName}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
             />
           </div>
         </div>
@@ -78,8 +168,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="lastName"
               className={style.FormInput}
               placeholder="Last Name"
+              value={userData.lastName}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -171,8 +267,13 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="companyName"
               className={style.FormInput}
               placeholder="Company Name"
+              value={userData.companyName}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
             />
           </div>
         </div>
@@ -201,8 +302,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="email"
+              name="email"
               className={style.FormInput}
               placeholder="email@company.com"
+              value={userData.email}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -221,8 +328,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="position"
               className={style.FormInput}
               placeholder="Position"
+              value={userData.position}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -247,8 +360,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="tel"
+              name="phoneNumber"
               className={style.FormInput}
               placeholder="+20xxxxxxxxxx"
+              value={userData.phoneNumber}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -277,8 +396,13 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="businessAddress"
               className={style.FormInput}
               placeholder="Address"
+              value={userData.businessAddress}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
             />
           </div>
         </div>

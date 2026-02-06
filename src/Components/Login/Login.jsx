@@ -9,7 +9,6 @@ import { userContext } from "../../context/userContext";
 import * as yup from "yup";
 import img from "../../assets/images/photo_2026-01-28_05-07-48.jpg";
 
-// import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   let navigate = useNavigate();
