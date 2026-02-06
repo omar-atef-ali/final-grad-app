@@ -61,7 +61,7 @@ export default function Footer() {
 
                
                 <div className={`${style.footer_bottom}`} >
-                    <p className={`${style.copyright}`} >© 2026 DeebAI. All rights reserved.</p>
+                    <p className={`${style.copyright}`} >© 2026 Namaa. All rights reserved.</p>
                     <div className={`${style.footer_legal}`} >
                         <a href="#">Privacy Policy</a>
                         <a href="#">Terms of Service</a>

@@ -1,0 +1,199 @@
+
+/* .page_container {
+    min-height: 100vh;
+    background: white;
+} */
+/* Hero Section */
+.hero_section {
+    position: relative;
+    /* height: 780px; */
+    min-height: 100vh;
+    overflow: hidden;
+
+}
+
+.hero_background {
+    position: absolute;
+    inset: 0;
+    
+}
+
+.hero_background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    
+}
+/* Header Logo */
+.header_logo {
+    position: absolute;
+    top: 51px;
+    left: 80px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 10;
+}
+
+.logo_text {
+    color: white;
+    font-size: 32px;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+}
+/* Main Content Card */
+.content_wrapper {
+    /* position: absolute;
+    inset: 32px 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center; */
+     position: absolute;
+    inset: 0 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+
+.checkemail_card {
+    background: #f9f9f9;
+    border-radius: 40px;
+    padding: 48px 24px;
+
+    /* width: 672px; */
+    width: 520px;
+}
+
+.card_inner {
+    /* width: 608px; */
+    width: 472px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Card Header */
+.card_header {
+    /* margin-bottom: 32px; */
+    margin-bottom: 48px;
+}
+
+.main_title {
+    font-size: 44px;
+    line-height: 52px;
+    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+    color: #0c0514;
+    margin-bottom: 16px;
+}
+
+.subtitle {
+    font-size: 16px;
+    line-height: 25px;
+    font-family: 'Poppins', sans-serif;
+    color: #7F7783;
+    margin-bottom: 8px;
+}
+.email_subtitle{
+     font-size: 16px;
+    line-height: 25px;
+    color: #0A0A0A;
+    margin-bottom: 24px;
+}
+.instruction{
+    font-size: 16px;
+    line-height: 25px;
+    font-family: 'Poppins', sans-serif;
+    color: #7F7783;
+    margin-bottom: 24px;
+}
+
+
+
+
+.warning_box{
+    border-radius: 16px;
+    padding: 11px 57px;
+    background-color: #FCF0CF;
+    border: 1px solid #9C9CA7;
+    margin-bottom: 36px;
+}
+.warning_text{
+    font-size: 16px;
+    text-align: center;
+}
+.warn_icon{
+  margin-right: 6px;
+}
+.p_resend{
+    /* color: #7F7783; */
+    color: #0A0A0A;
+}
+.resend_link {
+  color: #8A45B2;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.disabled {
+  color: #B4AFB6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+
+@media (max-width: 768px) {
+    .header_logo {
+        left: 24px;
+        top: 24px;
+    }
+
+    .logo_text {
+        font-size: 24px;
+    }
+
+    .checkemail_card {
+        width: 90vw;
+        padding: 80px 24px;
+        margin-top: 50px;
+    }
+
+    .card_inner {
+        width: 100%;
+    }
+
+    .main_title {
+        font-size: 36px;
+        line-height: 40px;
+    }
+
+}
+
+@media (max-width: 480px) {
+    
+    .main_title {
+        font-size: 28px;
+        line-height: 32px;
+    }
+
+    .checkemail_card {
+        padding: 60px 20px;
+    }
+}
+
+
+@media (min-width: 820px) {
+    .hero_section {
+        min-height: 100vh;
+    }
+}
+
+@media (max-width: 1200px) {
+  .content_wrapper {
+    inset: 32px 32px;
+  }
+}
+

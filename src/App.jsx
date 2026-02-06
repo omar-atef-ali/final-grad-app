@@ -19,9 +19,13 @@ import ProfileInfo from './Components/ProfileInfo/ProfileInfo'
 import ProfileSecurity from './Components/ProfileSecurity/ProfileSecurity'
 import ProfileSubscription from './Components/ProfileSubscription/ProfileSubscription'
 import ProfileBilling from './Components/ProfileBilling/ProfileBilling'
+import CheckEmail from './Components/CheckEmail/CheckEmail'
+import ConfirmEmail from './Components/ConfirmEmail/ConfirmEmail'
 
 let routers = createBrowserRouter([
   { index: true, element: < Register /> },
+  {path : "/check-email" , element : <CheckEmail />} ,
+  {path : "/confirm-email" , element : <ConfirmEmail />} ,
   { path: "login", element: <Login /> },
   {
     
@@ -32,7 +36,8 @@ let routers = createBrowserRouter([
 
       { path: "google/callback", element: <GoogleCallback /> },
       { path: "reset-password", element: <ResetPassword /> },
-      {path : "/changepassword" , element : <ChangePassword />} ,
+      {path : "/change-password" , element : <ChangePassword />} ,
+      
       {
         path: "profile",
         element: <ProfileLayout />,
