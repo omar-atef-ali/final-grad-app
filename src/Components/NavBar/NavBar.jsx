@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import style from "./NavBar.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import { userContext } from "../../context/userContext";
+import { getImageUrl } from "../../utils/imageUrl";
 
 export default function NavBar() {
 
   const [isOpen, setIsOpen] = useState(false);
+  const { userProfileImage } = useContext(userContext);
 
   const navigate = useNavigate();
 
@@ -87,20 +90,29 @@ export default function NavBar() {
               >
                 Demo
               </span>
-              <button className={style.UserAvatarSmall} onClick={() => navigate("/profile/info")}>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+              <button className={style.UserAvatarSmall} onClick={() => navigate("/profile/info")} style={{ overflow: "hidden", padding: 0 }}>
+                {userProfileImage ? (
+                  <img
+                    src={getImageUrl(userProfileImage)}
+                    alt="User"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=User"; }}
+                  />
+                ) : (
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                )}
               </button>
               <button
                 className={`${style.MenuToggle} ${isOpen ? style.Active : ""}`}

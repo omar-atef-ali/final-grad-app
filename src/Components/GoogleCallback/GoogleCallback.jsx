@@ -84,7 +84,7 @@ export default function GoogleCallback() {
           // setPageLaoding(false)
         }
       } catch (error) {
-        // console.error("Google login error:", error.response?.data?.errors[1]);
+        console.error("Google login error:", error.response?.data?.errors[1]);
         toast.error(
           error.response?.data?.errors[1] || "Something went wrong.",
           {

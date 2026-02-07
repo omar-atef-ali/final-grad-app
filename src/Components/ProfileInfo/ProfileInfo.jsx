@@ -50,7 +50,6 @@ export default function ProfileInfo() {
       } catch (error) {
         console.error("Error fetching profile:", error);
         toast.error(
-          error.response?.data?.errors[1] ||
           "Something went wrong",
           {
             position: "top-center",
@@ -205,56 +204,36 @@ export default function ProfileInfo() {
   }, [userToken]);
 
   // Debounced API call if state changed
+  // Products Notification Effect
   useEffect(() => {
     const productChanged = productsNotification !== initialNotificationsInfo.productsUpdatesNotification;
-    const billingChanged = billingNotification !== initialNotificationsInfo.billingNotification;
 
-    if (!productChanged && !billingChanged) return;
+    if (!productChanged) return;
 
     const timerId = setTimeout(async () => {
       try {
-        if (productChanged) {
-          setProductsLoading(true)
-          await api.put("/Users/profile/toggle-products-updates-notification", {}, {
-            headers: { Authorization: `Bearer ${userToken}` }
-          });
-          console.log("ok Products");
+        setProductsLoading(true)
+        await api.put("/Users/profile/toggle-products-updates-notification", {}, {
+          headers: { Authorization: `Bearer ${userToken}` }
+        });
+        console.log("ok Products");
 
-          // Update initial state for product only
-          setInitialNotificationsInfo(prev => ({
-            ...prev,
-            productsUpdatesNotification: productsNotification
-          }));
-          setProductsLoading(false)
-        }
-
-        if (billingChanged) {
-          setBillingLoading(true)
-          await api.put("/Users/profile/toggle-billing-notification", {}, {
-            headers: { Authorization: `Bearer ${userToken}` }
-          });
-          console.log("ok billing");
-
-          // Update initial state for billing only
-          setInitialNotificationsInfo(prev => ({
-            ...prev,
-            billingNotification: billingNotification
-          }));
-          setBillingLoading(false)
-        }
+        // Update initial state for product only
+        setInitialNotificationsInfo(prev => ({
+          ...prev,
+          productsUpdatesNotification: productsNotification
+        }));
+        setProductsLoading(false)
 
       } catch (error) {
-        console.error("Error updating notifications:", error);
-        // Optional: Revert UI if API fails? For now, we just log.
+        console.error("Error updating products notification:", error);
         toast.error(
-          error.response?.data?.errors[1] ||
-          "Something went wrong",
+          error.response?.data?.errors[1] || "Something went wrong",
           {
             position: "top-center",
             duration: 4000,
             style: {
-              background:
-                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
               border: "1px solid rgba(255, 255, 255, 0.1)",
               padding: "16px 20px",
               color: "#ffffff",
@@ -264,19 +243,65 @@ export default function ProfileInfo() {
               height: "60px",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
             },
-            iconTheme: {
-              primary: "#FF4D4F",
-              secondary: "#ffffff",
-            },
+            iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
           },
         );
         setProductsLoading(false);
-        setBillingLoading(false);
       }
-    }, 500); // 1 second debounce
+    }, 500);
 
     return () => clearTimeout(timerId);
-  }, [productsNotification, billingNotification, initialNotificationsInfo, userToken]);
+  }, [productsNotification, initialNotificationsInfo.productsUpdatesNotification, userToken]);
+
+
+  // Billing Notification Effect
+  useEffect(() => {
+    const billingChanged = billingNotification !== initialNotificationsInfo.billingNotification;
+
+    if (!billingChanged) return;
+
+    const timerId = setTimeout(async () => {
+      try {
+        setBillingLoading(true)
+        await api.put("/Users/profile/toggle-billing-notification", {}, {
+          headers: { Authorization: `Bearer ${userToken}` }
+        });
+        console.log("ok billing");
+
+        // Update initial state for billing only
+        setInitialNotificationsInfo(prev => ({
+          ...prev,
+          billingNotification: billingNotification
+        }));
+        setBillingLoading(false)
+
+      } catch (error) {
+        console.error("Error updating billing notification:", error);
+        toast.error(
+          error.response?.data?.errors[1] || "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
+          },
+        );
+        setBillingLoading(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timerId);
+  }, [billingNotification, initialNotificationsInfo.billingNotification, userToken]);
 
   const handleProductNotificationChange = (e) => {
     setProductsNotification(e.target.checked);

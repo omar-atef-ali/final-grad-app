@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import style from "./ProfileLayout.module.css";
 import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
 import { userContext } from "../../context/userContext";
 import api from "../../api";
-
-
+import toast from "react-hot-toast";
+import { getImageUrl } from "../../utils/imageUrl";
 
 export default function ProfileLayout() {
 
@@ -18,8 +18,10 @@ export default function ProfileLayout() {
 
   ///////////////////////////user data////////////////////////////////////
 
-  let { userToken, loading } = useContext(userContext);
+  let { userToken, loading, setUserProfileImage } = useContext(userContext);
   const [userData, setUserData] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
 
   const fetchProfile = async () => {
@@ -30,7 +32,11 @@ export default function ProfileLayout() {
           Authorization: `Bearer ${userToken}`,
         },
       });
-      setUserData(data)
+      setUserData(data);
+      // Update global context state for NavBar
+      if (data.profileImage) {
+        setUserProfileImage(data.profileImage);
+      }
       console.log(data);
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -41,6 +47,44 @@ export default function ProfileLayout() {
     fetchProfile();
   }, [userToken, loading]);
 
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setUserProfileImage(reader.result); // Optimistic update for NavBar
+      };
+      reader.readAsDataURL(file);
+
+      // Upload
+      const formData = new FormData();
+      formData.append("ProfileImage", file);
+
+      // Append other user data fields
+      if (userData) {
+        for (const key in userData) {
+          if (key !== "profileImage" && key !== "id" && userData[key] !== null) {
+            formData.append(key, userData[key]);
+          }
+        }
+      }
+
+      try {
+        await api.put("/Users/profile", formData);
+        toast.success("Profile picture updated successfully!");
+        fetchProfile(); // Refresh data
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Failed to upload profile picture.");
+      }
+    }
+  };
 
   return (
     <>
@@ -74,12 +118,28 @@ export default function ProfileLayout() {
             <aside className={`${style.sidebar}`}>
 
               <div className={`${style.profile_card}`} >
-                <div className={`${style.avatar_wrapper}`} >
-                  <div className={`${style.avatar}`} >
-                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18 9C16.3431 9 15 10.3431 15 12C15 13.6569 16.3431 15 18 15C19.6569 15 21 13.6569 21 12C21 10.3431 19.6569 9 18 9Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M24 24V22C24 20.3431 22.6569 19 21 19H15C13.3431 19 12 20.3431 12 22V24" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                <div className={`${style.avatar_wrapper}`} onClick={handleImageClick} style={{ cursor: "pointer" }}>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                    accept="image/*"
+                  />
+                  <div className={`${style.avatar}`} style={{ overflow: "hidden" }}>
+                    {imagePreview || userData?.profileImage ? (
+                      <img
+                        src={imagePreview || getImageUrl(userData.profileImage)}
+                        alt="Profile"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=Error"; }}
+                      />
+                    ) : (
+                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 9C16.3431 9 15 10.3431 15 12C15 13.6569 16.3431 15 18 15C19.6569 15 21 13.6569 21 12C21 10.3431 19.6569 9 18 9Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M24 24V22C24 20.3431 22.6569 19 21 19H15C13.3431 19 12 20.3431 12 22V24" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
                   </div>
                   <span className={`${style.camera_icon}`} >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
