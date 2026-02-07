@@ -20,23 +20,24 @@ export default function ProfileLayout() {
 
   let { userToken, loading } = useContext(userContext);
   const [userData, setUserData] = useState(null)
-  useEffect(() => {
+
+
+  const fetchProfile = async () => {
     if (loading || !userToken) return;
+    try {
+      const { data } = await api.get("/Users/profile", {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      setUserData(data)
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
 
-    const fetchProfile = async () => {
-      try {
-        const { data } = await api.get("/Users/profile", {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
-        setUserData(data)
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
-
+  useEffect(() => {
     fetchProfile();
   }, [userToken, loading]);
 
@@ -62,7 +63,7 @@ export default function ProfileLayout() {
               </div>
             </div>
             <button className={`${style.sign_out_btn}`} >
-              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              <i className="fa-solid fa-arrow-right-from-bracket"></i>
               <span>Sign Out</span>
             </button>
           </div>
@@ -76,8 +77,8 @@ export default function ProfileLayout() {
                 <div className={`${style.avatar_wrapper}`} >
                   <div className={`${style.avatar}`} >
                     <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18 9C16.3431 9 15 10.3431 15 12C15 13.6569 16.3431 15 18 15C19.6569 15 21 13.6569 21 12C21 10.3431 19.6569 9 18 9Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                      <path d="M24 24V22C24 20.3431 22.6569 19 21 19H15C13.3431 19 12 20.3431 12 22V24" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M18 9C16.3431 9 15 10.3431 15 12C15 13.6569 16.3431 15 18 15C19.6569 15 21 13.6569 21 12C21 10.3431 19.6569 9 18 9Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M24 24V22C24 20.3431 22.6569 19 21 19H15C13.3431 19 12 20.3431 12 22V24" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                   <span className={`${style.camera_icon}`} >
@@ -88,13 +89,13 @@ export default function ProfileLayout() {
                   </span>
                 </div>
                 <h3 className={`${style.profile_name}`}>{userData?.firstName} {userData?.lastName}</h3>
-                <p className={`${style.profile_role}`}>CEO</p>
+                <p className={`${style.profile_role}`}>{userData?.position}</p>
                 <p className={`${style.profile_company}`}>TechVenture Inc.</p>
 
                 <div className={`${style.profile_info}`} >
                   <div className={`${style.info_row}`} >
                     <span className={`${style.info_label}`} >Plan</span>
-                    <span className={`${style.badge}`}>No Plan</span>
+                    <span className={` ${userData?.hasActiveSubscription ? style.badgeBtn : style.badge}`}>{userData?.hasActiveSubscription ? "View More" : "No Plan"}</span>
                   </div>
                   <div className={`${style.info_row}`} >
                     <span className={`${style.info_label}`} >Status</span>
@@ -186,7 +187,7 @@ export default function ProfileLayout() {
                 </div>
               </div>
 
-              <Outlet />
+              <Outlet context={{ userData, setUserData, fetchProfile }} />
 
             </div>
           </div>

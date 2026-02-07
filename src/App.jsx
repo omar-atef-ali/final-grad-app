@@ -1,38 +1,52 @@
-import { useEffect } from 'react'
-import './App.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Login from "./Components/Login/Login"
-import Layout from "./Components/Layout/Layout"
-import { Toaster } from 'react-hot-toast'
+import { useEffect } from "react";
+import "./App.css";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
+import Login from "./Components/Login/Login";
+import Layout from "./Components/Layout/Layout";
+import { Toaster } from "react-hot-toast";
 // import Protected from './Components/Protected/Protected'
-import { userContext } from './context/userContext'
-import ResetPassword from './Components/ResetPassword/ResetPassword'
-import Register from './Components/Register/Register'
-import ChangePassword from './Components/ChangePassword/ChangePassword'
-import Home from './Components/Home/Home'
+import { userContext } from "./context/userContext";
+import ResetPassword from "./Components/ResetPassword/ResetPassword";
+import Register from "./Components/Register/Register";
+import ChangePassword from "./Components/ChangePassword/ChangePassword";
+import Home from "./Components/Home/Home";
 
 import GoogleCallback from "./Components/GoogleCallback/GoogleCallback";
 
-import { useContext } from 'react'
-import ProfileLayout from './Components/ProfileLayout/ProfileLayout'
-import ProfileInfo from './Components/ProfileInfo/ProfileInfo'
-import ProfileSecurity from './Components/ProfileSecurity/ProfileSecurity'
-import ProfileSubscription from './Components/ProfileSubscription/ProfileSubscription'
-import ProfileBilling from './Components/ProfileBilling/ProfileBilling'
+import { useContext } from "react";
+import ProfileLayout from "./Components/ProfileLayout/ProfileLayout";
+import ProfileInfo from "./Components/ProfileInfo/ProfileInfo";
+import ProfileSecurity from "./Components/ProfileSecurity/ProfileSecurity";
+import ProfileSubscription from "./Components/ProfileSubscription/ProfileSubscription";
+import ProfileBilling from "./Components/ProfileBilling/ProfileBilling";
+import CheckEmail from "./Components/CheckEmail/CheckEmail";
+import ConfirmEmail from "./Components/ConfirmEmail/ConfirmEmail";
 
 let routers = createBrowserRouter([
-  { index: true, element: < Register /> },
+  { index: true, element: <Register /> },
+  { path: "/check-email", element: <CheckEmail /> },
+  { path: "/confirm-email", element: <ConfirmEmail /> },
+  { path: "reset-password", element: <ResetPassword /> },
+
+  { path: "google/callback", element: <GoogleCallback /> },
+
   { path: "login", element: <Login /> },
   {
-
-    path: "/", element: <Layout />, children: [
-
+    path: "register",
+    element: <Navigate to="/" replace />,
+  },
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
       { path: "home", element: <Home /> },
 
+      { path: "change-password", element: <ChangePassword /> },
 
-      { path: "google/callback", element: <GoogleCallback /> },
-      { path: "reset-password", element: <ResetPassword /> },
-      { path: "/changepassword", element: <ChangePassword /> },
       {
         path: "profile",
         element: <ProfileLayout />,
@@ -44,31 +58,24 @@ let routers = createBrowserRouter([
           { path: "billing", element: <ProfileBilling /> }, // /profile/billing
         ],
       },
-
-    ]
-  }
-])
-
-
+    ],
+  },
+]);
 
 function App() {
-
-
-  let { setUserToken } = useContext(userContext)
+  let { setUserToken } = useContext(userContext);
   useEffect(() => {
     if (localStorage.getItem("token") !== null) {
-      setUserToken(localStorage.getItem("token"))
+      setUserToken(localStorage.getItem("token"));
     }
-
-  }, [])
-
+  }, []);
 
   return (
     <>
       <RouterProvider router={routers}></RouterProvider>
       <Toaster />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

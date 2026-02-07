@@ -9,7 +9,7 @@ import style from "./Register.module.css";
 import imghero from "../../assets/images/heroimage.jpeg";
 
 export default function Register() {
-  const { setemail } = useContext(userContext);
+  const {setemail } = useContext(userContext);
   let [showPassword, setShowPassword] = useState(false);
   let [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +36,7 @@ export default function Register() {
       localStorage.setItem("email", values.email);
 
       setemail(values.email);
-      navigate("/login");
+      navigate("/check-email");
     } catch (error) {
       console.log(error);
       toast.error(
@@ -71,27 +71,27 @@ export default function Register() {
   let validationRegister = yup.object({
     firstName: yup
       .string()
-      .required("required")
+      .required("")
       .min(3, "First Name must be at least 3 characters") // الحد الأدنى 3
       .max(100, "First Name must be at most 100 characters"),
     // .matches(/^[A-Za-z0-9]+$/, "First Name can only contain letters and numbers")
 
     lastName: yup
       .string()
-      .required("required")
+      .required("")
       .min(3, "Last Name must be at least 3 characters") // الحد الأدنى 3
       .max(100, "Last Name must be at most 100 characters"),
     // .matches(/^[A-Za-z0-9]+$/, "Last Name can only contain letters and numbers")
 
     email: yup
       .string()
-      .required("required")
+      .required("")
       .email("Invalid email address.")
       .min(5, "Email must be at least 5 characters long"),
 
     password: yup
       .string()
-      .required("required")
+      .required("")
       .min(8, "Password must be at least 8 characters long")
       .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
       .matches(/[a-z]/, "Password must contain at least one lowercase letter")
@@ -102,7 +102,7 @@ export default function Register() {
       ),
     confirmPassword: yup
       .string()
-      .required("required")
+      .required("")
       .oneOf([yup.ref("password"), null], "Passwords must match"),
     businessName: yup
       .string()
@@ -240,9 +240,7 @@ export default function Register() {
                           className="text-danger"
                           style={{ fontSize: "0.8rem" }}
                         >
-                          {formik.errors.firstName !== "required"
-                            ? formik.errors.firstName
-                            : ""}
+                          {formik.errors.firstName}
                         </div>
                       )}
                     </div>
@@ -289,9 +287,7 @@ export default function Register() {
                           className="text-danger mt-1"
                           style={{ fontSize: "0.8rem" }}
                         >
-                          {formik.errors.lastName !== "required"
-                            ? formik.errors.lastName
-                            : ""}
+                          {formik.errors.lastName}
                         </div>
                       )}
                     </div>
@@ -340,9 +336,7 @@ export default function Register() {
                         className="text-danger mt-1"
                         style={{ fontSize: "0.8rem" }}
                       >
-                        {formik.errors.email !== "required"
-                          ? formik.errors.email
-                          : ""}
+                        {formik.errors.email}
                       </div>
                     )}
                   </div>
@@ -576,9 +570,7 @@ export default function Register() {
                         className="text-danger mt-1"
                         style={{ fontSize: "0.8rem" }}
                       >
-                        {formik.errors.password !== "required"
-                          ? formik.errors.password
-                          : ""}
+                        {formik.errors.password}
                       </div>
                     )}
                   </div>
@@ -671,10 +663,10 @@ export default function Register() {
                           className="text-danger mt-1"
                           style={{ fontSize: "0.8rem" }}
                         >
-                          {formik.errors.confirmPassword !== "required"
+                          {/* {formik.errors.confirmPassword !== "required"
                             ? formik.errors.confirmPassword
-                            : ""}
-                          {/* {formik.errors.confirmPassword} */}
+                            : ""} */}
+                          {formik.errors.confirmPassword}
                         </div>
                       )}
                   </div>

@@ -1,5 +1,6 @@
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
+import { useOutletContext } from 'react-router-dom';
 import style from "./ProfileInfo.module.css"
 import { userContext } from '../../context/userContext';
 import api from '../../api';
@@ -8,6 +9,10 @@ import toast from 'react-hot-toast';
 export default function ProfileInfo() {
 
   /////////////////////user data////////////////////////////////////
+
+
+  const { fetchProfile: refreshSidebar } = useOutletContext();
+
 
   let { userToken, loading } = useContext(userContext);
   const [userData, setUserData] = useState({
@@ -44,6 +49,30 @@ export default function ProfileInfo() {
         })
       } catch (error) {
         console.error("Error fetching profile:", error);
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
       }
     };
 
@@ -76,9 +105,32 @@ export default function ProfileInfo() {
         toast.success("Profile updated successfully!");
         setSave(false);
         setIsDisabled(true);
+        refreshSidebar(); // Update parent layout
       } catch (error) {
         console.error("Error updating profile:", error);
-        toast.error("Failed to update profile.");
+        toast.error(
+          "Failed to update profile.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
       }
     } else {
       // Enable edit mode
@@ -86,6 +138,154 @@ export default function ProfileInfo() {
       setSave(true);
     }
   };
+
+
+  /* ------------------------------- Notification Logic ------------------------------ */
+  const [initialNotificationsInfo, setInitialNotificationsInfo] = useState({
+    productsUpdatesNotification: false,
+    billingNotification: false
+  });
+  const [productsNotification, setProductsNotification] = useState(false);
+  const [billingNotification, setBillingNotification] = useState(false);
+
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [billingLoading, setBillingLoading] = useState(false);
+
+
+  // Fetch initial notifications
+  useEffect(() => {
+    if (!userToken) return;
+
+    const fetchNotifications = async () => {
+      try {
+        const { data } = await api.get("/Users/profile/notifications", {
+          headers: { Authorization: `Bearer ${userToken}` }
+        });
+
+        const initial = {
+          productsUpdatesNotification: data.productsUpdatesNotification,
+          billingNotification: data.billingNotification
+        };
+
+        setInitialNotificationsInfo(initial);
+        setProductsNotification(initial.productsUpdatesNotification);
+        setBillingNotification(initial.billingNotification);
+
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+
+      }
+    };
+
+    fetchNotifications();
+  }, [userToken]);
+
+  // Debounced API call if state changed
+  useEffect(() => {
+    const productChanged = productsNotification !== initialNotificationsInfo.productsUpdatesNotification;
+    const billingChanged = billingNotification !== initialNotificationsInfo.billingNotification;
+
+    if (!productChanged && !billingChanged) return;
+
+    const timerId = setTimeout(async () => {
+      try {
+        if (productChanged) {
+          setProductsLoading(true)
+          await api.put("/Users/profile/toggle-products-updates-notification", {}, {
+            headers: { Authorization: `Bearer ${userToken}` }
+          });
+          console.log("ok Products");
+
+          // Update initial state for product only
+          setInitialNotificationsInfo(prev => ({
+            ...prev,
+            productsUpdatesNotification: productsNotification
+          }));
+          setProductsLoading(false)
+        }
+
+        if (billingChanged) {
+          setBillingLoading(true)
+          await api.put("/Users/profile/toggle-billing-notification", {}, {
+            headers: { Authorization: `Bearer ${userToken}` }
+          });
+          console.log("ok billing");
+
+          // Update initial state for billing only
+          setInitialNotificationsInfo(prev => ({
+            ...prev,
+            billingNotification: billingNotification
+          }));
+          setBillingLoading(false)
+        }
+
+      } catch (error) {
+        console.error("Error updating notifications:", error);
+        // Optional: Revert UI if API fails? For now, we just log.
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+        setProductsLoading(false);
+        setBillingLoading(false);
+      }
+    }, 500); // 1 second debounce
+
+    return () => clearTimeout(timerId);
+  }, [productsNotification, billingNotification, initialNotificationsInfo, userToken]);
+
+  const handleProductNotificationChange = (e) => {
+    setProductsNotification(e.target.checked);
+  };
+
+  const handleBillingNotificationChange = (e) => {
+    setBillingNotification(e.target.checked);
+  };
+
 
 
   return <>
@@ -438,7 +638,7 @@ export default function ProfileInfo() {
             </div>
           </div>
           <label className={style.ToggleWrapper}>
-            <input type="checkbox" className={style.ToggleCheckbox} />
+            <input type="checkbox" className={style.ToggleCheckbox} checked={productsNotification} onChange={handleProductNotificationChange} disabled={productsLoading} />
             <span className={style.ToggleSlider}></span>
           </label>
         </div>
@@ -467,7 +667,9 @@ export default function ProfileInfo() {
             <input
               type="checkbox"
               className={style.ToggleCheckbox}
-              defaultChecked
+              checked={billingNotification} onChange={handleBillingNotificationChange}
+              disabled={billingLoading}
+
             />
             <span className={style.ToggleSlider}></span>
           </label>

@@ -406,9 +406,13 @@ body {
 
 
 .subscription_img_parent{
-    width: 532px;
-    height:255px;
+    /* width: 532px;
+    height:255px; */
     margin: 0 auto;
+
+    width: 100%; 
+    max-width: 532px;
+    aspect-ratio: 532 / 255;
     
 }
 .img_part{
@@ -773,3 +777,4 @@ a:focus-visible {
         display: none;
     }
 }
+

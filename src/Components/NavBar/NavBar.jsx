@@ -80,7 +80,7 @@ export default function NavBar() {
               <span
                 className=" overflow-hidden d-block"
                 style={{
-                  fontSize: "14px",
+                  fontSize: "18px",
                   fontWeight: "500",
                   color: "var(--text-gray)",
                 }}
