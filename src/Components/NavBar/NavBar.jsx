@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import style from "./NavBar.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../../context/userContext";
@@ -8,6 +8,34 @@ export default function NavBar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const { userProfileImage } = useContext(userContext);
+  const [displayedImage, setDisplayedImage] = useState(userProfileImage);
+
+  // Sync displayedImage with userProfileImage, but only after loading the new image
+  useEffect(() => {
+    if (!userProfileImage) {
+      setDisplayedImage(null);
+      return;
+    }
+
+    // If it's a data URI (preview), update immediately
+    if (userProfileImage.startsWith("data:")) {
+      setDisplayedImage(userProfileImage);
+      return;
+    }
+
+    // Otherwise (server URL), preload to prevent white flash
+    const img = new Image();
+    const src = getImageUrl(userProfileImage);
+
+    if (src) {
+      img.src = src;
+      img.onload = () => setDisplayedImage(userProfileImage);
+      img.onerror = () => setDisplayedImage(userProfileImage); // Fallback: update even if preload fails
+    } else {
+      setDisplayedImage(userProfileImage);
+    }
+  }, [userProfileImage]);
+
 
   const navigate = useNavigate();
 
@@ -19,7 +47,7 @@ export default function NavBar() {
             className=" w-100 d-flex align-items-center gap-0 gap-md-5"
             style={{ width: "100%", justifyContent: "space-between" }}
           >
-            <div className={style.LogoContainer}>
+            <div className={style.LogoContainer} onClick={() => navigate("/home")}>
               <svg
                 width="35"
                 height="35"
@@ -41,7 +69,7 @@ export default function NavBar() {
 
             {/* <!-- Desktop Nav --> */}
             <nav className={`${style.NavLinks} ${isOpen ? style.Show : ""}`}>
-              <a href="#">Features</a>
+              <a href="/features">Features</a>
               <a href="#">Pricing</a>
               <a href="#">Documentation</a>
             </nav>
@@ -91,9 +119,9 @@ export default function NavBar() {
                 Demo
               </span>
               <button className={style.UserAvatarSmall} onClick={() => navigate("/profile/info")} style={{ overflow: "hidden", padding: 0 }}>
-                {userProfileImage ? (
+                {displayedImage ? (
                   <img
-                    src={getImageUrl(userProfileImage)}
+                    src={getImageUrl(displayedImage) || getImageUrl(userProfileImage)}
                     alt="User"
                     style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
                     onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=User"; }}

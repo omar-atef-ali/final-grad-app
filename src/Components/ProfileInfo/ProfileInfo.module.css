@@ -219,6 +219,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 16px;
+    /* padding-right: 25px; */
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -252,7 +253,7 @@ body {
 
 .ToggleCheckbox {
     opacity: 0;
-    width: 0;
+    width: 80px;
     height: 0;
 }
 
