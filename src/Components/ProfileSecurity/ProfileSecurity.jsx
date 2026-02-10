@@ -1,24 +1,26 @@
 
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import style from "./ProfileSecurity.module.css"
 import { useFormik } from "formik";
 import * as yup from "yup";
 import api from "../../api";
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import { userContext } from '../../context/userContext';
 export default function ProfileSecurity() {
+  const { userToken } = useContext(userContext)
   const [isLoading, setIsLoading] = useState(false);
+  const [userSessions, setuserSessions] = useState([])
   async function handleChangePassword(values) {
     const { confirmNewPassword, ...dataToSend } = values;
     try {
       setIsLoading(true)
-      const token = localStorage.getItem("token");
       let response = await api.put(`/Accounts/change-password`, dataToSend,
         {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
       );
       //   console.log(response.data);
       console.log("sucessful");
@@ -68,6 +70,84 @@ export default function ProfileSecurity() {
       setIsLoading(false);
     }
   }
+
+  async function getUserSessions() {
+    try {
+      let response = await api.get(`/UserSessions`)
+      console.log(response)
+      setuserSessions(response.data)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  // async function deleteUsers() {
+  //   try {
+  //     let response = await api.delete(`/UserSessions/others`, {
+  //       headers: {
+  //         Authorization: `Bearer ${userToken}`
+  //       }
+  //     })
+  //       console.log(response)
+  //   }
+  //   catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  //  async function deleteUserSession(id) {
+  //   try {
+  //     let response = await api.delete(`/UserSessions/${id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${userToken}`
+  //       }
+  //     })
+  //       console.log(response)
+  //       setuserSessions(prev => prev.filter(s=>s.id !==id))
+  //        toast.success("Session removed");
+  //   }
+  //   catch (error) {
+  //     console.log(error)
+  //      toast.error("Failed to remove session");
+  //   }
+  // }
+
+
+
+  function formatDate(isoDate) {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const d = new Date(isoDate);
+    const day = d.getDate();
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
+    return `${month} ${day}, ${year}`;
+  }
+  function timeAgo(dateString) {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diff = Math.floor((now - past) / 1000); // seconds
+
+    const minutes = Math.floor(diff / 60);
+    const hours = Math.floor(diff / 3600);
+    const days = Math.floor(diff / 86400);
+    const weeks = Math.floor(diff / 604800);
+    const months = Math.floor(diff / 2592000);
+    const years = Math.floor(diff / 31536000);
+
+    if (diff < 60) return "Just now";
+    if (minutes < 60) return `${minutes} minutes ago`;
+    if (hours < 24) return `${hours} hours ago`;
+    if (days < 7) return `${days} days ago`;
+    if (weeks < 4) return `${weeks} weeks ago`;
+    if (months < 12) return `${months} months ago`;
+    return `${years} years ago`;
+  }
+
+
   let validationChangePass = yup.object({
     currentPassword: yup
       .string()
@@ -97,6 +177,10 @@ export default function ProfileSecurity() {
     onSubmit: handleChangePassword,
     validationSchema: validationChangePass,
   });
+
+  useEffect(() => {
+    getUserSessions()
+  }, [])
   return <>
 
 
@@ -182,15 +266,18 @@ export default function ProfileSecurity() {
               )}
             </div>
           </div>
-          <button type='submit' className={`${style.update_password_btn}`} disabled={!(formik.isValid && formik.dirty) || isLoading}>
+          <button
+            type="submit"
+            className={`${style.update_password_btn}`}
+            disabled={!(formik.isValid && formik.dirty) || isLoading}
+          >
             {isLoading ? (
-              <span
-                className="spinner-border spinner-border-sm text-light"
-                role="status"
-              />
+              <span className="spinner-border spinner-border-sm text-light" role="status" />
             ) : (
               "Update Password"
-            )}</button>
+            )}
+          </button>
+
 
         </form>
       </section>
@@ -202,53 +289,84 @@ export default function ProfileSecurity() {
 
 
 
-
-
-        <div className={`${style.device_card}`}>
-          <div className={`${style.card_header}`}>
-            <div className={`${style.left}`}>
-              <div className={`${style.icon}`}>💻</div>
+        {userSessions.map((users) => (
+          <div key={users.id} className={`${style.device_card}`}>
+            <div className={`${style.card_header}`}>
+              {/* <div className={`${style.left}`}> */}
+              {/* <div className={`${style.icon}`}>💻</div> */}
               <div className={`${style.info}`}>
-                <div className={`${style.title}`}>MacBook Pro 16 - macOS</div>
+
+                <div className={`${style.info_parent}`}>
+                  <div className={`${style.info_sipling}`}>
+                    <div>
+                      <i class="fa-solid fa-laptop"></i>
+                    </div>
+                    <div className={`${style.title}`}>MacBook Pro 16 - macOS</div>
+                  </div>
+                  <div>
+                    {
+                      users.isCurrent ? <button className={`${style.current_btn}`}>Current</button>
+                        : <button className={`${style.no_current_btn}`}>Sign Out</button>
+                      // onClick={()=>deleteUserSession(users.id)}
+                    }
+                  </div>
+                </div>
+
+
                 <div className={`${style.location}`}>
                   <div className={`${style.location_parent}`}>
-                    <i className={`fa-solid fa-location-dot ${style.location_i}`}></i> <span>Cairo, Egypt</span>
+                    <i className={`fa-solid fa-location-dot ${style.location_i}`}></i> <span>{users.city} , {users.country}</span>
                   </div>
-                  <span className={`${style.trusted}`}><i className={`fa-regular fa-circle-check ${style.check_icon}`}></i> Trusted</span>
+                  <div>
+                    {users.isTrusted ? <span className={`${style.trusted}`}><i className={`fa-regular fa-circle-check ${style.check_icon}`}></i> Trusted</span> :
+                      <span className={`${style.not_trusted}`}><i className={`fa-solid fa-exclamation ${style.check_icon}`}></i> Not Trusted</span>
+                    }
+                  </div>
+
+
                 </div>
-                <div className={`${style.ip}`}>IP: 192.168.1.105</div>
+                <div className={`${style.ip}`}>IP: {users.ipAddress}</div>
+                <div className={`${style.divider}`}></div>
 
 
                 <div className={`${style.card_footer_parent}`}>
                   <div className={`${style.card_footer}`}>
                     <div className={`${style.label}`}>First Active</div>
-                    <div className={`${style.value}`}>Jan 15, 2026</div>
+                    <div className={`${style.value}`}>{formatDate(users.firstSeenAt)}</div>
                   </div>
                   <div className={`${style.card_footer}`}>
                     <div className={`${style.label}`}>Last Active</div>
-                    <div className={`${style.value}`}>Active now</div>
+                    <div className={`${style.value}`}>{timeAgo(users.lastSeenAt)}</div>
                   </div>
                 </div>
               </div>
+              {/* </div> */}
+
             </div>
 
-            <button className={`${style.current_btn}`}>Current</button>
+            <div className={`${style.divider2}`}></div>
+            {
+              users.isTrusted ? "" : <div className={`${style.trust_device}`}>
+                <div>
+                  <span className={`${style.trust_device_text}`}><i class={`fa-solid fa-shield ${style.sheild_icon}`}></i> Trust this device</span>
+                </div>
+
+              </div>
+            }
+
+            {
+              users.isTrusted ?
+                "" :<p className={`${style.trust_device_note}`}>A verification link will be sent to your email to approve this device.</p>
+
+            }
           </div>
 
-
-        </div>
-
-
-        <div className={`${style.trust_device}`}>
-          <div>
-            <span className={`${style.trust_device_text}`}><i class={`fa-solid fa-shield ${style.sheild_icon}`}></i> Trust this device</span>
-          </div>
+        ))}
 
 
 
 
-        </div>
-        <p className={`${style.trust_device_note}`}>A verification link will be sent to your email to approve this device.</p>
+
 
         <button className={`${style.sign_out_all_btn}`}>
           <i className={`fa-solid fa-arrow-right-from-bracket ${style.sign_out_icon}`}></i>

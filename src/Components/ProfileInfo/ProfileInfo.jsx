@@ -1,14 +1,324 @@
 
-import React from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
+import { useOutletContext } from 'react-router-dom';
 import style from "./ProfileInfo.module.css"
+import { userContext } from '../../context/userContext';
+import api from '../../api';
+import toast from 'react-hot-toast';
 
 export default function ProfileInfo() {
+
+  /////////////////////user data////////////////////////////////////
+
+
+  const { fetchProfile: refreshSidebar } = useOutletContext();
+
+
+  let { userToken, loading } = useContext(userContext);
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    companyName: '',
+    email: '',
+    position: '',
+    phoneNumber: '',
+    businessAddress: ''
+  })
+  const [isDisabled, setIsDisabled] = useState(true)
+  const [save, setSave] = useState(false)
+
+  useEffect(() => {
+    if (loading || !userToken) return;
+
+    const fetchProfile = async () => {
+      try {
+        const { data } = await api.get("/Users/profile", {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        // Ensure we don't set null values for controlled inputs
+        setUserData({
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          companyName: data.companyName || '',
+          email: data.email || '',
+          position: data.position || '',
+          phoneNumber: data.phoneNumber || '',
+          businessAddress: data.businessAddress || ''
+        })
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        toast.error(
+          "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+      }
+    };
+
+    fetchProfile();
+  }, [userToken, loading]);
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEditToggle = async () => {
+    if (save) {
+      // Logic to save data
+      try {
+        const formData = new FormData();
+        for (const key in userData) {
+          formData.append(key, userData[key]);
+        }
+
+        await api.put("/Users/profile", formData, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        toast.success("Profile updated successfully!");
+        setSave(false);
+        setIsDisabled(true);
+        refreshSidebar(); // Update parent layout
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        toast.error(
+          "Failed to update profile.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+      }
+    } else {
+      // Enable edit mode
+      setIsDisabled(false);
+      setSave(true);
+    }
+  };
+
+
+  /* ------------------------------- Notification Logic ------------------------------ */
+  const [initialNotificationsInfo, setInitialNotificationsInfo] = useState({
+    productsUpdatesNotification: false,
+    billingNotification: false
+  });
+  const [productsNotification, setProductsNotification] = useState(false);
+  const [billingNotification, setBillingNotification] = useState(false);
+
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [billingLoading, setBillingLoading] = useState(false);
+
+
+  // Fetch initial notifications
+  useEffect(() => {
+    if (!userToken) return;
+
+    const fetchNotifications = async () => {
+      try {
+        const { data } = await api.get("/Users/profile/notifications", {
+          headers: { Authorization: `Bearer ${userToken}` }
+        });
+
+        const initial = {
+          productsUpdatesNotification: data.productsUpdatesNotification,
+          billingNotification: data.billingNotification
+        };
+
+        setInitialNotificationsInfo(initial);
+        setProductsNotification(initial.productsUpdatesNotification);
+        setBillingNotification(initial.billingNotification);
+
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+
+      }
+    };
+
+    fetchNotifications();
+  }, [userToken]);
+
+  // Debounced API call if state changed
+  // Products Notification Effect
+  useEffect(() => {
+    const productChanged = productsNotification !== initialNotificationsInfo.productsUpdatesNotification;
+
+    if (!productChanged) return;
+
+    const timerId = setTimeout(async () => {
+      try {
+        setProductsLoading(true)
+        await api.put("/Users/profile/toggle-products-updates-notification", {}, {
+          headers: { Authorization: `Bearer ${userToken}` }
+        });
+        console.log("ok Products");
+
+        // Update initial state for product only
+        setInitialNotificationsInfo(prev => ({
+          ...prev,
+          productsUpdatesNotification: productsNotification
+        }));
+        setProductsLoading(false)
+
+      } catch (error) {
+        console.error("Error updating products notification:", error);
+        toast.error(
+          error.response?.data?.errors[1] || "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
+          },
+        );
+        setProductsLoading(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timerId);
+  }, [productsNotification, initialNotificationsInfo.productsUpdatesNotification, userToken]);
+
+
+  // Billing Notification Effect
+  useEffect(() => {
+    const billingChanged = billingNotification !== initialNotificationsInfo.billingNotification;
+
+    if (!billingChanged) return;
+
+    const timerId = setTimeout(async () => {
+      try {
+        setBillingLoading(true)
+        await api.put("/Users/profile/toggle-billing-notification", {}, {
+          headers: { Authorization: `Bearer ${userToken}` }
+        });
+        console.log("ok billing");
+
+        // Update initial state for billing only
+        setInitialNotificationsInfo(prev => ({
+          ...prev,
+          billingNotification: billingNotification
+        }));
+        setBillingLoading(false)
+
+      } catch (error) {
+        console.error("Error updating billing notification:", error);
+        toast.error(
+          error.response?.data?.errors[1] || "Something went wrong",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "60px",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
+          },
+        );
+        setBillingLoading(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timerId);
+  }, [billingNotification, initialNotificationsInfo.billingNotification, userToken]);
+
+  const handleProductNotificationChange = (e) => {
+    setProductsNotification(e.target.checked);
+  };
+
+  const handleBillingNotificationChange = (e) => {
+    setBillingNotification(e.target.checked);
+  };
+
+
+
   return <>
 
     <div className={style.FormSection}>
       <div className={style.SectionHeader}>
         <h3 className={style.SectionTitle}>Personal Information</h3>
-        <button className={style.BtnGradient}>
+        <button className={style.BtnGradient} onClick={handleEditToggle}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <g id="mynaui:edit">
               <path
@@ -19,7 +329,7 @@ export default function ProfileInfo() {
               />
             </g>
           </svg>
-          Edit Profile
+          {save ? "Save" : "Edit Profile"}
         </button>
       </div>
 
@@ -48,8 +358,13 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="firstName"
               className={style.FormInput}
               placeholder="First Name"
+              value={userData.firstName}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
             />
           </div>
         </div>
@@ -78,8 +393,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="lastName"
               className={style.FormInput}
               placeholder="Last Name"
+              value={userData.lastName}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -171,8 +492,13 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="companyName"
               className={style.FormInput}
               placeholder="Company Name"
+              value={userData.companyName}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
             />
           </div>
         </div>
@@ -201,8 +527,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="email"
+              name="email"
               className={style.FormInput}
               placeholder="email@company.com"
+              value={userData.email}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -221,8 +553,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="position"
               className={style.FormInput}
               placeholder="Position"
+              value={userData.position}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -247,8 +585,14 @@ export default function ProfileInfo() {
             </div>
             <input
               type="tel"
+              name="phoneNumber"
               className={style.FormInput}
               placeholder="+20xxxxxxxxxx"
+              value={userData.phoneNumber}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
+
             />
           </div>
         </div>
@@ -277,8 +621,13 @@ export default function ProfileInfo() {
             </div>
             <input
               type="text"
+              name="businessAddress"
               className={style.FormInput}
               placeholder="Address"
+              value={userData.businessAddress}
+              onChange={handleInputChange}
+              disabled={isDisabled}
+              style={isDisabled ? { opacity: .5 } : { opacity: 1 }}
             />
           </div>
         </div>
@@ -314,7 +663,7 @@ export default function ProfileInfo() {
             </div>
           </div>
           <label className={style.ToggleWrapper}>
-            <input type="checkbox" className={style.ToggleCheckbox} />
+            <input type="checkbox" className={style.ToggleCheckbox} checked={productsNotification} onChange={handleProductNotificationChange} disabled={productsLoading} />
             <span className={style.ToggleSlider}></span>
           </label>
         </div>
@@ -343,7 +692,9 @@ export default function ProfileInfo() {
             <input
               type="checkbox"
               className={style.ToggleCheckbox}
-              defaultChecked
+              checked={billingNotification} onChange={handleBillingNotificationChange}
+              disabled={billingLoading}
+
             />
             <span className={style.ToggleSlider}></span>
           </label>

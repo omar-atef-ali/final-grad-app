@@ -47,7 +47,7 @@ export default function Footer() {
                                 {/* <svg width="18" height="18" viewBox="0 0 14 13" fill="none">
                                     <path d="M10.9038 0H13.0273L8.38879 5.374L13.8462 12.688H9.57363L6.22483 8.253L2.39736 12.688H0.271978L5.23286 6.938L0 0.000999987H4.38132L7.40374 4.054L10.9038 0ZM10.1571 11.4H11.3341L3.73846 1.221H2.47648L10.1571 11.4Z" fill="#717182"/>
                                 </svg> */}
-                                <i class="fa-brands fa-x-twitter"></i>
+                                <i className="fa-brands fa-x-twitter"></i>
                             </a>
                             <a href="#" className={`${style.social_icon }`} >
                                 <i className="fa-brands fa-linkedin-in"></i>

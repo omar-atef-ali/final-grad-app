@@ -9,7 +9,7 @@
   flex-direction: column;
   min-height: 100vh;
   background-color: #f9f9f9;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Hero Section */
@@ -19,7 +19,6 @@
   min-height: 100vh;
   background-color: #0c0514;
   overflow: hidden;
-
 }
 
 .heroBg {
@@ -52,7 +51,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding-top: 30px;
-  padding-bottom: 60px;
+  padding-bottom: 40px;
 }
 
 .logoContainer {
@@ -65,7 +64,7 @@
 .logoText {
   font-size: 32px;
   font-weight: 400;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .brandMessage {
@@ -98,16 +97,15 @@
   width: 100%;
   max-width: 750px;
   display: flex;
-  padding: 23px 80px;
+  padding: 23px 50px;
   align-items: center;
   justify-content: center;
-
 }
 
 .loginCard {
   background-color: #f9f9f9;
   width: 100%;
-  max-width: 520px;
+  max-width: 480px;
   height: 100%;
   border-radius: 40px;
   display: flex;
@@ -125,7 +123,6 @@
   .loginCard {
     border-radius: 24px;
     padding: 32px 20px;
-
   }
 
   .welcomeTitle {
@@ -134,7 +131,7 @@
 }
 
 .cardHeader {
-  margin-bottom: 48px;
+  margin-bottom: 25px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -142,18 +139,18 @@
 }
 
 .welcomeTitle {
-  font-size: 44px;
+  font-size: 43px;
   font-weight: 500;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   color: #0c0514;
-  margin-bottom: 16px;
+  margin-bottom: 13px;
   margin-top: 0;
 }
 
 .welcomeSubtitle {
   color: rgba(10, 10, 10, 0.6);
-  font-size: 16px;
-  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-family: "Poppins", sans-serif;
   margin: 0;
 }
 
@@ -172,14 +169,14 @@
 }
 
 .inputLabel {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #0c0514;
 }
 
 .inputWrapper {
   position: relative;
-  height: 49px;
+  height: 39px;
   width: 100%;
 }
 
@@ -247,25 +244,24 @@
 }
 
 .checkbox {
-  width: 26px;
-  height: 25px;
+  width: 16px;
+  height: 18px;
   border: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 3px;
   accent-color: #390686;
 }
 
 .rememberText {
-  font-size: 15px;
+  font-size: 13px;
   color: rgba(104, 102, 119, 0.6);
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
 }
 
-
 .forgotPassword {
-  font-size: 15px;
+  font-size: 13px;
   color: rgba(104, 102, 119, 1);
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   text-decoration: none;
   display: inline-block;
@@ -277,13 +273,13 @@
 
 .loginBtn {
   width: 100%;
-  height: 48px;
+  height: 45px;
   border-radius: 16px;
   background: linear-gradient(to right, #261043, #311d4b, #43165d);
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   border: none;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -293,16 +289,15 @@
   opacity: 0.9;
 }
 .loginBtn:disabled {
-  opacity: 0.6;       
+  opacity: 0.6;
   pointer-events: none;
-  cursor: not-allowed; 
-
+  cursor: not-allowed;
 }
 
 .divider {
   position: relative;
   width: 100%;
-  height: 25px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -322,13 +317,13 @@
   font-size: 14px;
   color: rgba(10, 10, 10, 0.25);
   letter-spacing: 0.05em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .socialBtn {
   position: relative;
   width: 100%;
-  height: 48px;
+  height: 45px;
   border: 1px solid black;
   border-radius: 16px;
   display: flex;
@@ -354,7 +349,7 @@
   text-align: center;
   font-size: 14px;
   letter-spacing: 0.05em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .signupLink {
@@ -364,135 +359,21 @@
   text-decoration-style: solid;
 }
 
-/* Footer */
-.footer {
-  background-color: #f9f9f9;
-  width: 100%;
-  padding: 80px 24px;
-}
-
-.footerContent {
-  max-width: 1440px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 48px;
-}
-
-.footerBrand {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.footerLogoText {
-  font-size: 24px;
-  font-weight: 400;
-  font-family: 'Inter', sans-serif;
-}
-
-.footerDesc {
-  color: #717182;
-  font-size: 14px;
-  line-height: 20px;
-  max-width: 263px;
-  margin: 0;
-}
-
-.footerColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.footerTitle {
-  color: #0a0a0a;
-  font-size: 16px;
-  font-weight: 400;
-  margin: 0;
-}
-
-.footerLinks {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footerLink {
-  color: #717182;
-  font-size: 14px;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footerLink:hover {
-  color: #0a0a0a;
-}
-
-.socialIcons {
-  display: flex;
-  gap: 16px;
-}
-
-.iconBox {
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s;
-}
-
-.iconBox:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.footerBottom {
-  max-width: 1440px;
-  margin: 64px auto 0;
-  padding-top: 32px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-
-.copyright {
-  color: #717182;
-  font-size: 14px;
-  margin: 0;
-}
-
-.legalLinks {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
 /* Desktop Media Queries */
 @media (min-width: 1024px) {
   .heroSection {
-    height: 800px;
+    height: 100vh;
 
   }
 
   .heroContent {
     flex-direction: row;
     padding-left: 80px;
-
   }
 
   .brandColumn {
     padding-top: 51px;
-    padding-bottom: 112px;
+    padding-bottom: 70px;
   }
 
   .brandMessage {
@@ -504,19 +385,12 @@
   }
 
   .loginCard {
-    padding: 72px 32px;
-
-  }
-
-  .footer {
-    padding: 80px 160px;
-  }
-
-  .footerContent {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .footerBottom {
-    flex-direction: row;
+    padding: 45px 32px;
   }
 }
+
+/* @media (max-width: 768px) {
+  .loginPage {
+    min-height: 110vh;
+  }
+} */

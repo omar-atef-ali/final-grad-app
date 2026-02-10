@@ -1,30 +1,67 @@
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+.page_container {
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.hero_section {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.hero_background {
+  position: absolute;
+  inset: 0;
+}
+
+.hero_background img {
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5); /* خلفية نصف شفافة */
+  object-fit: cover;
+}
+
+/* Header Logo */
+.header_logo {
+  position: absolute;
+  top: 51px;
+  left: 80px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 9999; /* يكون فوق كل العناصر */
+  gap: 16px;
+  z-index: 10;
+}
+
+.logo_text {
+  color: white;
+  font-size: 32px;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+}
+
+/* ===== LOADER ===== */
+
+.loader_overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.395);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(3px);
 }
 
 .spinner {
-  border: 8px solid #7575753c; /* لون الخلفية */
-  border-top: 8px solid #d0cdcd; /* لون الدوران */
+  width: 70px;
+  height: 70px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid #8a45b2;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
   animation: spin 1s linear infinite;
 }
 
-.callback{
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center ;
-    /* text-align: center; */
-    padding-top: 25%;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

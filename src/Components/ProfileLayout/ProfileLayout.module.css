@@ -315,6 +315,25 @@ body {
   background: transparent;
 }
 
+.badgeBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2.8px 8.8px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-dark);
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 3px 3px rgba(34,31,31,0.158);
+}
+
+.badgeBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transition: background .2s;
+}
+
 .badge_warning {
   background: var(--warning-yellow-bg);
   border-color: transparent;
@@ -473,6 +492,7 @@ body {
     transform: scale(0.92);
     opacity: 0.6;
   }
+
   to {
     transform: scale(1);
     opacity: 1;

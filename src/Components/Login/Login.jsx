@@ -9,7 +9,6 @@ import { userContext } from "../../context/userContext";
 import * as yup from "yup";
 import img from "../../assets/images/photo_2026-01-28_05-07-48.jpg";
 
-// import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   let navigate = useNavigate();
@@ -94,7 +93,7 @@ export default function Login() {
   const loginWithGoogle = () => {
     const clientId =
       "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
-    const redirectUri = `http://localhost:5173/google/callback`;
+    const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
     const scope = "openid email profile";
     const responseType = "code";
 

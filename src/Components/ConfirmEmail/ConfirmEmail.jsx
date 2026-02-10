@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import style from './ConfirmEmail.module.css'
 import imghero from "../../assets/images/heroimage.jpeg"
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import api from "../../api";
 
 export default function ConfirmEmail() {
     const navigate = useNavigate();
