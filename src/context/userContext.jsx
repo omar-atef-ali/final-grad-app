@@ -12,15 +12,21 @@ export default function UserContextProvider(props) {
 
   let [userProfileImage, setUserProfileImage] = useState(null);
 
+  // 1. Check storage on mount
   useEffect(() => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
       setUserToken(token);
-      fetchUserNameAndImage(token);
     }
     setLoading(false);
-
   }, []);
+
+  // 2. Fetch data whenever token changes (Login or Refresh)
+  useEffect(() => {
+    if (userToken) {
+      fetchUserNameAndImage(userToken);
+    }
+  }, [userToken]);
 
   async function fetchUserNameAndImage(token) {
     try {
@@ -30,7 +36,8 @@ export default function UserContextProvider(props) {
         },
       });
       if (data.profileImage) {
-        setUserProfileImage(data.profileImage);
+        // Force cache refresh
+        setUserProfileImage(`${data.profileImage}?t=${new Date().getTime()}`);
       }
     } catch (error) {
       console.log(error);

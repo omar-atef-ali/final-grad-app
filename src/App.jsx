@@ -14,7 +14,7 @@ import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import Register from "./Components/Register/Register";
 import ChangePassword from "./Components/ChangePassword/ChangePassword";
 import Home from "./Components/Home/Home";
-
+import Features from "./Components/Features/Features";
 import GoogleCallback from "./Components/GoogleCallback/GoogleCallback";
 
 import { useContext } from "react";
@@ -46,9 +46,9 @@ let routers = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "home", element: <Home /> },
-      { path: "feature-details", element: <FeatureDetails /> },
 
-     
+      { path: "features", element: <Features /> },
+      { path: "feature-details/:id", element: <FeatureDetails /> },
 
       {
         path: "profile",

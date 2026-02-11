@@ -53,7 +53,7 @@ export default function Login() {
             fontSize: "0.95rem",
             borderRadius: "5px",
             width: "300px",
-            height: "60px",
+            height: "100%",
             boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
           },
           iconTheme: {

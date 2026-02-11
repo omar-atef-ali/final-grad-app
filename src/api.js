@@ -40,14 +40,16 @@ api.interceptors.response.use(
     // === 401 AND not retried before ===
     if (error.response.status === 401 && !originalRequest._retry) {
       console.log("⛔ 401 detected for:", originalRequest.url);
-
-      const localRefreshToken = localStorage.getItem("refreshToken");
-      const sessionRefreshToken = sessionStorage.getItem("refreshToken");
-
-      const refreshToken = localRefreshToken || sessionRefreshToken;
-      const storageType = localRefreshToken ? "local" : "session"; // Determine where it came from
-
-      const oldToken = localStorage.getItem("token") || sessionStorage.getItem("token");
+      
+      let isLocal = null;
+      if(localStorage.getItem("token") !== null){
+        isLocal = true;
+      }else{
+        isLocal = false;
+      }
+    
+      const refreshToken = isLocal ? localStorage.getItem("refreshToken") : sessionStorage.getItem("refreshToken");
+      const oldToken = isLocal ? localStorage.getItem("token") : sessionStorage.getItem("token");
 
       if (!refreshToken) {
         console.log("❌ No refresh token → logout");
@@ -73,10 +75,10 @@ api.interceptors.response.use(
       }
 
       isRefreshing = true;
-      console.log(`♻️ Starting refresh flow (${storageType} storage)...`);
+      console.log("♻️ Starting refresh flow...");
 
       try {
-        // اهم نقطة — استخدم نفس instance (api) مش axios
+        // أهم نقطة — استخدم نفس instance (api) مش axios
         const res = await api.post("/Auth/refresh", {
           token: oldToken,
           refreshToken,
@@ -85,14 +87,13 @@ api.interceptors.response.use(
         const { token: newAccessToken, refreshToken: newRefreshToken } =
           res.data;
 
-        if (storageType === "local") {
+        if(isLocal){
           localStorage.setItem("token", newAccessToken);
           localStorage.setItem("refreshToken", newRefreshToken);
-        } else {
+        }else{
           sessionStorage.setItem("token", newAccessToken);
           sessionStorage.setItem("refreshToken", newRefreshToken);
         }
-
 
         api.defaults.headers.common[
           "Authorization"
@@ -121,7 +122,7 @@ api.interceptors.response.use(
 
         localStorage.clear();
         sessionStorage.clear();
-        window.location.href = "/login";
+        window.location.href = "/";
 
         return Promise.reject(refreshError);
       }
@@ -130,10 +131,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-
-
-
 
 
 export default api;

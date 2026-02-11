@@ -227,33 +227,35 @@ body {
 } */
 
 .image_area {
-  position: relative;
-  width: 100%;
-  /* background-color: red; */
-  height: 560px;;
+    position: relative;
+    width: 100%;
+    /* background-color: red; */
+    height: 560px;
+    ;
 
 }
 
 .main_image {
-  width: 100%;
-  height: 100%;
-  border-radius: 16px 0px 0px 16px;
-  display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px 0px 0px 16px;
+    display: block;
 }
+
 .main_image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .stats_container {
-  /* position: absolute;
+    /* position: absolute;
   bottom: 20px;
   left: 20px;
   display: flex;
   gap: 12px; */
 
-   position: absolute;
+    position: absolute;
     bottom: 25px;
     left: 72px;
     display: flex;
@@ -261,13 +263,13 @@ body {
 }
 
 .stat_card {
-  /* background: rgba(0,0,0,0.7);
+    /* background: rgba(0,0,0,0.7);
   color: white;
   padding: 10px 14px;
   border-radius: 12px;
   backdrop-filter: blur(6px); */
 
-   width: 154.662px;
+    width: 154.662px;
     height: 71.975px;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 16px;
@@ -275,15 +277,15 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+
     /* padding: 12px 16px; */
 }
 
 .stat_value {
-  /* font-size: 18px;
+    /* font-size: 18px;
   font-weight: bold; */
 
-   font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 24px;
     font-weight: bold;
     line-height: 32px;
@@ -292,9 +294,9 @@ body {
 }
 
 .stat_label {
-  /* font-size: 12px;
+    /* font-size: 12px;
   opacity: 0.8; */
-  font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 12px;
     font-weight: 400;
     line-height: 16px;
@@ -395,7 +397,8 @@ body {
 
 .btn_try_feature {
     flex: 1;
-    height: 36px;
+    height: 35px;
+    width: 170px;
     border: none;
     border-radius: 8px;
     background: linear-gradient(90deg, rgba(61, 27, 106, 0.9) 0%, rgba(78, 48, 116, 0.9) 50%, rgba(138, 69, 178, 0.9) 100%);
@@ -414,13 +417,14 @@ body {
 }
 
 .btn_try_feature:hover {
-    transform: translateY(-2px);
-    box-shadow: 3px 5px 6px 0px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+    /* box-shadow: 3px 5px 6px 0px rgba(0, 0, 0, 0.3); */
 }
 
 .btn_see_pricing {
     flex: 1;
-    height: 36px;
+    height: 35px;
+    width: 170px;
     border: 0.8px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     background: #FFFFFF;
@@ -435,10 +439,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.btn_see_pricing:hover {
-    transform: translateY(-2px);
-    box-shadow: 3px 5px 6px 0px rgba(0, 0, 0, 0.3);
-}
+
 
 /* Use Cases Section */
 .use_cases_section {
@@ -447,7 +448,7 @@ body {
     background-color: #ECEEF2;
     border-radius: 16px;
     margin-bottom: 88px;
-     box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 .section_header {
@@ -478,7 +479,9 @@ body {
     border: 1.6px solid rgba(0, 0, 0, 0.1);
     border-radius: 14px;
     padding: 25.6px;
+    /* padding:50px 25px; */
     height: 135.2px;
+    /* height: 180px; */
     display: flex;
     gap: 16px;
     align-items: flex-start;
@@ -755,6 +758,7 @@ body {
 
 
 @media (max-width: 767px) {
+
     /* Container padding */
     .container-fluid {
         padding-left: 1rem !important;
@@ -823,20 +827,20 @@ body {
     /* Feature card mobile */
     .feature_detail_section {
         padding: 24px 0 40px;
-    
+
     }
 
     .feature_card {
         border-radius: 12px;
-    
+
     }
 
     .image_area {
         /* height: 700px; */
         border-radius: 12px 12px 0 0;
-        
+
     }
-    
+
 
     .stats_container {
         /* position: static; */
@@ -845,10 +849,13 @@ body {
         /* left: 25px; */
         /* bottom: 0px;
         gap: 12px; */
-         position: absolute; /* بدل static */
-        bottom: 15px; /* المسافة من تحت الصورة */
-        left: 50%;          /* ضع منتصف العنصر عند منتصف الصورة */
-    transform: translateX(-50%);
+        position: absolute;
+        /* بدل static */
+        bottom: 15px;
+        /* المسافة من تحت الصورة */
+        left: 50%;
+        /* ضع منتصف العنصر عند منتصف الصورة */
+        transform: translateX(-50%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -860,7 +867,7 @@ body {
         width: 100%;
         height: 60px;
         padding: 8px 30px;
-        
+
     }
 
     .stat_value {
@@ -924,7 +931,7 @@ body {
     /* Use cases mobile */
     .use_cases_section {
         padding: 40px 0 60px;
-         /* padding: 15px 88px; */
+        /* padding: 15px 88px; */
     }
 
     .section_header {
@@ -1043,6 +1050,7 @@ body {
 }
 
 @media (min-width: 768px) and (max-width:1024px) {
+
     /* Container padding */
     .container-fluid {
         padding-left: 1rem !important;
@@ -1111,20 +1119,20 @@ body {
     /* Feature card mobile */
     .feature_detail_section {
         padding: 24px 0 40px;
-    
+
     }
 
     .feature_card {
         border-radius: 12px;
-    
+
     }
 
     .image_area {
         /* height: 700px; */
         border-radius: 12px 12px 0 0;
-        
+
     }
-    
+
 
     .stats_container {
         /* position: static; */
@@ -1133,10 +1141,13 @@ body {
         /* left: 25px; */
         /* bottom: 0px;
         gap: 12px; */
-         position: absolute; /* بدل static */
-        bottom: 15px; /* المسافة من تحت الصورة */
-        left: 50%;          /* ضع منتصف العنصر عند منتصف الصورة */
-    transform: translateX(-50%);
+        position: absolute;
+        /* بدل static */
+        bottom: 15px;
+        /* المسافة من تحت الصورة */
+        left: 50%;
+        /* ضع منتصف العنصر عند منتصف الصورة */
+        transform: translateX(-50%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1148,7 +1159,7 @@ body {
         width: 100%;
         height: 60px;
         padding: 40px 50px;
-        
+
     }
 
     .stat_value {

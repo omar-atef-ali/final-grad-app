@@ -216,7 +216,7 @@ export default function ProfileInfo() {
         await api.put("/Users/profile/toggle-products-updates-notification", {}, {
           headers: { Authorization: `Bearer ${userToken}` }
         });
-        console.log("ok Products");
+        // console.log("ok Products");
 
         // Update initial state for product only
         setInitialNotificationsInfo(prev => ({
@@ -266,7 +266,7 @@ export default function ProfileInfo() {
         await api.put("/Users/profile/toggle-billing-notification", {}, {
           headers: { Authorization: `Bearer ${userToken}` }
         });
-        console.log("ok billing");
+        // console.log("ok billing");
 
         // Update initial state for billing only
         setInitialNotificationsInfo(prev => ({

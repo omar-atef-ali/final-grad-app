@@ -1,0 +1,328 @@
+:root {
+    --text-dark: #0a0a0a;
+    --text-gray: #475467;
+    --primary-bg: #4a2560;
+    --bg-card: #ffffff;
+    --bg-demo: #f9f9f9;
+    --bg-cta: #f5f3f6;
+    --bg-gray: #F2F4F7;
+    --border-color: rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Layout Container */
+.container {
+    max-width: 1280px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Navbar */
+.navbar {
+    height: 80px;
+    box-shadow: none;
+    /* Flat as per design */
+}
+
+.navbarBrand {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    /* Regular as per code */
+    font-size: 24px;
+    color: var(--text-dark);
+}
+
+.logoIcon {
+    width: 40px;
+    height: 39px;
+}
+
+.logoBack {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.logoFront {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.logoDivider {
+    width: 1px;
+    height: 28px;
+    background-color: var(--text-dark);
+    opacity: 0.2;
+}
+
+.navLink {
+    color: #86808e !important;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.iconBtn {
+    width: 40px;
+    height: 40px;
+    border: 0.5px solid rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btnOutline {
+    border: 0.5px solid rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    color: #86808e;
+    font-size: 20px;
+    height: 40px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+}
+
+.btnOutline:hover {
+    background-color: #f8f9fa;
+    color: var(--text-dark);
+    border-color: var(--text-dark);
+}
+
+.btnPrimary {
+    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+    border: none;
+    border-radius: 8px;
+    color: white !important;
+    height: 35px;
+    width: 190px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+}
+
+.btnPrimary:hover {
+    border-color: var(--primary-dark);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1);
+}
+
+/* Hero Section */
+.heroSection {
+    padding-top: 100px;
+    /* Navbar + spacing */
+    padding-bottom: 80px;
+}
+
+.heroTitle {
+    font-size: 56px;
+    line-height: 60px;
+    text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.textGradient {
+    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
+.heroSubtitle {
+    font-size: 20px;
+    color: var(--text-gray);
+    max-width: 760px;
+    line-height: 28px;
+}
+
+.btnWhite {
+    background-color: white;
+    color: var(--text-dark);
+    border: 1px solid #D0D5DD;
+    height: 35px;
+    width: 170px;
+    border-radius: 8px;
+    font-weight: 400;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
+}
+
+.btnWhite:hover {
+    background-color: #f8f9fa;
+    color: var(--text-dark);
+}
+
+/* Features Section */
+.featuresSection {
+    padding-top: 80px;
+    padding-bottom: 60px;
+}
+
+.sectionTitle {
+    font-size: 40px;
+    color: var(--text-dark);
+}
+
+.sectionSubtitle {
+    font-size: 20px;
+    color: var(--text-gray);
+    max-width: 650px;
+}
+
+.featureCard {
+    border: 1.6px solid var(--border-color);
+    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.096);
+
+    border-radius: 14px;
+    padding: 32px;
+    background-color: white;
+    position: relative;
+    height: 359px;
+    /* Fixed height per design */
+    display: flex;
+    flex-direction: column;
+}
+
+.cardIconPlaceholder {
+    width: 64px;
+    height: 64px;
+    background-color: #d9d9d9;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.cardIconPlaceholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cardTitle {
+    font-size: 24px;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.cardText {
+    font-size: 16px;
+    color: #7e7882;
+    line-height: 24px;
+    font-family: 'Arimo', sans-serif;
+    margin-bottom: auto;
+    /* Push button to bottom */
+}
+
+.btnViewMore {
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    height: 36px;
+    width: 275px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Text center, icon right? No, text center relative to button */
+    padding: 0 16px;
+    color: var(--text-dark);
+    font-family: 'Arimo', sans-serif;
+    font-size: 14px;
+    margin-top: 24px;
+    position: relative;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btnViewMore .aroow {
+    position: absolute;
+    right: 16px;
+}
+
+.btnViewMore:hover {
+    background-color: #f8f9fa;
+    color: var(--text-dark);
+    transform: translateY(-1px);
+}
+
+/* Demo Section */
+
+
+.demoText {
+    font-size: 18px;
+    color: var(--text-gray);
+    max-width: 650px;
+}
+
+.footerCta {
+    margin: 0;
+    padding: 90px 0;
+    /* padding-bottom: 80px; */
+    background-color: white;
+}
+
+.footerCtaCard {
+    background: var(--bg-gray);
+    border-radius: 24px;
+    padding: 32px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+/* Bottom CTA */
+.ctaSection {
+    background-color: var(--bg-cta);
+    padding: 80px 0;
+    margin-top: 0;
+    margin-bottom: 88px;
+}
+
+.ctaSection .sectionTitle {
+    font-family: 'Arimo', sans-serif;
+    font-size: 36px;
+}
+
+.btnGradient {
+    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    border-radius: 8px;
+    color: white !important;
+    height: 35px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    font-family: 'Arimo', sans-serif;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.btnGradient:hover {
+    color: white;
+    opacity: 1;
+    background: linear-gradient(to right, #4b277a, #5c398a, #8A45B2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1);
+}
