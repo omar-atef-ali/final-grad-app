@@ -6,9 +6,6 @@ const api = axios.create({
 
 
 
-/* =======================
-   Refresh control
-======================= */
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -20,124 +17,112 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-/* =======================
-   Request Interceptor
-======================= */
 api.interceptors.request.use(
   (config) => {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
-
+    // console.log("📤 Sending request:", config.url);
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-/* =======================
-   Response Interceptor
-======================= */
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
-    /* 🌐 Network / CORS error */
-    if (!error.response) {
-      console.log("🌐 Network error:", error);
-      return Promise.reject(error);
-    }
+    if (!error.response) return Promise.reject(error);
 
-    const url = originalRequest.url || "";
-
-    const isAuthRequest =
-      url.includes("/Auth/login") ||
-      url.includes("/Auth/register") ||
-      url.includes("/Auth/refresh");
-
-    /* === Handle 401 === */
-    if (
-      error.response.status === 401 &&
-      !originalRequest._retry &&
-      !isAuthRequest
-    ) {
-      console.log("⛔ 401 detected:", url);
-
-      const localRefreshToken = localStorage.getItem("refreshToken");
-      const sessionRefreshToken = sessionStorage.getItem("refreshToken");
-
-      const refreshToken = localRefreshToken || sessionRefreshToken;
-      const storageType = localRefreshToken ? "local" : "session";
-
-      const oldToken =
-        localStorage.getItem("token") || sessionStorage.getItem("token");
+    // === 401 AND not retried before ===
+    if (error.response.status === 401 && !originalRequest._retry) {
+      console.log("⛔ 401 detected for:", originalRequest.url);
+      
+      let isLocal = null;
+      if(localStorage.getItem("token") !== null){
+        isLocal = true;
+      }else{
+        isLocal = false;
+      }
+    
+      const refreshToken = isLocal ? localStorage.getItem("refreshToken") : sessionStorage.getItem("refreshToken");
+      const oldToken = isLocal ? localStorage.getItem("token") : sessionStorage.getItem("token");
 
       if (!refreshToken) {
         console.log("❌ No refresh token → logout");
         localStorage.clear();
         sessionStorage.clear();
-        // window.location.href = "/login";
+        window.location.href = "/";
         return Promise.reject(error);
       }
 
       originalRequest._retry = true;
 
-      /* ⏳ If refresh already in progress */
       if (isRefreshing) {
+        console.log("⏳ Refresh already in progress → queue request");
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
           .then((newToken) => {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+            console.log("🔁 Retrying queued request:", originalRequest.url);
             return api(originalRequest);
           })
           .catch((err) => Promise.reject(err));
       }
 
       isRefreshing = true;
-      console.log("♻️ Refreshing token...");
+      console.log("♻️ Starting refresh flow...");
 
       try {
+        // أهم نقطة — استخدم نفس instance (api) مش axios
         const res = await api.post("/Auth/refresh", {
           token: oldToken,
           refreshToken,
         });
 
-        const {
-          token: newAccessToken,
-          refreshToken: newRefreshToken,
-        } = res.data;
+        const { token: newAccessToken, refreshToken: newRefreshToken } =
+          res.data;
 
-        if (storageType === "local") {
+        if(isLocal){
           localStorage.setItem("token", newAccessToken);
           localStorage.setItem("refreshToken", newRefreshToken);
-        } else {
+        }else{
           sessionStorage.setItem("token", newAccessToken);
           sessionStorage.setItem("refreshToken", newRefreshToken);
         }
 
-        api.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
 
+        console.log("✅ Refresh success");
+        console.log("🔐 New token:", newAccessToken);
+
+        // حل كل requests اللي كانت مستنية
         processQueue(null, newAccessToken);
         isRefreshing = false;
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        // retry للطلب اللي فشل
+        originalRequest.headers[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
+
+        console.log("🔁 Retrying original request:", originalRequest.url);
         return api(originalRequest);
       } catch (refreshError) {
-        console.log("❌ Refresh failed:", refreshError);
+        console.log("❌ Refresh failed. Logging out...");
+        console.log("🔥 Full error:", refreshError);
 
         processQueue(refreshError, null);
         isRefreshing = false;
 
-        /* ❗ Logout ONLY if refresh token is invalid */
-        if (refreshError.response?.status === 401) {
-          localStorage.clear();
-          sessionStorage.clear();
-          // window.location.href = "/login";
-        }
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "/";
 
         return Promise.reject(refreshError);
       }
@@ -146,8 +131,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-
 
 
 export default api;

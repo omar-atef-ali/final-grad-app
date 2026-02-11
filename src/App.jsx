@@ -25,6 +25,7 @@ import ProfileSubscription from "./Components/ProfileSubscription/ProfileSubscri
 import ProfileBilling from "./Components/ProfileBilling/ProfileBilling";
 import CheckEmail from "./Components/CheckEmail/CheckEmail";
 import ConfirmEmail from "./Components/ConfirmEmail/ConfirmEmail";
+import FeatureDetails from "./Components/FeatureDetails/FeatureDetails";
 
 let routers = createBrowserRouter([
   { index: true, element: <Register /> },
@@ -44,8 +45,8 @@ let routers = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "home", element: <Home /> },
-      {path : "features" , element : <Features />},
-
+      { path: "features", element: <Features /> },
+      { path: "feature-details/:id", element: <FeatureDetails /> },
       { path: "change-password", element: <ChangePassword /> },
 
       {

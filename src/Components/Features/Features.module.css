@@ -110,6 +110,8 @@ a {
 
 .btnPrimary {
     background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
     border: none;
     border-radius: 8px;
     color: white !important;
@@ -124,7 +126,6 @@ a {
 }
 
 .btnPrimary:hover {
-    background: linear-gradient(to right, #4b277a, #5c398a, #8A45B2);
     border-color: var(--primary-dark);
     color: white;
     transform: translateY(-1px);
@@ -166,7 +167,8 @@ a {
     height: 35px;
     width: 170px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 400;
+    font-size: 14px;
     transition: all 0.2s ease;
     box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
 }
@@ -195,6 +197,8 @@ a {
 
 .featureCard {
     border: 1.6px solid var(--border-color);
+    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.096);
+
     border-radius: 14px;
     padding: 32px;
     background-color: white;
@@ -211,6 +215,13 @@ a {
     background-color: #d9d9d9;
     border-radius: 14px;
     margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.cardIconPlaceholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .cardTitle {
@@ -315,4 +326,3 @@ a {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1);
 }
-

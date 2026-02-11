@@ -164,7 +164,7 @@ body {
 
 .form_input {
   width: 100%;
-  padding: 11px 24px 11px 48px; /* top right bottom left */
+  padding: 11px 24px 11px 45px; /* top right bottom left */
   border: 1px solid rgba(10, 10, 10, 0.5);
   border-radius: 8px;
   font-family: "Poppins", sans-serif;
@@ -178,6 +178,9 @@ body {
 
 .form_input:focus {
   border-color: #390686;
+}
+.form_input::placeholder{
+  font-size: 12px;
 }
 
 .eye_button {

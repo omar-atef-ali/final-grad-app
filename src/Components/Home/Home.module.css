@@ -63,19 +63,20 @@ p {
 
 .btnPrimaryCustom {
     background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
     color: white;
     border: 1px solid var(--primary-purple);
     /* padding: 12px 24px; */
     height: 35px;
     width: 170px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 400;
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
 }
 
 .btnPrimaryCustom:hover {
-    background: linear-gradient(to right, #4b277a, #5c398a, #8A45B2);
+    /* background: linear-gradient(to right, #4b277a, #5c398a, #8A45B2); */
     border-color: var(--primary-dark);
     color: white;
     transform: translateY(-1px);
@@ -89,7 +90,7 @@ p {
     height: 35px;
     width: 170px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 400;
     transition: all 0.2s ease;
     box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
 }
@@ -417,6 +418,19 @@ p {
     padding: 32px;
     height: 100%;
     box-shadow: 0 4px 6px -2px rgba(16, 24, 40, 0.03), 0 12px 16px -4px rgba(16, 24, 40, 0.08);
+}
+
+
+.reviewImg {
+  width: 40px;
+  height: 40px;
+  background-color: #3F1C6E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border: none;
 }
 
 .stars {

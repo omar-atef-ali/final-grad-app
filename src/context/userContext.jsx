@@ -3,8 +3,6 @@ import axios from "axios";
 import api from "../api";
 
 
-
-
 export let userContext = createContext();
 
 export default function UserContextProvider(props) {
