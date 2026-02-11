@@ -1,7 +1,58 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import style from "./FeatureDetails.module.css"
 import imghero from "../../assets/images/piling.jpeg"
+import api from "../../api";
+import { useParams } from 'react-router-dom'
+import toast from 'react-hot-toast';
+import { userContext } from '../../context/userContext';
 export default function FeatureDetails() {
+
+  const { featureid } = useParams()
+  const { userToken } = useContext(userContext)
+  async function getFeatureeDetails() {
+    
+    try {
+      let response = await api.get(`/Services/${featureid}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        }
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while registration.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+    }
+  }
+  useEffect(() => {
+    if (featureid && userToken) {
+      getFeatureeDetails();
+    }
+  }, [featureid, userToken]);
+
+
   return (
     <>
 
@@ -20,24 +71,7 @@ export default function FeatureDetails() {
           <div className="container">
             <div className={`${style.feature_card}`}>
               <div className="row d-flex g-0">
-                {/* <div className="col-lg-6">
-                  <div className={`${style.image_area}`}>
-                    <div className={`${style.stats_container}`}>
-                      <div className={`${style.stat_card}`}>
-                        <div className={`${style.stat_value}`}>50+</div>
-                        <div className={`${style.stat_label}`}>Chart Types</div>
-                      </div>
-                      <div className={`${style.stat_card}`}>
-                        <div className={`${style.stat_value}`}>&lt;1s</div>
-                        <div className={`${style.stat_label}`}>Load Time</div>
-                      </div>
-                      <div className={`${style.stat_card}`}>
-                        <div className={`${style.stat_value}`}>∞</div>
-                        <div className={`${style.stat_label}`}>Custom Views</div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
+
                 <div className="col-lg-6">
                   <div className={style.image_area}>
 

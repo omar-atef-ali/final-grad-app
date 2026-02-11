@@ -31,7 +31,8 @@ let routers = createBrowserRouter([
   { index: true, element: <Register /> },
   { path: "/check-email", element: <CheckEmail /> },
   { path: "/confirm-email", element: <ConfirmEmail /> },
-  { path: "reset-password", element: <ResetPassword /> },
+  { path: "/reset-password", element: <ResetPassword /> },
+   { path: "/change-password", element: <ChangePassword /> },
 
   { path: "google/callback", element: <GoogleCallback /> },
 
@@ -47,7 +48,7 @@ let routers = createBrowserRouter([
       { path: "home", element: <Home /> },
       { path: "feature-details", element: <FeatureDetails /> },
 
-      { path: "change-password", element: <ChangePassword /> },
+     
 
       {
         path: "profile",
