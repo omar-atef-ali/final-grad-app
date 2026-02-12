@@ -157,23 +157,23 @@ export default function ProfileSecurity() {
     }
   }
 
-  //  async function deleteUserSession(id) {
-  //   try {
-  //     let response = await api.delete(`/UserSessions/${id}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${userToken}`
-  //       }
-  //     })
-  //       console.log(response)
-  //       setuserSessions(prev => prev.filter(s=>s.id !==id))
-  //        toast.success("Session removed");
-  //   }
-  //   catch (error) {
-  //     console.log(error)
-  //      toast.error(
-  //       error.response?.data?.errors[1] || "Failed to remove session")
-  //   }
-  // }
+   async function deleteUserSession(id) {
+    try {
+      let response = await api.delete(`/UserSessions/${id}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        }
+      })
+        console.log(response)
+        setuserSessions(prev => prev.filter(s=>s.id !==id))
+         toast.success("Session removed");
+    }
+    catch (error) {
+      console.log(error)
+       toast.error(
+        error.response?.data?.errors[1] || "Failed to remove session")
+    }
+  }
 
 
 
@@ -386,7 +386,7 @@ export default function ProfileSecurity() {
                   </div>
                   <div>
                     {
-                      users.isCurrent ? <button className={`${style.current_btn}`}>Current</button>
+                      users.isCurrent ? <button onClick={()=>deleteUserSession(users.id)} className={`${style.current_btn}`}>Current</button>
                         : <button className={`${style.no_current_btn}`}>Sign Out</button>
                       // onClick={()=>deleteUserSession(users.id)}
                     }

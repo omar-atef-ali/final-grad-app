@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import style from "./Features.module.css"
-// import { userContext } from '../../Context/userContext'
 import api from '../../api'
 import { userContext } from '../../context/userContext'
 

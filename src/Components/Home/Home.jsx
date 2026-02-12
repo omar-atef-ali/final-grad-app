@@ -5,7 +5,7 @@ import { Layout, Zap, ShieldCheck, TrendingUp, Sparkles, Link, BrainCircuit, Lig
 import imag2 from "../../assets/images/photo_2026-02-09_20-28-22.jpg"
 import api from "../../api";
 import { userContext } from "../../context/userContext";
-// import { userContext } from '../../Context/userContext'
+
 
 
 export default function Home() {
