@@ -57,9 +57,6 @@ export default function FeatureDetails() {
 
 
 
-// import { useNavigate } from 'react-router-dom'
-// export default function FeatureDetails() {
-//   let navigate = useNavigate()
 
   return (
     <>
