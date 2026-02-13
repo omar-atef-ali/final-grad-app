@@ -136,7 +136,7 @@ export default function FeatureDetails() {
                       className={style.main_image}
                     />
 
-                    <div className={style.stats_container}>
+                    {/* <div className={style.stats_container}>
                       <div className={style.stat_card}>
                         <div className={style.stat_value}>50+</div>
                         <div className={style.stat_label}>Chart Types</div>
@@ -149,7 +149,7 @@ export default function FeatureDetails() {
                         <div className={style.stat_value}>∞</div>
                         <div className={style.stat_label}>Custom Views</div>
                       </div>
-                    </div>
+                    </div> */}
 
                   </div>
                 </div>
