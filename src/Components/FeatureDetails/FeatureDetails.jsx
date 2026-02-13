@@ -1,9 +1,63 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import style from "./FeatureDetails.module.css"
 import imghero from "../../assets/images/piling.jpeg"
-import { useNavigate } from 'react-router-dom'
+import api from "../../api";
+import { useNavigate, useParams } from 'react-router-dom'
+import toast from 'react-hot-toast';
+import { userContext } from '../../context/userContext';
 export default function FeatureDetails() {
-  let navigate = useNavigate()
+
+  const {id } = useParams()
+  const { userToken } = useContext(userContext)
+  const [featureDetails,setfeatureDetails]=useState({})
+  const navigate=useNavigate()
+  async function getFeatureeDetails() {
+    
+    try {
+      let {data} = await api.get(`/Services/${id}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        }
+      });
+      console.log(data);
+      setfeatureDetails(data)
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while registration.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+    }
+  }
+  useEffect(() => {
+    if (id && userToken) {
+      getFeatureeDetails();
+    }
+  }, [id, userToken]);
+
+
+
+
   return (
     <>
 
@@ -26,7 +80,7 @@ export default function FeatureDetails() {
                   <div className={style.image_area}>
 
                     <img
-                      src={imghero}
+                      src={featureDetails?.imageURL}
                       alt="dashboard preview"
                       className={style.main_image}
                     />
@@ -53,11 +107,11 @@ export default function FeatureDetails() {
                 <div className="col-lg-6">
                   <div className={`${style.content_area}`}>
                     <div className={`${style.content_header}`}>
-                      <h1 className={`${style.content_title}`}>Dashboard</h1>
+                      <h1 className={`${style.content_title}`}>{featureDetails.name}</h1>
                       <p className={`${style.content_subtitle}`}>Visualize what matters most</p>
                     </div>
                     <p className={`${style.content_description}`}>
-                      Lorem ipsum dolor sit amet consectetur. Enim tristique porta pellentesque libero tellus. Convallis non maecenas amet quam sagittis non. Pharetra integer velit eleifend bibendum duis dui est libero.
+                       {featureDetails.description}
                     </p>
                     <div className={`${style.key_benefits}`}>
                       <h3 className={`${style.benefits_title}`}>Key Benefits</h3>

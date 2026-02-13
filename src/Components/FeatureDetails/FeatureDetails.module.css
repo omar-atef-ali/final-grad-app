@@ -479,7 +479,9 @@ body {
     border: 1.6px solid rgba(0, 0, 0, 0.1);
     border-radius: 14px;
     padding: 25.6px;
+    /* padding:50px 25px; */
     height: 135.2px;
+    /* height: 180px; */
     display: flex;
     gap: 16px;
     align-items: flex-start;

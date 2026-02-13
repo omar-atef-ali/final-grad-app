@@ -4,9 +4,11 @@ import imag from "../../assets/images/mainImage.jpeg"
 import { Layout, Zap, ShieldCheck, TrendingUp, Sparkles, Link, BrainCircuit, Lightbulb, Lock, CheckCircle } from "lucide-react";
 import imag2 from "../../assets/images/photo_2026-02-09_20-28-22.jpg"
 import api from "../../api";
-import { userContext } from '../../Context/userContext'
+
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { userContext } from "../../context/userContext";
+
 
 
 export default function Home() {
