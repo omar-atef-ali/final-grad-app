@@ -198,7 +198,7 @@ export default function ProfileLayout() {
                 </div>
                 <h3 className={`${style.profile_name}`}>{userData?.firstName} {userData?.lastName}</h3>
                 <p className={`${style.profile_role}`}>{userData?.position}</p>
-                <p className={`${style.profile_company}`}>TechVenture Inc.</p>
+                <p className={`${style.profile_company}`}>{userData?.companyName}</p>
 
                 <div className={`${style.profile_info}`} >
                   <div className={`${style.info_row}`} >
@@ -207,7 +207,7 @@ export default function ProfileLayout() {
                   </div>
                   <div className={`${style.info_row}`} >
                     <span className={`${style.info_label}`} >Status</span>
-                    <span className={`${style.badge} ${style.badge_warning}`} >Free</span>
+                    <span className={`${style.badge} ${userData?.hasActiveSubscription ? style.badge_success : style.badge_warning}`} >{userData?.hasActiveSubscription ? "Pro" : "Free"}</span>
                   </div>
                 </div>
 

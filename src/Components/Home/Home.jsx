@@ -5,6 +5,8 @@ import { Layout, Zap, ShieldCheck, TrendingUp, Sparkles, Link, BrainCircuit, Lig
 import imag2 from "../../assets/images/photo_2026-02-09_20-28-22.jpg"
 import api from "../../api";
 import { userContext } from '../../Context/userContext'
+import { NavLink, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 export default function Home() {
@@ -12,18 +14,33 @@ export default function Home() {
   const { userToken } = useContext(userContext)
 
   const [review, setReview] = useState([])
+  const [activeTab, setActiveTab] = useState(0);
+
+  const iconMap = {
+    Sparkles: Sparkles,
+    Layout: Layout,
+    Zap: Zap,
+    ShieldCheck: ShieldCheck,
+    TrendingUp: TrendingUp,
+    Link: Link,
+    BrainCircuit: BrainCircuit,
+    Lightbulb: Lightbulb,
+    Lock: Lock,
+    CheckCircle: CheckCircle
+  };
+
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         // مش محتاج تبعت الهيدر لو الـ api.js بيحطه تلقائي، بس لو عايز تأكد عليه تمام
-        let { data } = await api.get("Reviews/approved", {
+        let { data } = await api.get("Reviews/landing-page", {
           headers: {
             "Authorization": `Bearer ${userToken}`
           }
         });
         setReview(data);
-        console.log(data);
+        // console.log(data);
 
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -57,6 +74,59 @@ export default function Home() {
       fetchReviews();
     }
   }, [userToken]);
+
+  ///////////////////////////////////////////////////////////////
+
+  const navigate = useNavigate()
+
+  const [feature, setFeature] = useState([])
+  useEffect(() => {
+    const fetchFeatures = async () => {
+      try {
+        const { data } = await api.get("Services", {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        })
+        // console.log(data);
+        setFeature(data)
+
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Error fetching reviews.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "100%",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+
+      }
+    }
+    if (userToken) { // تأكد إن التوكن موجود قبل الطلب لو ضروري
+      fetchFeatures()
+    }
+
+  }, [userToken])
+
+
 
 
 
@@ -134,39 +204,66 @@ export default function Home() {
       </section>
 
       {/* <!-- Main Features --> */}
-      
-        <section className={style.mainFeatures} id="features">
-          <div className="container" style={{ maxWidth: "1280px" }}>
-            <h2 className={style.sectionTitle}>Everything You Need to Make Data-Driven Decisions</h2>
-            <p className={style.sectionSubtitle}>Powerful AI features designed specifically for small and medium businesses</p>
 
-            <div className={style.featureTabs}>
-              <div className={`${style.featureTab} ${style.active}`}>Personalized Recommendations</div>
-              <div className={style.featureTab}>Smart Dashboards</div>
-              <div className={style.featureTab}>AI Chatbot</div>
-              <div className={style.featureTab}>Seamless Integration</div>
+      <section className={style.mainFeatures} id="features">
+        <div className="container" style={{ maxWidth: "1280px" }}>
+          <h2 className={style.sectionTitle}>Everything You Need to Make Data-Driven Decisions</h2>
+          <p className={style.sectionSubtitle}>Powerful AI features designed specifically for small and medium businesses</p>
+
+          <div className={style.tabsContainer}>
+            <div className={`${style.Tabs}`}>
+              {(feature && (feature.length || feature.name)) ? (
+                // Handle both direct array and object with 'name' property
+                (feature.length ? feature : feature.name).map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveTab(index)}
+                    className={`${style.Tab}  ${activeTab === index ? style.Active : ""}`}
+                    // Remove background: transparent inline style to allow CSS class to apply background
+                    style={{ border: "none" }}
+                  >
+                    {item.name || item.title}
+                  </button>
+                ))
+              ) : null}
             </div>
+          </div>
 
-            <div className={style.featureShowcase}>
-              <div className="row justify-content-between h-100">
-                <div className="col-lg-5 mb-4 mb-lg-0" style={{ paddingLeft: "64px", paddingTop: "64px" }}>
-                  <div className="d-inline-flex align-items-center justify-content-center  rounded-3 bg-light ">
-                    <Sparkles style={{ width: "32px", height: "32px", color: "var(--primary-purple)", marginBottom: "24px" }} />
+          {(feature && (feature.length > 0 || feature.name)) ? (() => {
+            const activeFeature = (feature.length ? feature : feature.name)[activeTab];
+            return activeFeature ? (
+              <div className={style.featureShowcase}>
+                <div className="row justify-content-between h-100">
+                  <div className="col-lg-5 mb-4 mb-lg-0" style={{ paddingLeft: "64px", paddingTop: "64px" }}>
+                    <div className="d-inline-flex align-items-center justify-content-center rounded-3 bg-light">
+                      {activeFeature.icon && iconMap[activeFeature.icon] ?
+                        React.createElement(iconMap[activeFeature.icon], {
+                          style: { width: "32px", height: "32px", color: "var(--primary-purple)", marginBottom: "24px" }
+                        }) :
+                        <Sparkles style={{ width: "32px", height: "32px", color: "var(--primary-purple)", marginBottom: "24px" }} />
+                      }
+                    </div>
+                    <h3 className="mb-3 fw-bold">{activeFeature.name || activeFeature.title}</h3>
+                    <p style={{ marginBottom: "44px" }}>{activeFeature.description}</p>
+                    <button onClick={() => navigate(`/feature-details/${activeFeature.id}`)} className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}>Learn More →</button>
                   </div>
-                  <h3 className="mb-3 fw-bold">Personalized Recommendations</h3>
-                  <p style={{ marginBottom: "44px" }}>Get AI-driven insights tailored to your business data and goals.</p>
-                  <button className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}>Learn More →</button>
-                </div>
-                <div className="col-lg-5 h-100">
-                  <div className={`${style.featureImageContainer}  overflow-hidden border shadow-sm`}>
-                    <img src={imag2} alt="Feature Interface" className={style.featureImage} />
+                  <div className="col-lg-5 h-100">
+                    <div className={`${style.featureImageContainer} overflow-hidden border shadow-sm`}>
+                      <img
+                        src={activeFeature.image ? activeFeature.image : imag2}
+                        alt={activeFeature.name || "Feature Interface"}
+                        className={style.featureImage}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-      
+            ) : null;
+          })() : (
+            ""
+          )}        </div>
+      </section>
+
 
 
       {/* <!-- How It Works --> */}
@@ -270,56 +367,121 @@ export default function Home() {
 
       {/* <!-- Testimonials --> */}
       {review.length > 0 &&
-      <section className={style.testimonials}>
-        <div className="container" style={{ maxWidth: "1280px" }}>
-          <div className="text-center mb-5">
-            <h2 className={style.sectionTitle}>Trusted by Business Owners Worldwide</h2>
-            <p className={style.sectionSubtitle}>See what our customers have to say about Namaa</p>
-          </div>
-          <div className="row justify-content-center">
-            {/* <!-- Testimonial 1 --> */}
-            {review.map((review, index) => (
-              <div className="col-md-5 mb-5" key={index}>
-                <div className={style.testimonialCard}>
-                  <div className={style.stars}>
-                    {[...Array(Number(review.stars))].map((_, i) => (
-                      <span key={i}>★</span>
-                    ))}
-                  </div>
-                  <p className={style.testimonialText}>{review.comment}</p>
-                  <div className={style.testimonialAuthor}>
-                    {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>}
+        <section className={style.testimonials}>
+          <div className={review.length > 3 ? "container-fluid" : "container"} style={{ maxWidth: review.length > 3 ? "100%" : "1280px", overflow: "hidden" }}>
+            <div className="text-center mb-5">
+              <h2 className={style.sectionTitle}>Trusted by Business Owners Worldwide</h2>
+              <p className={style.sectionSubtitle}>See what our customers have to say about Namaa</p>
+            </div>
 
+            {review.length > 3 ? (
+              <div className={style.marqueeContainer}>
+                <div className={style.marqueeWrapper}>
+                  {/* First Set */}
+                  {review.map((review, index) => (
+                    <div className={style.testimonialCardMarquee} key={`first-${index}`}>
+                      <div className={style.stars}>
+                        {[...Array(Number(review.stars))].map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                      <p className={style.testimonialText}>{review.comment}</p>
+                      <div className={style.testimonialAuthor}>
+                        {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>}
 
-                    <div className={style.authorInfo}>
-                      <h5>{review.clientName}</h5>
-                      <span>{review.position}</span>
+                        <div className={style.authorInfo}>
+                          <h5>{review.clientName}</h5>
+                          <span>{review.position}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
+
+                  {/* Second Set (Duplicate) */}
+                  {review.map((review, index) => (
+                    <div className={style.testimonialCardMarquee} key={`second-${index}`}>
+                      <div className={style.stars}>
+                        {[...Array(Number(review.stars))].map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                      <p className={style.testimonialText}>{review.comment}</p>
+                      <div className={style.testimonialAuthor}>
+                        {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>}
+
+                        <div className={style.authorInfo}>
+                          <h5>{review.clientName}</h5>
+                          <span>{review.position}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            ) : (
+              <div className="row justify-content-center">
+                {review.map((review, index) => (
+                  <div className="col-md-4 mb-5" key={index}>
+                    <div className={style.testimonialCard}>
+                      <div className={style.stars}>
+                        {[...Array(Number(review.stars))].map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                      <p className={style.testimonialText}>{review.comment}</p>
+                      <div className={style.testimonialAuthor}>
+                        {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>}
 
-
-
-
-
+                        <div className={style.authorInfo}>
+                          <h5>{review.clientName}</h5>
+                          <span>{review.position}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      </section>
-}
+        </section>
+      }
+
       {/* <!-- Footer CTA --> */}
       <section className={style.footerCta}>
         <div className="container" style={{ maxWidth: "950px" }}>

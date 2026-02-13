@@ -326,7 +326,7 @@ body {
   color: var(--text-dark);
   font-size: 12px;
   cursor: pointer;
-  box-shadow: 0 3px 3px rgba(34,31,31,0.158);
+  box-shadow: 0 3px 3px rgba(34, 31, 31, 0.158);
 }
 
 .badgeBtn:hover {
@@ -336,6 +336,11 @@ body {
 
 .badge_warning {
   background: var(--warning-yellow-bg);
+  border-color: transparent;
+}
+
+.badge_success {
+  background-color: #8A45B257;
   border-color: transparent;
 }
 

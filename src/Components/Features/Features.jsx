@@ -121,20 +121,6 @@ export default function Features() {
             </section>}
 
 
-            {/* <!-- Demo Section --> */}
-
-            <section className={style.footerCta}>
-                <div className="container" style={{ maxWidth: "1150px" }}>
-                    <div className={style.footerCtaCard}>
-                        <h2 className={`${style.textGradient} fw-bold mb-3`}>See It In Action</h2>
-                        <p className={`${style.demoText} mb-4 mx-auto`}>Try our interactive demo with real business scenarios. Experience all features with sample data.</p>
-                        <div className="d-flex justify-content-center gap-3">
-                            <button className={`  ${style.btnPrimary} `} style={{ fontSize: "14px" }}>Launch Free Demo →</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* <!-- Bottom CTA --> */}
             <section className={style.ctaSection}>
                 <div className={`${style.container} container-xxl text-center`}>
@@ -142,9 +128,9 @@ export default function Features() {
                     <p className={`${style.sectionSubtitle} mx-auto mb-4`}>Start with one feature or get them all. Flexible pricing designed for growing businesses.</p>
                     <div className="d-flex justify-content-center gap-3">
                         <button style={{ fontSize: "14px" }} className={` ${style.btnPrimary} d-flex align-items-center gap-2`}>
-                            View Pricing Plans →
+                            Try Free Demo →
                         </button>
-                        <a style={{ backgroundColor: "white", fontSize: "14px" }} href="#" className={`btn ${style.btnWhite}`}>Get Started Free</a>
+                        <a style={{ backgroundColor: "white", fontSize: "14px" }} href="#" className={`btn ${style.btnWhite}`}>View Pricing</a>
                     </div>
                 </div>
             </section>
