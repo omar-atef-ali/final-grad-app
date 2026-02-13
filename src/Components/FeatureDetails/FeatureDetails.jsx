@@ -7,14 +7,15 @@ import toast from 'react-hot-toast';
 import { userContext } from '../../context/userContext';
 export default function FeatureDetails() {
 
-  const {id } = useParams()
+  const { id } = useParams()
   const { userToken } = useContext(userContext)
-  const [featureDetails,setfeatureDetails]=useState({})
-  const navigate=useNavigate()
+  const [featureDetails, setfeatureDetails] = useState({})
+  const [review, setReview] = useState([])
+  const navigate = useNavigate()
   async function getFeatureeDetails() {
-    
+
     try {
-      let {data} = await api.get(`/Services/${id}`, {
+      let { data } = await api.get(`/Services/${id}`, {
         headers: {
           Authorization: `Bearer ${userToken}`
         }
@@ -49,11 +50,61 @@ export default function FeatureDetails() {
       );
     }
   }
+  
   useEffect(() => {
     if (id && userToken) {
       getFeatureeDetails();
     }
   }, [id, userToken]);
+
+  // console.log(id)
+
+  useEffect(() => {
+    if(!id|| !userToken) return
+    const fetchReviews = async () => {
+      try {
+        
+        let  {data} = await api.get(`/Reviews/service/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${userToken}`
+          }
+        });
+        setReview(data);
+        console.log(data);
+
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Error fetching reviews.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "100%",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+      }
+    };
+    if (userToken) { 
+      fetchReviews();
+    }
+  }, [userToken,id]);
+
 
 
 
@@ -111,7 +162,7 @@ export default function FeatureDetails() {
                       <p className={`${style.content_subtitle}`}>Visualize what matters most</p>
                     </div>
                     <p className={`${style.content_description}`}>
-                       {featureDetails.description}
+                      {featureDetails.description}
                     </p>
                     <div className={`${style.key_benefits}`}>
                       <h3 className={`${style.benefits_title}`}>Key Benefits</h3>
@@ -217,6 +268,122 @@ export default function FeatureDetails() {
             </div>
           </section>
         </div>
+         {/* reviews section */}
+        {review.length > 0 &&
+          <section className={style.testimonials}>
+            <div className={review.length > 3 ? "container-fluid" : "container"} style={{ maxWidth: review.length > 3 ? "100%" : "1280px", overflow: "hidden" }}>
+              <div className="text-center mb-5">
+                <h2 className={style.sectionTitle}>Trusted by Business Owners Worldwide</h2>
+                <p className={style.sectionSubtitle}>See what our customers have to say about Namaa</p>
+              </div>
+
+              {review.length > 3 ? (
+                <div className={style.marqueeContainer}>
+                  <div className={style.marqueeWrapper}>
+                    
+                    {review.map((review, index) => (
+                      <div className={style.testimonialCardMarquee} key={`first-${index}`}>
+                        <div className={style.stars}>
+                          {[...Array(Number(review.stars))].map((_, i) => (
+                            <span key={i}>★</span>
+                          ))}
+                        </div>
+                        <p className={style.testimonialText}>{review.comment}</p>
+                        <div className={style.testimonialAuthor}>
+                          {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>}
+
+                          <div className={style.authorInfo}>
+                            <h5>{review.clientName}</h5>
+                            <span>{review.position}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                   
+                    {review.map((review, index) => (
+                      <div className={style.testimonialCardMarquee} key={`second-${index}`}>
+                        <div className={style.stars}>
+                          {[...Array(Number(review.stars))].map((_, i) => (
+                            <span key={i}>★</span>
+                          ))}
+                        </div>
+                        <p className={style.testimonialText}>{review.comment}</p>
+                        <div className={style.testimonialAuthor}>
+                          {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>}
+
+                          <div className={style.authorInfo}>
+                            <h5>{review.clientName}</h5>
+                            <span>{review.position}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="row justify-content-center">
+                  {review.map((review, index) => (
+                    <div className="col-md-4 mb-5" key={index}>
+                      <div className={style.testimonialCard}>
+                        <div className={style.stars}>
+                          {[...Array(Number(review.stars))].map((_, i) => (
+                            <span key={i}>★</span>
+                          ))}
+                        </div>
+                        <p className={style.testimonialText}>{review.comment}</p>
+                        <div className={style.testimonialAuthor}>
+                          {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>}
+
+                          <div className={style.authorInfo}>
+                            <h5>{review.clientName}</h5>
+                            <span>{review.position}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        }
       </main>
 
 
