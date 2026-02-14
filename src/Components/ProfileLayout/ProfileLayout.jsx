@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import style from "./ProfileLayout.module.css";
-import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { userContext } from "../../context/userContext";
 import api from "../../api";
 import toast from "react-hot-toast";
@@ -18,7 +18,7 @@ export default function ProfileLayout() {
 
   ///////////////////////////user data////////////////////////////////////
 
-  let { userToken, loading, setUserProfileImage } = useContext(userContext);
+  let { userToken, setUserToken, loading, setUserProfileImage } = useContext(userContext);
   const [userData, setUserData] = useState(null)
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -107,33 +107,57 @@ export default function ProfileLayout() {
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error(
-        "Failed to upload profile picture.",
-        {
-          position: "top-center",
-          duration: 4000,
-          style: {
-            background:
-              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            padding: "16px 20px",
-            color: "#ffffff",
-            fontSize: "0.95rem",
-            borderRadius: "5px",
-            width: "300px",
-            height: "100%",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          "Failed to upload profile picture.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "100%",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
           },
-          iconTheme: {
-            primary: "#FF4D4F",
-            secondary: "#ffffff",
-          },
-        },
-      );
-        
+        );
+
       }
     }
   };
 
+  /////////////////////////////////////////////////////////////
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    try {
+      const { data } = api.post("/Auth/sign-out", {
+        token: userToken,
+        refreshToken: localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken"),
+      }, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("refreshToken");
+      setUserToken(null);
+      navigate("/login");
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
   return (
     <>
 
@@ -154,7 +178,7 @@ export default function ProfileLayout() {
                 <p className={`${style.profile_subtitle}`} >Manage your account and preferences</p>
               </div>
             </div>
-            <button className={`${style.sign_out_btn}`} >
+            <button onClick={handleLogout} className={`${style.sign_out_btn}`} >
               <i className="fa-solid fa-arrow-right-from-bracket"></i>
               <span>Sign Out</span>
             </button>
