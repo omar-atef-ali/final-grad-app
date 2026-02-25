@@ -5,7 +5,6 @@ const api = axios.create({
 });
 
 
-
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -19,7 +18,7 @@ const processQueue = (error, token = null) => {
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -40,22 +39,13 @@ api.interceptors.response.use(
     // === 401 AND not retried before ===
     if (error.response.status === 401 && !originalRequest._retry) {
       console.log("⛔ 401 detected for:", originalRequest.url);
-      
-      let isLocal = null;
-      if(localStorage.getItem("token") !== null){
-        isLocal = true;
-      }else{
-        isLocal = false;
-      }
-    
-      const refreshToken = isLocal ? localStorage.getItem("refreshToken") : sessionStorage.getItem("refreshToken");
-      const oldToken = isLocal ? localStorage.getItem("token") : sessionStorage.getItem("token");
+
+      const refreshToken = localStorage.getItem("refreshToken");
+      const oldToken = localStorage.getItem("token");
 
       if (!refreshToken) {
-        console.log("❌ No refresh token → logout");
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = "/";
+        console.log("❌ No refresh token → rejecting request");
+        // No hard redirect here, let the UI or caller handle it
         return Promise.reject(error);
       }
 
@@ -78,7 +68,6 @@ api.interceptors.response.use(
       console.log("♻️ Starting refresh flow...");
 
       try {
-        // أهم نقطة — استخدم نفس instance (api) مش axios
         const res = await api.post("/Auth/refresh", {
           token: oldToken,
           refreshToken,
@@ -87,43 +76,41 @@ api.interceptors.response.use(
         const { token: newAccessToken, refreshToken: newRefreshToken } =
           res.data;
 
-        if(isLocal){
-          localStorage.setItem("token", newAccessToken);
-          localStorage.setItem("refreshToken", newRefreshToken);
-        }else{
-          sessionStorage.setItem("token", newAccessToken);
-          sessionStorage.setItem("refreshToken", newRefreshToken);
-        }
+        localStorage.setItem("token", newAccessToken);
+        localStorage.setItem("refreshToken", newRefreshToken);
 
         api.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${newAccessToken}`;
 
         console.log("✅ Refresh success");
-        console.log("🔐 New token:", newAccessToken);
 
-        // حل كل requests اللي كانت مستنية
         processQueue(null, newAccessToken);
         isRefreshing = false;
 
-        // retry للطلب اللي فشل
-        originalRequest.headers[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
-
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         console.log("🔁 Retrying original request:", originalRequest.url);
         return api(originalRequest);
       } catch (refreshError) {
-        console.log("❌ Refresh failed. Logging out...");
-        console.log("🔥 Full error:", refreshError);
-
-        processQueue(refreshError, null);
         isRefreshing = false;
 
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = "/";
+        // Log the error for debugging
+        console.log("❌ Refresh failed:", refreshError.response?.status || refreshError.message);
 
+        // ONLY logout if the server specifically rejects the refresh token
+        // usually 401 (Unauthorized) or 403 (Forbidden) or 400 (Bad Request)
+        const refreshStatus = refreshError.response?.status;
+        if (refreshStatus === 401 || refreshStatus === 403 || refreshStatus === 400) {
+          console.log("🔥 Refresh token expired or invalid. Logging out...");
+          processQueue(refreshError, null);
+          localStorage.clear();
+          window.location.href = "/login";
+          return Promise.reject(refreshError);
+        }
+
+        // If it's a network error or 500, just fail the queue but don't logout
+        console.log("⚠️ Token refresh failed due to network/server issue. No logout.");
+        processQueue(refreshError, null);
         return Promise.reject(refreshError);
       }
     }
@@ -131,6 +118,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default api;

@@ -2,26 +2,28 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import api from "../../api";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { userContext } from "../../context/userContext";
 import style from "./Register.module.css";
 import imghero from "../../assets/images/heroimage.jpeg";
 
 export default function Register() {
-  const {setemail } = useContext(userContext);
+  const { setemail } = useContext(userContext);
   let [showPassword, setShowPassword] = useState(false);
   let [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   ///////////////////////////////////////////////
 
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  if (token) {
-    // لو فيه توكن، يروح مباشرة على الهوم
-    navigate("/home");
-  }
+
+  useEffect(() => {
+    if (token) {
+      // لو فيه توكن، يروح مباشرة على الهوم
+      navigate("/home");
+    }
+  }, [token, navigate]);
 
   ////////////////////////////////////////////////////////
 
@@ -41,7 +43,7 @@ export default function Register() {
       console.log(error);
       toast.error(
         error.response?.data?.errors[1] ||
-          "Something went wrong while registration.",
+        "Something went wrong while registration.",
         {
           position: "top-center",
           duration: 4000,
@@ -140,7 +142,8 @@ export default function Register() {
   const registerWithGoogle = () => {
     const clientId =
       "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
-    const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    // const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    const redirectUri = `http://localhost:5173/google/callback`;
     const scope = "openid email profile";
     const responseType = "code";
 
@@ -151,7 +154,7 @@ export default function Register() {
       `&response_type=${encodeURIComponent(responseType)}` +
       `&scope=${encodeURIComponent(scope)}` +
       `&state=register`;
-      ;
+    ;
 
     window.location.href = authUrl;
   };

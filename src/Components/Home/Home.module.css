@@ -74,6 +74,10 @@ p {
     font-weight: 400;
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btnPrimaryCustom:hover {
@@ -560,14 +564,12 @@ p {
 }
 
 .reviewImg {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     background-color: #3F1C6E;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+    object-fit: cover;
+    display: block;
     border: none;
 }
 

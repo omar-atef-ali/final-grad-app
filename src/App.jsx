@@ -4,6 +4,7 @@ import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
+  useNavigate,
 } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import Layout from "./Components/Layout/Layout";
@@ -26,13 +27,14 @@ import ProfileBilling from "./Components/ProfileBilling/ProfileBilling";
 import CheckEmail from "./Components/CheckEmail/CheckEmail";
 import ConfirmEmail from "./Components/ConfirmEmail/ConfirmEmail";
 import FeatureDetails from "./Components/FeatureDetails/FeatureDetails";
+import Cart from "./Components/Cart/Cart";
 
 let routers = createBrowserRouter([
   { index: true, element: <Register /> },
   { path: "/check-email", element: <CheckEmail /> },
   { path: "/confirm-email", element: <ConfirmEmail /> },
   { path: "/reset-password", element: <ResetPassword /> },
-   { path: "/change-password", element: <ChangePassword /> },
+  { path: "/change-password", element: <ChangePassword /> },
 
   { path: "google/callback", element: <GoogleCallback /> },
 
@@ -49,6 +51,7 @@ let routers = createBrowserRouter([
 
       { path: "features", element: <Features /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
+      { path: "/cart", element: <Cart /> },
 
       {
         path: "profile",
@@ -72,6 +75,7 @@ function App() {
       setUserToken(localStorage.getItem("token"));
     }
   }, []);
+
 
   return (
     <>

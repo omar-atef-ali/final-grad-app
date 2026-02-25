@@ -136,28 +136,53 @@ export default function ProfileLayout() {
 
   /////////////////////////////////////////////////////////////
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
-      const { data } = api.post("/Auth/sign-out", {
-        token: userToken,
-        refreshToken: localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken"),
+      const refreshToken = localStorage.getItem("refreshToken");
+      const res = await api.post("/Auth/sign-out", {
+        refreshToken: refreshToken,
       }, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
       });
+
+      // Clear data and redirect ONLY on success
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("refreshToken");
       setUserToken(null);
       navigate("/login");
-      console.log(data);
+      // toast.success("Successfully signed out");
+      // console.log(res);
+
     } catch (error) {
       console.log(error);
-
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Error signing out",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
     }
-  }
+  };
   return (
     <>
 

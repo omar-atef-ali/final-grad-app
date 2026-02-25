@@ -290,7 +290,7 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
-                          {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                          {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
                             viewBox="0 0 24 24"
@@ -306,7 +306,7 @@ export default function FeatureDetails() {
 
                           <div className={style.authorInfo}>
                             <h5>{review.clientName}</h5>
-                            <span>{review.position}</span>
+                            <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                           </div>
                         </div>
                       </div>
@@ -322,7 +322,7 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
-                          {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                          {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
                             viewBox="0 0 24 24"
@@ -338,7 +338,7 @@ export default function FeatureDetails() {
 
                           <div className={style.authorInfo}>
                             <h5>{review.clientName}</h5>
-                            <span>{review.position}</span>
+                            <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                           </div>
                         </div>
                       </div>
@@ -357,7 +357,7 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
-                          {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                          {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
                             viewBox="0 0 24 24"
@@ -373,7 +373,7 @@ export default function FeatureDetails() {
 
                           <div className={style.authorInfo}>
                             <h5>{review.clientName}</h5>
-                            <span>{review.position}</span>
+                            <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                           </div>
                         </div>
                       </div>

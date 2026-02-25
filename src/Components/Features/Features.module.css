@@ -111,7 +111,10 @@ a {
 .btnPrimary {
     background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
     box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     border: none;
     border-radius: 8px;
     color: white !important;
