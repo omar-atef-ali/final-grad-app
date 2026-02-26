@@ -249,7 +249,11 @@ body {
 
 
 .current_btn {
-  background: linear-gradient(135deg, rgba(63, 28, 110, 0.83), rgba(78, 48, 116, 0.83), rgba(138, 69, 178, 0.83));
+  /* background: linear-gradient(135deg, rgba(63, 28, 110, 0.83), rgba(78, 48, 116, 0.83), rgba(138, 69, 178, 0.83)); */
+   background: linear-gradient(90deg,
+      #3F1C6E 0%,
+      #4E3074 50%,
+      #8A45B2 100%);
   color: white;
   border: none;
   padding: 6px 12px;

@@ -50,7 +50,7 @@ export default function FeatureDetails() {
       );
     }
   }
-  
+
   useEffect(() => {
     if (id && userToken) {
       getFeatureeDetails();
@@ -60,11 +60,11 @@ export default function FeatureDetails() {
   // console.log(id)
 
   useEffect(() => {
-    if(!id|| !userToken) return
+    if (!id || !userToken) return
     const fetchReviews = async () => {
       try {
-        
-        let  {data} = await api.get(`/Reviews/service/${id}`, {
+
+        let { data } = await api.get(`/Reviews/service/${id}`, {
           headers: {
             "Authorization": `Bearer ${userToken}`
           }
@@ -100,10 +100,10 @@ export default function FeatureDetails() {
         );
       }
     };
-    if (userToken) { 
+    if (userToken) {
       fetchReviews();
     }
-  }, [userToken,id]);
+  }, [userToken, id]);
 
 
 
@@ -131,8 +131,8 @@ export default function FeatureDetails() {
                   <div className={style.image_area}>
 
                     <img
-                      src={featureDetails?.imageURL}
-                      alt="dashboard preview"
+                      src={`https://deebai.runasp.net${featureDetails?.imageURL}`}
+                      alt={featureDetails?.name}
                       className={style.main_image}
                     />
 
@@ -159,14 +159,37 @@ export default function FeatureDetails() {
                   <div className={`${style.content_area}`}>
                     <div className={`${style.content_header}`}>
                       <h1 className={`${style.content_title}`}>{featureDetails.name}</h1>
-                      <p className={`${style.content_subtitle}`}>Visualize what matters most</p>
+                      <p className={`${style.content_subtitle}`}>{featureDetails.subTitle}</p>
                     </div>
                     <p className={`${style.content_description}`}>
                       {featureDetails.description}
                     </p>
                     <div className={`${style.key_benefits}`}>
                       <h3 className={`${style.benefits_title}`}>Key Benefits</h3>
-                      <div className={`${style.benefit_item}`}>
+                      {/* <div className={`${style.benefit_item}`}>
+                        <div className={`${style.benefit_icon}`}>
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M7.5 10L9.16667 11.6667L12.5 8.33333" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </div>
+                        <span className={`${style.benefit_text}`}>Lorem ipsum dolor sit amet consectetur.</span>
+                      </div> */}
+                      {
+                        featureDetails.keyBenefits?.map((benefits, index) => (
+                          <div key={index} className={`${style.benefit_item}`}>
+                            <div className={`${style.benefit_icon}`}>
+                              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M7.5 10L9.16667 11.6667L12.5 8.33333" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </div>
+                            <span className={`${style.benefit_text}`}>{benefits.text}</span>
+                          </div>
+                        ))
+                      }
+
+                      {/* <div className={`${style.benefit_item}`}>
                         <div className={`${style.benefit_icon}`}>
                           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
@@ -183,25 +206,7 @@ export default function FeatureDetails() {
                           </svg>
                         </div>
                         <span className={`${style.benefit_text}`}>Lorem ipsum dolor sit amet consectetur.</span>
-                      </div>
-                      <div className={`${style.benefit_item}`}>
-                        <div className={`${style.benefit_icon}`}>
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M7.5 10L9.16667 11.6667L12.5 8.33333" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </div>
-                        <span className={`${style.benefit_text}`}>Lorem ipsum dolor sit amet consectetur.</span>
-                      </div>
-                      <div className={`${style.benefit_item}`}>
-                        <div className={`${style.benefit_icon}`}>
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M7.5 10L9.16667 11.6667L12.5 8.33333" stroke="#00A63E" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </div>
-                        <span className={`${style.benefit_text}`}>Lorem ipsum dolor sit amet consectetur.</span>
-                      </div>
+                      </div> */}
                     </div>
                     <div className={`${style.action_buttons}`}>
                       <button className={`${style.btn_try_feature}`}>
@@ -268,7 +273,7 @@ export default function FeatureDetails() {
             </div>
           </section>
         </div>
-         {/* reviews section */}
+        {/* reviews section */}
         {review.length > 0 &&
           <section className={style.testimonials}>
             <div className={review.length > 3 ? "container-fluid" : "container"} style={{ maxWidth: review.length > 3 ? "100%" : "1280px", overflow: "hidden" }}>
@@ -280,7 +285,7 @@ export default function FeatureDetails() {
               {review.length > 3 ? (
                 <div className={style.marqueeContainer}>
                   <div className={style.marqueeWrapper}>
-                    
+
                     {review.map((review, index) => (
                       <div className={style.testimonialCardMarquee} key={`first-${index}`}>
                         <div className={style.stars}>
@@ -290,7 +295,8 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
-                          {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+
+                          {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
                             viewBox="0 0 24 24"
@@ -312,7 +318,7 @@ export default function FeatureDetails() {
                       </div>
                     ))}
 
-                   
+
                     {review.map((review, index) => (
                       <div className={style.testimonialCardMarquee} key={`second-${index}`}>
                         <div className={style.stars}>
@@ -322,7 +328,8 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
-                          {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+
+                          {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
                             viewBox="0 0 24 24"
@@ -357,7 +364,8 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
-                          {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+
+                          {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
                             viewBox="0 0 24 24"

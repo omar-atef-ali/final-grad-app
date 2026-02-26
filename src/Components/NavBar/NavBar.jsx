@@ -7,7 +7,7 @@ import { getImageUrl } from "../../utils/imageUrl";
 export default function NavBar() {
 
   const [isOpen, setIsOpen] = useState(false);
-  const { userProfileImage } = useContext(userContext);
+  const { userProfileImage , userToken } = useContext(userContext);
   const [displayedImage, setDisplayedImage] = useState(userProfileImage);
 
   // Sync displayedImage with userProfileImage, but only after loading the new image
@@ -70,27 +70,12 @@ export default function NavBar() {
             {/* <!-- Desktop Nav --> */}
             <nav className={`${style.NavLinks} ${isOpen ? style.Show : ""}`}>
               <a href="/features">Features</a>
-              <a href="#">Pricing</a>
+              <a href="/pricing">Pricing</a>
               <a href="#">Documentation</a>
             </nav>
 
             {/* <!-- Mobile Header Actions --> */}
             <div className={style.HeaderActions} style={{ marginLeft: "auto" }}>
-              <button className={style.IconBtn}>
-                {/* <!-- Heart Icon --> */}
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
               <button className={style.IconBtn}>
                 {/* <!-- Shopping Cart --> */}
                 <svg
@@ -110,14 +95,17 @@ export default function NavBar() {
               </button>
               <span
                 className=" overflow-hidden d-block"
+               
                 style={{
                   fontSize: "18px",
                   fontWeight: "500",
                   color: "var(--text-gray)",
+                  cursor:"pointer"
                 }}
               >
                 Demo
               </span>
+              {userToken ? (
               <button className={style.UserAvatarSmall} onClick={() => navigate("/profile/info")} style={{ overflow: "hidden", padding: 0 }}>
                 {displayedImage ? (
                   <img
@@ -142,6 +130,7 @@ export default function NavBar() {
                   </svg>
                 )}
               </button>
+              ) : ( <button className={style.btnPrimaryCustom} onClick={() => navigate("/login")}>login</button>)}
               <button
                 className={`${style.MenuToggle} ${isOpen ? style.Active : ""}`}
                 onClick={() => setIsOpen(!isOpen)}

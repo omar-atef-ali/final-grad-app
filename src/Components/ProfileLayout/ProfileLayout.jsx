@@ -15,6 +15,8 @@ export default function ProfileLayout() {
     return <Navigate to="/profile/info" replace />;
   }
 
+  
+
 
   ///////////////////////////user data////////////////////////////////////
 

@@ -274,7 +274,8 @@ export default function Home() {
             ) : null;
           })() : (
             ""
-          )}        </div>
+          )}      
+            </div>
       </section>
 
 

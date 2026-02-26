@@ -148,6 +148,7 @@ export default function ProfileSecurity() {
         }
       })
       console.log(response)
+      await getUserSessions();
       toast.success("All Sessions removed");
     }
     catch (error) {
@@ -386,9 +387,9 @@ export default function ProfileSecurity() {
                   </div>
                   <div>
                     {
-                      users.isCurrent ? <button onClick={()=>deleteUserSession(users.id)} className={`${style.current_btn}`}>Current</button>
-                        : <button className={`${style.no_current_btn}`}>Sign Out</button>
-                      // onClick={()=>deleteUserSession(users.id)}
+                      users.isCurrent ? <button className={`${style.current_btn}`}>Current</button>
+                        : <button onClick={()=>deleteUserSession(users.id)} className={`${style.no_current_btn}`}>Sign Out</button>
+                       
                     }
                   </div>
                 </div>
@@ -428,8 +429,11 @@ export default function ProfileSecurity() {
               {/* </div> */}
 
             </div>
+            {
+              users.isTrusted ? "" : <div className={`${style.divider2}`}></div>
+            }
 
-            <div className={`${style.divider2}`}></div>
+            
             {
               users.isTrusted ? "" : <div onClick={() => trustDevice(users.id)} className={`${style.trust_device}`}>
                 <div>
