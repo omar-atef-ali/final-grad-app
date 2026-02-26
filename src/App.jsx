@@ -9,7 +9,7 @@ import {
 import Login from "./Components/Login/Login";
 import Layout from "./Components/Layout/Layout";
 import { Toaster } from "react-hot-toast";
-// import Protected from './Components/Protected/Protected'
+import Protected from './Components/Protected/Protected'
 import { userContext } from "./context/userContext";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import Register from "./Components/Register/Register";
@@ -60,13 +60,13 @@ let routers = createBrowserRouter([
 
       {
         path: "profile",
-        element: <ProfileLayout />,
+        element: <Protected><ProfileLayout /></Protected>,
         children: [
-          { index: true, element: <ProfileInfo /> }, // /profile
-          { path: "info", element: <ProfileInfo /> }, // /profile/info
-          { path: "security", element: <ProfileSecurity /> }, // /profile/security
-          { path: "subscription", element: <ProfileSubscription /> }, // /profile/subscription
-          { path: "billing", element: <ProfileBilling /> }, // /profile/billing
+          { index: true, element: <Protected><ProfileInfo /></Protected> }, // /profile
+          { path: "info", element:<Protected> <ProfileInfo /> </Protected>}, // /profile/info
+          { path: "security", element: <Protected><ProfileSecurity /></Protected> }, // /profile/security
+          { path: "subscription", element:<Protected> <ProfileSubscription /> </Protected>}, // /profile/subscription
+          { path: "billing", element:<Protected> <ProfileBilling /> </Protected> }, // /profile/billing
         ],
       },
     ],

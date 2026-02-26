@@ -185,7 +185,6 @@ export default function Cart() {
                             </div>
                           </div>
                           <div className="d-flex gap-2">
-                            <button className="btn btn-sm btn-icon text-muted"><i className="fa-regular fa-heart"></i></button>
                             <button className="btn btn-sm btn-icon text-muted"><i className="fa-solid fa-x"></i></button>
                           </div>
                         </div>

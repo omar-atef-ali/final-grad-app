@@ -186,14 +186,17 @@ export default function Pricing() {
             <h1 className={`${style.hero_title}`}>Pay as you go</h1>
             <p className={`${style.hero_description}`}>Customize your plan based on duration and token usage. No lock-in, cancel anytime.</p>
             <div className={`${style.hero_buttons}`}>
-              <button className={`${style.btn} ${style.btn_gradient}`}>
-                <span>Build Your Custom Plan</span>
+              <button
+                className={`${style.btn} ${style.btn_gradient}`}
+                onClick={() => document.getElementById('individual-features')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <span >Build Your Custom Plan</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3.33301 8H12.6663" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M8 3.33333L12.6667 8L8 12.6667" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <button className={`${style.btn} ${style.btn_outline}`}>Start a Free Trial</button>
+              <button onClick={() => navigate("/demo")} className={`${style.btn} ${style.btn_outline}`}>Start a Free Trial</button>
             </div>
           </div>
         </div>
@@ -328,7 +331,7 @@ export default function Pricing() {
       {/* ===================== END BUNDLES CAROUSEL ===================== */}
 
       {/* ===================== INDIVIDUAL FEATURES CAROUSEL ===================== */}
-      <section className={`${style.individual_features_section}`}>
+      <section id="individual-features" className={`${style.individual_features_section}`}>
         <div className={`${style.container}`}>
           <div className={`${style.section_header}`}>
             <h2 className={`${style.section_title}`}>Individual Features</h2>

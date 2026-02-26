@@ -15,12 +15,8 @@ export default function FeatureDetails() {
   async function getFeatureeDetails() {
 
     try {
-      let { data } = await api.get(`/Services/${id}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`
-        }
-      });
-      console.log(data);
+      let { data } = await api.get(`/Services/${id}`);
+      // console.log(data);
       setfeatureDetails(data)
     } catch (error) {
       console.log(error);
@@ -52,23 +48,19 @@ export default function FeatureDetails() {
   }
 
   useEffect(() => {
-    if (id && userToken) {
+    if (id ) {
       getFeatureeDetails();
     }
-  }, [id, userToken]);
+  }, [id]);
 
   // console.log(id)
 
   useEffect(() => {
-    if (!id || !userToken) return
+    if (!id ) return
     const fetchReviews = async () => {
       try {
 
-        let { data } = await api.get(`/Reviews/service/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${userToken}`
-          }
-        });
+        let { data } = await api.get(`/Reviews/service/${id}`);
         setReview(data);
         console.log(data);
 
@@ -100,10 +92,9 @@ export default function FeatureDetails() {
         );
       }
     };
-    if (userToken) {
+
       fetchReviews();
-    }
-  }, [userToken, id]);
+  }, [id]);
 
 
 

@@ -153,7 +153,7 @@ export default function ProfileLayout() {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       setUserToken(null);
-      navigate("/login");
+      navigate("/");
       // toast.success("Successfully signed out");
       // console.log(res);
 

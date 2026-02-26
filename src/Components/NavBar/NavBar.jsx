@@ -76,7 +76,7 @@ export default function NavBar() {
 
             {/* <!-- Mobile Header Actions --> */}
             <div className={style.HeaderActions} style={{ marginLeft: "auto" }}>
-              <button className={style.IconBtn}>
+              <button onClick={() => navigate("/cart")} className={style.IconBtn}>
                 {/* <!-- Shopping Cart --> */}
                 <svg
                   width="20"
@@ -93,7 +93,7 @@ export default function NavBar() {
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
               </button>
-              <span
+              <span onClick={() => navigate("/demo")}
                 className=" overflow-hidden d-block"
                
                 style={{
