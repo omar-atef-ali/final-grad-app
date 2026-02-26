@@ -1,116 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from './pricing.module.css'
 import { FaCheck } from "react-icons/fa";
+import toast from 'react-hot-toast';
+import api from "../../api";
 
-const bundles = [
-  {
-    id: 0,
-    name: 'Start Bundle',
-    discount: '17% OFF',
-    description: 'Perfect for small businesses getting started with data analytics',
-    save: 'Save EGP 500/mo',
-    price: 'EGP 15,500',
-    originalPrice: 'EGP 15,000',
-    commitment: '6 Month Commitment',
-    featured: false,
-    features: [
-      { icon: 'dashboard', title: 'Smart Dashboards', detailIcon: 'check', detail: 'Unlimited usage' },
-      { icon: 'ai', title: 'AI Recommendations', detailIcon: 'token', detail: '100K tokens' },
-      { icon: 'support', title: 'Priority Support', detailIcon: 'check', detail: '24/7 access' },
-    ],
-    btnClass: 'btn_card',
-  },
-  {
-    id: 1,
-    name: 'Professional Bundle',
-    discount: '23% OFF',
-    description: 'Ideal for growing teams needing advanced analytics and automation',
-    save: 'Save EGP 900/mo',
-    price: 'EGP 11,900',
-    originalPrice: 'EGP 15,500',
-    commitment: '12 Month Commitment',
-    featured: true,
-    features: [
-      { icon: 'dashboard', title: 'Smart Dashboards', detailIcon: 'check', detail: 'Unlimited usage' },
-      { icon: 'ai', title: 'AI Recommendations', detailIcon: 'check', detail: 'Unlimited tokens' },
-      { icon: 'code', title: 'Code Automation', detailIcon: 'check', detail: 'Advanced features' },
-      { icon: 'support', title: 'Priority Support', detailIcon: 'check', detail: '24/7 access' },
-    ],
-    btnClass: 'btn_card_primary',
-  },
-  {
-    id: 2,
-    name: 'Save Bundle',
-    discount: null,
-    description: 'Basic features for individuals and freelancers',
-    save: null,
-    price: 'EGP 14,500',
-    originalPrice: null,
-    commitment: '3 Month Commitment',
-    featured: false,
-    features: [
-      { icon: 'dashboard', title: 'Basic Dashboards', detailIcon: 'check', detail: 'Limited usage' },
-      { icon: 'support', title: 'Email Support', detailIcon: 'check', detail: 'Business hours' },
-    ],
-    btnClass: 'btn_card',
-  },
-  {
-    id: 3,
-    name: 'Start Bundle',
-    discount: '17% OFF',
-    description: 'Perfect for small businesses getting started with data analytics',
-    save: 'Save EGP 500/mo',
-    price: 'EGP 13,500',
-    originalPrice: 'EGP 15,000',
-    commitment: '6 Month Commitment',
-    featured: false,
-    features: [
-      { icon: 'dashboard', title: 'Smart Dashboards', detailIcon: 'check', detail: 'Unlimited usage' },
-      { icon: 'ai', title: 'AI Recommendations', detailIcon: 'token', detail: '100K tokens' },
-      { icon: 'support', title: 'Priority Support', detailIcon: 'check', detail: '24/7 access' },
-    ],
-    btnClass: 'btn_card',
-  },
-]
-
-const individualFeatures = [
-  {
-    id: 0,
-    name: 'Smart Dashboards',
-    description: 'Visualize your business data',
-    price: 'EGP 500',
-    oldPrice: 'EGP 600',
-    isBestValue: false,
-    features: ['Customizable dashboards', 'Real-time data', 'Multiple visualizations', 'Export capabilities'],
-  },
-  {
-    id: 1,
-    name: 'AI Recommendations',
-    description: 'Intelligent insights for your data',
-    price: 'EGP 800',
-    oldPrice: 'EGP 1,000',
-    isBestValue: true,
-    features: ['Smart suggestions', 'Predictive analytics', 'Trend detection', 'Custom alerts'],
-  },
-  {
-    id: 2,
-    name: 'Code Automation',
-    description: 'Automate your development workflow',
-    price: 'EGP 700',
-    oldPrice: 'EGP 900',
-    isBestValue: false,
-    features: ['Auto code generation', 'CI/CD integration', 'Testing automation', 'GitHub sync'],
-  },
-  {
-    id: 3,
-    name: 'Priority Support',
-    description: '24/7 dedicated support team',
-    price: 'EGP 300',
-    oldPrice: 'EGP 400',
-    isBestValue: false,
-    features: ['24/7 access', 'Dedicated agent', 'Response < 1hr', 'Live chat & calls'],
-  },
-]
 
 const icons = {
   dashboard: (
@@ -155,16 +48,40 @@ export default function Pricing() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [activeIndividualIndex, setActiveIndividualIndex] = useState(0)
 
+  const [individualFeatures, setindividualFeatures] = useState([])
+  const [bundles, setbundles] = useState([])
+  const [review, setReview] = useState([])
+
   // Bundle carousel
-  const goNext = () => setActiveIndex((prev) => (prev + 1) % bundles.length)
-  const goPrev = () => setActiveIndex((prev) => (prev - 1 + bundles.length) % bundles.length)
+  // const goNext = () => setActiveIndex((prev) => (prev + 1) % bundles.length)
+  // const goPrev = () => setActiveIndex((prev) => (prev - 1 + bundles.length) % bundles.length)
+
+  const goNext = () =>
+    setActiveIndex(prev =>
+      bundles.length ? (prev + 1) % bundles.length : 0
+    )
+
+  const goPrev = () =>
+    setActiveIndex(prev =>
+      bundles.length ? (prev - 1 + bundles.length) % bundles.length : 0
+    )
 
   const getVisibleIndices = () => {
+    if (!bundles.length) return []
+
     const prev = (activeIndex - 1 + bundles.length) % bundles.length
     const next = (activeIndex + 1) % bundles.length
+
     return [prev, activeIndex, next]
   }
-  const visibleIndices = getVisibleIndices()
+
+  const visibleIndices = bundles.length ? getVisibleIndices() : []
+  // const getVisibleIndices = () => {
+  //   const prev = (activeIndex - 1 + bundles.length) % bundles.length
+  //   const next = (activeIndex + 1) % bundles.length
+  //   return [prev, activeIndex, next]
+  // }
+  // const visibleIndices = getVisibleIndices()
 
   // Individual features carousel
   const goIndividualNext = () => setActiveIndividualIndex((prev) => (prev + 1) % individualFeatures.length)
@@ -176,6 +93,83 @@ export default function Pricing() {
     return [prev, activeIndividualIndex, next]
   }
   const visibleIndividualIndices = getVisibleIndividualIndices()
+
+  async function getPackages() {
+    try {
+      let { data } = await api.get(`/Packages`)
+      console.log(data)
+      setbundles(data)
+
+    }
+    catch (error) {
+      console.log(error)
+      toast.error(
+        error.response?.data?.errors[1])
+    }
+  }
+
+
+
+  async function getServiceCards() {
+    try {
+      let { data } = await api.get(`/Services/cards`)
+      console.log(data)
+      setindividualFeatures(data)
+
+    }
+    catch (error) {
+      console.log(error)
+      toast.error(
+        error.response?.data?.errors[1])
+    }
+  }
+  useEffect(() => {
+    getPackages()
+    getServiceCards()
+  }, [])
+  useEffect(() => {
+    if (!bundles.length) return
+
+    const selctedBundle = bundles[activeIndex]
+    if (!selctedBundle?.id) return;
+
+    const fetchReviews = async () => {
+      try {
+
+        let { data } = await api.get(`/Reviews/package/${selctedBundle.id}`);
+        setReview(data);
+        console.log(data);
+
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Error fetching reviews.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "100%",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+      }
+    };
+    fetchReviews()
+  }, [activeIndex, bundles]);
 
   return (
     <>
@@ -255,6 +249,9 @@ export default function Pricing() {
             <div className={style.carousel_track}>
               {visibleIndices.map((bundleIdx, position) => {
                 const bundle = bundles[bundleIdx]
+
+                if (!bundle) return null
+
                 const isCenter = position === 1
                 return (
                   <div
@@ -267,7 +264,11 @@ export default function Pricing() {
                     <div className={style.pricing_header}>
                       <div className={style.pricing_title_row}>
                         <h3 className={style.pricing_name}>{bundle.name}</h3>
-                        {bundle.discount && <span className={style.discount_badge}>{bundle.discount}</span>}
+                        {bundle?.saleAmount && bundle?.price && (
+                          <span className={style.discount_badge}>
+                            {Math.round((bundle.saleAmount / bundle.price) * 100)}% OFF
+                          </span>
+                        )}
                       </div>
                       <p className={style.pricing_description}>{bundle.description}</p>
                       {bundle.save && <span className={style.save_badge}>{bundle.save}</span>}
@@ -275,8 +276,15 @@ export default function Pricing() {
 
                     <div className={style.pricing_amount}>
                       <div className={style.price}>
-                        <span className={style.price_value}>{bundle.price}</span>
-                        {bundle.originalPrice && <span className={style.price_original}>{bundle.originalPrice}</span>}
+                        <span className={style.price_value}>EGP {bundle.price}</span>
+                        {bundle?.
+                          salePercentage && bundle.
+                            salePercentage > 0 ? (
+                          <span className={style.individual_old_price}>
+                            EGP {Math.round(bundle.price / (1 - bundle.
+                              salePercentage / 100))}
+                          </span>
+                        ) : null}
                       </div>
                       <div className={style.commitment}>
                         <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
@@ -289,21 +297,24 @@ export default function Pricing() {
 
                     <div className={style.pricing_features}>
                       <h4 className={style.features_title}>Includes:</h4>
-                      {bundle.features.map((feat, i) => (
+                      {bundle?.services?.map((feat, i) => (
                         <div key={i} className={style.feature_item}>
                           <div className={style.feature_item_icon}>{icons[feat.icon]}</div>
                           <div className={style.feature_item_content}>
-                            <div className={style.feature_item_title}>{feat.title}</div>
+                            <div className={style.feature_item_title}>{feat.name}</div>
                             <div className={style.feature_item_detail}>
                               {feat.detailIcon === 'check' ? <CheckIcon /> : <TokenIcon />}
-                              <span>{feat.detail}</span>
+                              <span>{feat.tokenAmount} tokens</span>
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
 
-                    <button className={`${style.btn} ${style[bundle.btnClass]}`}>Choose Plan</button>
+                    <button className={`${style.btn} ${style.btn_individual}`}>
+                      Proceed to Checkout
+
+                    </button>
                   </div>
                 )
               })}
@@ -326,6 +337,122 @@ export default function Pricing() {
               />
             ))}
           </div>
+
+          {review.length > 0 &&
+            <section className={style.testimonials}>
+              <div className={review.length > 3 ? "container-fluid" : "container"} style={{ maxWidth: review.length > 3 ? "100%" : "1280px", overflow: "hidden" }}>
+                <div className="text-center mb-5">
+                  <h2 className={style.sectionTitle}>More Value. Bigger Impact.</h2>
+                  <p className={style.sectionSubtitle}>Complete solutions designed to deliver real results — not just isolated features.</p>
+                </div>
+
+                {review.length > 3 ? (
+                  <div className={style.marqueeContainer}>
+                    <div className={style.marqueeWrapper}>
+
+                      {review.map((review, index) => (
+                        <div className={style.testimonialCardMarquee} key={`first-${index}`}>
+                          <div className={style.stars}>
+                            {[...Array(Number(review.stars))].map((_, i) => (
+                              <span key={i}>★</span>
+                            ))}
+                          </div>
+                          <p className={style.testimonialText}>{review.comment}</p>
+                          <div className={style.testimonialAuthor}>
+                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                              <circle cx="12" cy="7" r="4"></circle>
+                            </svg>}
+
+                            <div className={style.authorInfo}>
+                              <h5>{review.clientName}</h5>
+                              <span>{review.position}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+
+                      {review.map((review, index) => (
+                        <div className={style.testimonialCardMarquee} key={`second-${index}`}>
+                          <div className={style.stars}>
+                            {[...Array(Number(review.stars))].map((_, i) => (
+                              <span key={i}>★</span>
+                            ))}
+                          </div>
+                          <p className={style.testimonialText}>{review.comment}</p>
+                          <div className={style.testimonialAuthor}>
+                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                              <circle cx="12" cy="7" r="4"></circle>
+                            </svg>}
+
+                            <div className={style.authorInfo}>
+                              <h5>{review.clientName}</h5>
+                              <span>{review.position}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row justify-content-center">
+                    {review.map((review, index) => (
+                      <div className="col-md-4 mb-5" key={index}>
+                        <div className={style.testimonialCard}>
+                          <div className={style.stars}>
+                            {[...Array(Number(review.stars))].map((_, i) => (
+                              <span key={i}>★</span>
+                            ))}
+                          </div>
+                          <p className={style.testimonialText}>{review.comment}</p>
+                          <div className={style.testimonialAuthor}>
+                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                              <circle cx="12" cy="7" r="4"></circle>
+                            </svg>}
+
+                            <div className={style.authorInfo}>
+                              <h5>{review.clientName}</h5>
+                              <span>{review.position}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+          }
         </div>
       </section>
       {/* ===================== END BUNDLES CAROUSEL ===================== */}
@@ -347,50 +474,58 @@ export default function Pricing() {
             </button>
 
             {/* 3 visible cards */}
-            <div className={style.carousel_track}>
-              {visibleIndividualIndices.map((featIdx, position) => {
-                const feat = individualFeatures[featIdx]
-                const isCenter = position === 1
-                return (
-                  <div
-                    key={featIdx}
-                    className={`${style.individual_card} ${isCenter ? style.carousel_card_active : style.carousel_card_side}`}
-                    onClick={() => !isCenter && setActiveIndividualIndex(featIdx)}
-                  >
-                    {feat.isBestValue && <div className={`${style.individual_badge}`}>Best Value</div>}
+            {individualFeatures.length > 0 && (
+              <div className={style.carousel_track}>
+                {visibleIndividualIndices.map((featIdx, position) => {
+                  const feat = individualFeatures[featIdx]
+                  const isCenter = position === 1
+                  return (
+                    <div
+                      key={featIdx}
+                      className={`${style.individual_card} ${isCenter ? style.carousel_card_active : style.carousel_card_side}`}
+                      onClick={() => !isCenter && setActiveIndividualIndex(featIdx)}
+                    >
+                      {feat.isBestValue && <div className={`${style.individual_badge}`}>Best Value</div>}
 
-                    <div className={`${style.individual_icon}`}>
-                      {icons[featureIcons[featIdx]]}
-                    </div>
-
-                    <div className={`${style.individual_content}`}>
-                      <h3 className={`${style.individual_name}`}>{feat.name}</h3>
-                      <span className={`${style.individual_description}`}>{feat.description}</span>
-
-                      <div className={`${style.parent_individual_price}`}>
-                        <div className={`${style.individual_price_parent}`}>
-                          <span className={`${style.start}`}>starting from</span>
-                          <div className={`${style.individual_price}`}>
-                            <span className={`${style.individual_price_value}`}>{feat.price}</span>
-                            <span className={`${style.individual_price_period}`}>/month</span>
-                          </div>
-                          <span className={`${style.individual_old_price}`}>{feat.oldPrice} /month</span>
-                          <span className={`${style.custom}`}>Customizable by duration &amp; tokens</span>
-                        </div>
+                      <div className={`${style.individual_icon}`}>
+                        
+                          {icons[featureIcons[featIdx]]}
+                          
                       </div>
 
-                      <ul className={style.individual_features}>
-                        {feat.features.map((item, i) => (
-                          <li key={i}><FaCheck className={style.checkIcon} /> {item}</li>
-                        ))}
-                      </ul>
+                      <div className={`${style.individual_content}`}>
+                        <h3 className={`${style.individual_name}`}>{feat.name}</h3>
+                        <span className={`${style.individual_description}`}>{feat.subTitle}</span>
 
-                      <button className={`${style.btn} ${style.btn_individual}`}>Add To Estimate</button>
+                        <div className={`${style.parent_individual_price}`}>
+                          <div className={`${style.individual_price_parent}`}>
+                            <span className={`${style.start}`}>starting from</span>
+                            <div className={`${style.individual_price}`}>
+                              <span className={`${style.individual_price_value}`}>EGP {feat.price}</span>
+                              <span className={`${style.individual_price_period}`}>/month</span>
+                            </div>
+                            {feat?.salePercentage && feat.salePercentage > 0 ? (
+                              <span className={style.individual_old_price}>
+                                EGP {Math.round(feat.price / (1 - feat.salePercentage / 100))} /month
+                              </span>
+                            ) : null}
+                            <span className={`${style.custom}`}>Customizable by duration &amp; tokens</span>
+                          </div>
+                        </div>
+
+                        <ul className={style.individual_features}>
+                          {feat?.keyBenefits?.map((item, i) => (
+                            <li key={i}><FaCheck className={style.checkIcon} /> {item}</li>
+                          ))}
+                        </ul>
+
+                        <button className={`${style.btn} ${style.btn_individual}`}>Add To Estimate</button>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            )}
 
             {/* Arrow Right */}
             <button className={style.carousel_arrow} onClick={goIndividualNext} aria-label="Next">
