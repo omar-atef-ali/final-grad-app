@@ -443,21 +443,9 @@ body {
   border: none;
   background: transparent;
   border-radius: 20px;
-  color: var(--text-gray);
   font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
-  text-decoration: none;
-}
-
-.Tab.Active {
-  background: var(--primary-gradient);
-  color: white;
-  font-weight: 500;
-}
-
-.Tab {
-  /* reset a tag behavior */
   text-decoration: none;
   color: inherit;
   /* button behavior */
@@ -467,11 +455,17 @@ body {
 
   font: inherit;
   line-height: normal;
-  white-space: nowrap;
-
   /* remove focus outline (لو عندك ستايل خاص للفوكس) */
-  outline: none;
+  outline: none !important;
 }
+
+
+.Tab.Active {
+  background: var(--primary-gradient);
+  color: white;
+  font-weight: 500;
+}
+
 
 @media (max-width: 480px) {
   .Tab {

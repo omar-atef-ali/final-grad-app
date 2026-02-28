@@ -146,6 +146,7 @@ body {
     color: black;
     transform: translateY(-2px);
 }
+
 /* Hero Section */
 .hero_section {
     background: var(--white);
@@ -428,6 +429,7 @@ body {
     font-size: 12px;
     border: 0.8px solid #B9F8CF;
     align-self: flex-start;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
 .pricing_amount {
@@ -652,6 +654,7 @@ body {
     font-size: 14px;
     color: var(--text-gray);
 }
+
 /* Individual Features Section */
 .individual_features_section {
     background: #FAFAFA;
@@ -705,7 +708,7 @@ body {
     align-items: center;
     justify-content: center;
     box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
-    
+
 }
 
 .individual_content {
@@ -714,7 +717,8 @@ body {
     /* gap:0px; */
     flex: 1;
 }
-.all{
+
+.all {
     display: flex;
     justify-content: space-between;
 }
@@ -844,6 +848,8 @@ body {
 
 .comparison_table {
     width: 100%;
+    min-width: 800px;
+    /* Ensure it doesn't squash too much */
     border-collapse: collapse;
     background: var(--white);
     border-radius: 12px;
@@ -857,21 +863,30 @@ body {
 
 .comparison_table th {
     padding: 20px 16px;
-    text-align: left;
+    text-align: center;
     font-size: 15px;
     font-weight: 600;
     color: var(--primary-purple);
     border-bottom: 2px solid var(--border-purple);
+    white-space: nowrap;
 }
 
 .comparison_table th:first-child {
-    width: 30%;
+    text-align: left;
+}
+
+.comparison_table th:first-child {
+    min-width: 200px;
 }
 
 .comparison_table td {
     padding: 20px 16px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.comparison_table td:first-child {
+    text-align: left;
 }
 
 .comparison_table tr:last-child td {
@@ -938,13 +953,26 @@ body {
     transition: transform 0.3s ease;
 }
 
-.faq_item:hover .faq_question svg {
-    transform: translateY(2px);
+.faq_item.active .faq_answer {
+    max-height: 500px;
+    padding: 0 32px 24px;
+    opacity: 1;
 }
 
+.faq_answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    padding: 0 32px;
+}
 
+.faq_answer p {
+    color: var(--gray-text);
+    font-size: 16px;
+    line-height: 1.6;
+}
 
-/* Responsive Design */
 @media (max-width: 1200px) {
     .hero_title {
         font-size: 48px;

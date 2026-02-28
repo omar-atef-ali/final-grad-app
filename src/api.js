@@ -69,11 +69,8 @@ api.interceptors.response.use(
 
       try {
         const res = await api.post("/Auth/refresh", {
+          oldToken,
           refreshToken,
-        },{
-          headers: {
-            "Authorization": `Bearer ${oldToken}`
-          }
         });
 
         const { token: newAccessToken, refreshToken: newRefreshToken } =

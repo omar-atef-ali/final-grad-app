@@ -7,7 +7,7 @@ import { getImageUrl } from "../../utils/imageUrl";
 export default function NavBar() {
 
   const [isOpen, setIsOpen] = useState(false);
-  const { userProfileImage , userToken } = useContext(userContext);
+  const { userProfileImage, userToken } = useContext(userContext);
   const [displayedImage, setDisplayedImage] = useState(userProfileImage);
 
   // Sync displayedImage with userProfileImage, but only after loading the new image
@@ -94,43 +94,36 @@ export default function NavBar() {
                 </svg>
               </button>
               <span onClick={() => navigate("/demo")}
-                className=" overflow-hidden d-block"
-               
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "500",
-                  color: "var(--text-gray)",
-                  cursor:"pointer"
-                }}
+                className={style.navDemo}
               >
                 Demo
               </span>
               {userToken ? (
-              <button className={style.UserAvatarSmall} onClick={() => navigate("/profile/info")} style={{ overflow: "hidden", padding: 0 }}>
-                {displayedImage ? (
-                  <img
-                    src={getImageUrl(displayedImage) || getImageUrl(userProfileImage)}
-                    alt="User"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
-                    onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=User"; }}
-                  />
-                ) : (
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                )}
-              </button>
-              ) : ( <button className={style.btnPrimaryCustom} onClick={() => navigate("/login")}>login</button>)}
+                <button className={style.UserAvatarSmall} onClick={() => navigate("/profile/info")} style={{ overflow: "hidden", padding: 0 }}>
+                  {displayedImage ? (
+                    <img
+                      src={getImageUrl(displayedImage) || getImageUrl(userProfileImage)}
+                      alt="User"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                      onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=User"; }}
+                    />
+                  ) : (
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  )}
+                </button>
+              ) : (<button className={style.btnPrimaryCustom} onClick={() => navigate("/login")}>login</button>)}
               <button
                 className={`${style.MenuToggle} ${isOpen ? style.Active : ""}`}
                 onClick={() => setIsOpen(!isOpen)}

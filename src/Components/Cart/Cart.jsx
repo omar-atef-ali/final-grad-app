@@ -1,156 +1,173 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import style from "./Cart.module.css";
+import { userContext } from '../../context/userContext';
+import api from '../../api';
+import { useNavigate } from 'react-router-dom';
 
-const initialItems = [
-  {
-    id: 1,
-    name: 'Dashboard',
-    description: 'Visualize your data with interactive dashboards',
-    price: 39,
-    duration: 3, // Default duration
-    durationOptions: [1, 3, 6, 9],
-    icon: 'bi-bar-chart-fill',
-    iconColorClass: 'bg-purple-main'
-  },
-  {
-    id: 2,
-    name: 'AI Recommendation',
-    description: 'Get AI-driven insights tailored to your business data and goals',
-    price: 39,
-    duration: 3, // Default duration
-    durationOptions: [1, 3, 6, 9],
-    icon: 'bi-graph-up-arrow',
-    iconColorClass: 'bg-purple-main'
-  }
-];
-
-const DurationSlider = ({ value, onChange, options }) => {
-  // Map value (months) to index (0-4)
-  const steps = options.length - 1;
-  const currentIndex = options.indexOf(value);
-
-  // Calculate percentage for thumb position
-  const percentage = (currentIndex / steps) * 100;
-
-  const handleChange = (e) => {
-    const newIndex = parseInt(e.target.value, 10);
-    onChange(options[newIndex]);
-  };
-
-  return (
-    <div className={`${style['slider-container']} my-4 position-relative`} style={{ height: '40px' }}>
-      {/* Visual Track */}
-      <div
-        className={`${style['slider-track']} w-100 rounded-pill`}
-        style={{
-          height: '8px',
-          background: `linear-gradient(90deg, rgb(78, 48, 116) 0%, rgb(138, 69, 178) ${percentage}%, rgb(225, 223, 221) ${percentage}%, rgb(225, 223, 221) 100%)`,
-          position: 'absolute',
-          top: '10px'
-        }}
-      ></div>
-
-      {/* Invisible Range Input for Interaction */}
-      <input
-        type="range"
-        min="0"
-        max={steps}
-        step="1"
-        value={currentIndex}
-        onChange={handleChange}
-        className={style['range-input']}
-        aria-label="Commitment duration slider"
-      />
-
-      {/* Labels */}
-      <div className={`${style['slider-labels']} d-flex justify-content-between w-100 position-absolute`} style={{ top: '24px', pointerEvents: 'none' }}>
-        {options.map((option) => (
-          <span
-            key={option}
-            className={`small ${value === option ? 'fw-bold text-dark' : 'text-muted'}`}
-            style={{ fontSize: '12px', width: '20px', textAlign: 'center' }}
-          >
-            {option}
-          </span>
-        ))}
-      </div>
-
-      {/* Thumb (Visual Only) */}
-      <div
-        className={`${style['slider-thumb']} position-absolute ${style['bg-purple-main']} rounded-circle border border-white shadow-sm`}
-        style={{
-          width: '18px',
-          height: '18px',
-          top: '5px',
-          left: `${percentage}%`,
-          transform: 'translateX(-50%)',
-          zIndex: 2,
-          pointerEvents: 'none',
-          transition: 'left 0.1s ease-out'
-        }}
-      ></div>
-
-      {/* Dots (Visual Only) */}
-      {options.map((option, index) => {
-        const dotPercentage = (index / steps) * 100;
-        const isActive = index <= currentIndex;
-        return (
-          <div
-            key={index}
-            className={`${style['slider-dot']} position-absolute rounded-circle`}
-            style={{
-              width: '8px',
-              height: '8px',
-              top: '10px',
-              left: `${dotPercentage}%`,
-              transform: 'translateX(-50%)',
-              backgroundColor: isActive ? 'var(--purple-dark)' : 'rgb(225, 223, 221)',
-              transition: 'background-color 0.1s ease-out'
-            }}
-          ></div>
-        );
-      })}
-    </div>
-  );
-};
 
 export default function Cart() {
-  const [items, setItems] = useState(initialItems);
+  const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState([]);
+  const { userToken } = useContext(userContext);
+  const [localSelections, setLocalSelections] = useState({});
+  const [selectedTokenIds, setSelectedTokenIds] = useState({});
 
-  const handleDurationChange = (id, newDuration) => {
-    setItems(items.map(item =>
-      item.id === id ? { ...item, duration: newDuration } : item
-    ));
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      const initialDurations = {};
+      const initialTokens = {};
+
+      // Load saved selections from localStorage
+      const savedSelections = JSON.parse(localStorage.getItem('cart_selections') || '{}');
+
+      cartItems.forEach(item => {
+        const savedData = savedSelections[item.cartItemId];
+        const targetDays = savedData?.duration || Math.round((item.duration || 1) * 30);
+
+        // Find the closest duration available in servicePrices
+        const availableDurations = item.servicePrices?.map(sp => sp.durationInDays) || [];
+        const closestDuration = availableDurations.length > 0
+          ? availableDurations.reduce((prev, curr) =>
+            Math.abs(curr - targetDays) < Math.abs(prev - targetDays) ? curr : prev
+            , availableDurations[0])
+          : targetDays;
+
+        initialDurations[item.cartItemId] = closestDuration;
+
+        // Find tokens for this specific duration
+        const tokensForDuration = item.servicePrices
+          ?.find(sp => sp.durationInDays === closestDuration)
+          ?.tokens || [];
+
+        // Match by saved ID, then saved amount, or fallback to first available
+        const savedTokenId = savedData?.tokenId;
+        const currentToken = tokensForDuration.find(t => String(t.id) === String(savedTokenId)) ||
+          tokensForDuration.find(t => t.amount === item.tokenAmount) ||
+          tokensForDuration[0];
+
+        if (currentToken) {
+          initialTokens[item.cartItemId] = currentToken.id;
+        }
+      });
+      setLocalSelections(initialDurations);
+      setSelectedTokenIds(initialTokens);
+    }
+  }, [cartItems]);
+
+  const handleDurationChange = (cartItemId, duration) => {
+    const numDuration = Number(duration);
+    setLocalSelections(prev => ({
+      ...prev,
+      [cartItemId]: numDuration
+    }));
+
+    // Persist duration to localStorage immediately
+    const saved = JSON.parse(localStorage.getItem('cart_selections') || '{}');
+    saved[cartItemId] = { ...saved[cartItemId], duration: numDuration };
+
+    // Find the item and the first token for this duration to sync
+    const item = cartItems.find(i => i.cartItemId === cartItemId);
+    const firstTokenId = item?.servicePrices
+      ?.find(sp => sp.durationInDays === numDuration)
+      ?.tokens?.[0]?.id;
+
+    if (firstTokenId) {
+      setSelectedTokenIds(prev => ({
+        ...prev,
+        [cartItemId]: firstTokenId
+      }));
+      // Update token in persistent storage too
+      saved[cartItemId].tokenId = firstTokenId;
+    }
+
+    localStorage.setItem('cart_selections', JSON.stringify(saved));
   };
 
-  const calculateItemCost = (item) => {
-    const subtotal = item.price * item.duration;
-    // Discount: 15% if 3 months or more
-    const discountRate = item.duration >= 3 ? 0.15 : 0;
-    const discountAmount = subtotal * discountRate;
-    const total = subtotal - discountAmount;
+  const handleTokenChange = (cartItemId, tokenId) => {
+    setSelectedTokenIds(prev => ({
+      ...prev,
+      [cartItemId]: tokenId
+    }));
 
-    return {
-      subtotal,
-      discountAmount,
-      total,
-      hasDiscount: item.duration >= 3
-    };
+    // Persist to localStorage
+    const saved = JSON.parse(localStorage.getItem('cart_selections') || '{}');
+    saved[cartItemId] = { ...saved[cartItemId], tokenId: tokenId };
+    localStorage.setItem('cart_selections', JSON.stringify(saved));
   };
 
-  // Calculate Summary Totals
-  const summary = items.reduce((acc, item) => {
-    const costs = calculateItemCost(item);
-    return {
-      subtotal: acc.subtotal + costs.subtotal,
-      discount: acc.discount + costs.discountAmount,
-      total: acc.total + costs.total
-    };
-  }, { subtotal: 0, discount: 0, total: 0 });
+  useEffect(() => {
+    async function getCartItems() {
+      try {
+        const { data } = await api.get('Cart', {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        });
+        setCartItems(data);
+        console.log("Cart Data:", data);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    }
+    if (userToken) {
+      getCartItems();
+    }
+  }, [userToken]);
+
+
+
+
+  // Calculate accurate totals based on current local selections or server defaults
+  const itemTotals = React.useMemo(() => {
+    return cartItems.map(item => {
+      const currentDurationDays = localSelections[item.cartItemId] || Math.round((item.duration || 0) * 30);
+      const currentTokenId = selectedTokenIds[item.cartItemId];
+
+      // Find the specific price configuration for the current selection
+      const sp = item.servicePrices?.find(sp => sp.durationInDays === currentDurationDays);
+      const token = sp?.tokens?.find(t => String(t.id) === String(currentTokenId));
+
+      // New Core Logic: Total Monthly = Base Duration Price (sp.price) + Token Price (token.price)
+      const basePrice = sp ? (sp.price || 0) : (item.price || 0); // Fallback to item.price if sp missing
+      const tokenPrice = token ? (token.price || 0) : 0;
+
+      const monthlyPrice = basePrice + tokenPrice;
+      const durationMonths = currentDurationDays / 30; // Pro-rated exact months
+
+      const subtotalBeforeDiscount = basePrice + tokenPrice;
+      const discountPercentage = item.isOnSale ? (item.salePercentage || 0) : 0;
+      const discountAmount = subtotalBeforeDiscount * (discountPercentage / 100);
+      const finalTotal = subtotalBeforeDiscount - discountAmount;
+
+      return {
+        cartItemId: item.cartItemId,
+        basePrice,
+        tokenPrice,
+        monthlyPrice,
+        durationMonths,
+        subtotalBeforeDiscount,
+        discountAmount,
+        finalTotal,
+        tokenAmount: token ? token.amount : item.tokenAmount,
+        discountPercentage
+      };
+    });
+  }, [cartItems, localSelections, selectedTokenIds]);
+
+  const summary = React.useMemo(() => {
+    return itemTotals.reduce((acc, item) => ({
+      subtotal: acc.subtotal + item.subtotalBeforeDiscount,
+      discount: acc.discount + item.discountAmount,
+      total: acc.total + item.finalTotal
+    }), { subtotal: 0, discount: 0, total: 0 });
+  }, [itemTotals]);
+
+
 
   return (
     <>
       <main className={style['main-content']}>
+
         <div className={`${style['container-custom']} py-4`}>
           {/* <!-- Content Wrapper --> */}
           <div className=" p-4 rounded-4">
@@ -165,158 +182,266 @@ export default function Cart() {
               </div>
             </div>
 
-            <div className="row g-4">
-              {/* <!-- Left Column: Items --> */}
-              <div className="col-lg-8">
-                {items.map((item) => {
-                  const costs = calculateItemCost(item);
-                  return (
-                    <div key={item.id} className={`card ${style['item-card']} mb-4 border-0 shadow-sm rounded-4`}>
-                      <div className="card-body p-4">
-                        {/* <!-- Header --> */}
-                        <div className="d-flex justify-content-between align-items-start mb-4">
-                          <div className="d-flex gap-3">
-                            <div className={`${style['item-icon-box']} ${style[item.iconColorClass]} rounded-2 d-flex align-items-center justify-content-center`} style={{ width: '48px', height: '48px' }}>
-                              <i className={`bi ${item.icon} text-white fs-5`}></i>
-                            </div>
-                            <div>
-                              <h5 className="fw-bold mb-1 fs-6">{item.name}</h5>
-                              <p className="text-muted mb-0 small">{item.description}</p>
-                            </div>
-                          </div>
-                          <div className="d-flex gap-2">
-                            <button className="btn btn-sm btn-icon text-muted"><i className="fa-solid fa-x"></i></button>
-                          </div>
-                        </div>
-
-                        {/* <!-- Cost Estimate Section --> */}
-                        <div className="cost-section">
-                          <h6 className="fw-bold mb-3 small">Cost Estimate</h6>
-
-                          <div className="d-flex justify-content-between align-items-center mb-2">
-                            <label className="fw-bold small">Commitment duration</label>
-                            <div className="input-group input-group-sm w-auto border rounded-2 p-1">
-                              <input type="text" className="form-control border-0 text-center p-0 fw-normal" value={item.duration} readOnly style={{ width: '20px', height: '20px', fontSize: '14px' }} />
-                              <span className="input-group-text bg-transparent border-0 p-0 ms-1 text-muted small">months</span>
-                            </div>
-                          </div>
-
-                          {/* <!-- Slider --> */}
-                          <DurationSlider
-                            value={item.duration}
-                            onChange={(val) => handleDurationChange(item.id, val)}
-                            options={item.durationOptions}
-                          />
-
-                          {/* <!-- Savings Badge --> */}
-                          {costs.hasDiscount && (
-                            <div className="d-flex align-items-center gap-2 mb-4">
-                              <div className={`${style['badge-savings']} d-flex align-items-center ${style['bg-green-light']} ${style['text-green']} fw-normal px-2 py-1 rounded-1`} style={{ fontSize: '12px', border: '1px solid #107c10' }}>
-                                <i className="bi bi-check2 me-1"></i>
-                                Save 15% with 3+ month commitment
-                              </div>
-                            </div>
-                          )}
-
-                          {/* <!-- Breakdown --> */}
-                          <div className="breakdown-table">
-                            <div className="d-flex justify-content-between mb-2 small">
-                              <span className="text-muted">Subtotal per month</span>
-                              <span className="text-dark fw-normal">${item.price.toFixed(2)}/month</span>
-                            </div>
-                            <div className="d-flex justify-content-between mb-2 small">
-                              <span className="text-muted">Duration</span>
-                              <span className="text-dark fw-normal">{item.duration} months</span>
-                            </div>
-                            <div className="d-flex justify-content-between mb-2 small">
-                              <span className="text-muted">Subtotal before discount</span>
-                              <span className="text-dark fw-normal">${costs.subtotal.toFixed(2)}</span>
-                            </div>
-                            {costs.hasDiscount && (
-                              <div className="d-flex justify-content-between mb-3 small">
-                                <span className={style['text-green']}>Commitment discount (15%)</span>
-                                <span className={style['text-green']}>-${costs.discountAmount.toFixed(2)}</span>
-                              </div>
-                            )}
-
-                            <hr className={`${style.divider} mb-3`} />
-
-                            <div className="d-flex justify-content-between align-items-center">
-                              <span className="fw-bold text-dark small">Item total</span>
-                              <span className={`fw-bold ${style['text-purple']} fs-5`}>${costs.total.toFixed(2)}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* <!-- Right Column: Summary --> */}
-              <div className="col-lg-4">
-                <div className={`card ${style['summary-card']} border-0 shadow-sm rounded-4`}>
-                  {/* <!-- Header --> */}
-                  <div className={`card-header ${style['bg-light-gray']} border-bottom p-4 rounded-top-4`}>
-                    <div className="d-flex align-items-center gap-2">
-                      <i className="bi bi-clipboard-data text-muted"></i>
-                      <h6 className={`fw-bold mb-0 ${style['text-sm']}`}>Total Estimate</h6>
+            {cartItems.length === 0 ? (
+              <div className="container-fluid d-flex justify-content-center align-items-center">
+                <div className={style['empty-state-card']}>
+                  {/* <!-- Icon Container --> */}
+                  <div className="d-flex justify-content-center mb-4">
+                    <div className={style['icon-circle']}>
+                      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <path d="M30.0003 3.33301H10.0003C8.15938 3.33301 6.66699 4.82539 6.66699 6.66634V33.333C6.66699 35.174 8.15938 36.6663 10.0003 36.6663H30.0003C31.8413 36.6663 33.3337 35.174 33.3337 33.333V6.66634C33.3337 4.82539 31.8413 3.33301 30.0003 3.33301Z" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M13.333 10H26.6663" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M26.667 23.333V29.9997" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M26.667 16.667H26.6837" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M20 16.667H20.0167" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M13.333 16.667H13.3497" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M20 23.333H20.0167" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M13.333 23.333H13.3497" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M20 30H20.0167" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M13.333 30H13.3497" stroke="#8A45B2" strokeWidth="3.33333" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     </div>
                   </div>
-                  <div className="card-body p-4 bg-white rounded-bottom-4">
-                    {/* <!-- Items List --> */}
-                    {items.map((item) => {
-                      const costs = calculateItemCost(item);
+
+                  {/* <!-- Heading --> */}
+                  <h3 className={`${style['empty-state-heading']} text-center mb-4`}>No items in estimate</h3>
+
+                  {/* <!-- Description --> */}
+                  <p className={`${style['empty-state-description']} text-center mb-4`}>Add features to your estimate to calculate costs and proceed with setup.</p>
+
+                  {/* <!-- Action Buttons --> */}
+                  <div className="d-flex justify-content-center gap-3">
+                    <button onClick={() => navigate('/features')} className={style['btn-primary-gradient']}>Browse Features</button>
+                    <button onClick={() => navigate('/pricing')} className={style['btn-secondary-outline']}>View Pricing</button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="row g-4">
+                {/* <!-- Left Column: Items --> */}
+                <div className="col-lg-8">
+                  <div className="d-flex flex-column gap-4">
+                    {cartItems.map((item) => {
+                      const itTotal = itemTotals.find(it => it.cartItemId === item.cartItemId) || {};
                       return (
-                        <div key={item.id} className="summary-item mb-3">
-                          <div className="d-flex justify-content-between mb-1">
-                            <span className={`text-muted ${style['text-sm']}`} style={{ fontFamily: "'Arimo', sans-serif" }}>{item.name}</span>
-                            <span className={`fw-bold ${style['text-sm']}`}>${costs.total.toFixed(2)}</span>
+                        <div key={item.cartItemId} className={style['pricing-card']}>
+                          <div className={style['card-header-custom']}>
+                            <div className="d-flex justify-content-between align-items-start">
+                              <div className="d-flex gap-3 flex-grow-1">
+                                <div className={style['icon-box-gradient']}>
+                                  <img src={`https://deebai.runasp.net${item.iconURL}`} alt="" />
+                                </div>
+                                <div className="flex-grow-1">
+                                  <h3 className={style['card-title-custom']}>{item.name}</h3>
+                                  <p className={style['card-subtitle-custom']}>{item.subTitle}</p>
+                                </div>
+                              </div>
+                              <button className={style['btn-close-custom']} aria-label="Close">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                  <path d="M12 4L4 12" stroke="#302F31" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M4 4L12 12" stroke="#302F31" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              </button>
+                            </div>
                           </div>
-                          <div className="text-muted" style={{ fontSize: '12px' }}>
-                            ${item.price}/mo × {item.duration} months {costs.hasDiscount ? '(15% off)' : ''}
+
+                          <div className={style['card-body-custom']}>
+                            <div className={style['config-section']}>
+                              <h4 className={style['section-title-custom']}>
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="me-2">
+                                  <path d="M13.5 1.5H4.5C3.67157 1.5 3 2.17157 3 3V15C3 15.8284 3.67157 16.5 4.5 16.5H13.5C14.3284 16.5 15 15.8284 15 15V3C15 2.17157 14.3284 1.5 13.5 1.5Z" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M6 4.5H12" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M12 10.5V13.5" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M12 7.5H12.0075" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M9 7.5H9.0075" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M6 7.5H6.0075" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M9 10.5H9.0075" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M6 10.5H6.0075" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M9 13.5H9.0075" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M6 13.5H6.0075" stroke="#3D1B6A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                                Configure Your Plan
+                              </h4>
+
+                              <div className="row g-3">
+                                <div className="col-md-6">
+                                  <label className={style['form-label-custom']}>
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="me-2">
+                                      <path d="M7.99967 14.6663C11.6816 14.6663 14.6663 11.6816 14.6663 7.99967C14.6663 4.31778 11.6816 1.33301 7.99967 1.33301C4.31778 1.33301 1.33301 4.31778 1.33301 7.99967C1.33301 11.6816 4.31778 14.6663 7.99967 14.6663Z" stroke="#8A45B2" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                      <path d="M8 4V8L10.6667 9.33333" stroke="#8A45B2" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                    Commitment Duration
+                                  </label>
+                                  <div className={style['select-wrapper']}>
+                                    <select
+                                      className={style['form-select-custom']}
+                                      value={localSelections[item.cartItemId] || Math.round(item.duration * 30)}
+                                      onChange={(e) => handleDurationChange(item.cartItemId, e.target.value)}
+                                    >
+                                      {Array.from(new Set(item?.servicePrices?.map(sp => sp.durationInDays)))
+                                        .sort((a, b) => a - b)
+                                        .map((days) => (
+                                          <option key={days} value={days}>
+                                            {days} days
+                                          </option>
+                                        ))}
+                                    </select>
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={style['select-arrow']}>
+                                      <path d="M4 6L8 10L12 6" stroke="#717182" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+                                    </svg>
+                                  </div>
+                                </div>
+                                {item?.servicePrices[0]?.tokens.length > 0 && (
+                                  <div className="col-md-6">
+                                    <label className={style['form-label-custom']}>
+                                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="me-2">
+                                        <path d="M2.66699 9.33377C2.54083 9.3342 2.41714 9.29882 2.31029 9.23175C2.20344 9.16468 2.11781 9.06867 2.06335 8.95487C2.0089 8.84107 1.98785 8.71416 2.00265 8.58887C2.01746 8.46359 2.06751 8.34507 2.14699 8.2471L8.74699 1.4471C8.7965 1.38996 8.86396 1.35134 8.93831 1.33759C9.01266 1.32384 9.08947 1.33578 9.15614 1.37144C9.22281 1.4071 9.27538 1.46437 9.30521 1.53384C9.33504 1.60331 9.34037 1.68087 9.32032 1.75377L8.04032 5.7671C8.00258 5.86812 7.9899 5.97678 8.00338 6.08377C8.01686 6.19076 8.05609 6.29289 8.11771 6.38139C8.17933 6.46988 8.2615 6.54211 8.35717 6.59187C8.45284 6.64164 8.55915 6.66745 8.66699 6.6671H13.3337C13.4598 6.66667 13.5835 6.70205 13.6904 6.76912C13.7972 6.83619 13.8828 6.9322 13.9373 7.046C13.9917 7.1598 14.0128 7.28671 13.998 7.412C13.9832 7.53728 13.9331 7.6558 13.8537 7.75377L7.25365 14.5538C7.20415 14.6109 7.13668 14.6495 7.06233 14.6633C6.98798 14.677 6.91117 14.6651 6.84450 14.6294C6.77783 14.5938 6.72526 14.5365 6.69543 14.467C6.66560 14.3976 6.66027 14.32 6.68032 14.2471L7.96032 10.2338C7.99806 10.1328 8.01074 10.0241 7.99726 9.9171C7.98378 9.81011 7.94455 9.70798 7.88293 9.61948C7.82131 9.53099 7.73914 9.45876 7.64347 9.40899C7.54780 9.35923 7.44149 9.33342 7.33365 9.33377H2.66699Z" stroke="#8A45B2" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                      </svg>
+                                      Token Allocation
+                                    </label>
+                                    <div className={style['select-wrapper']}>
+                                      <select
+                                        className={style['form-select-custom']}
+                                        value={selectedTokenIds[item.cartItemId] || ""}
+                                        onChange={(e) => handleTokenChange(item.cartItemId, e.target.value)}
+                                      >
+                                        {item?.servicePrices
+                                          ?.filter(sp => sp.durationInDays === (localSelections[item.cartItemId] || Math.round(item.duration * 30)))
+                                          ?.flatMap(sp => sp.tokens || [])
+                                          ?.map((token) => (
+                                            <option key={token.id} value={token.id}>
+                                              {token.amount} Tokens
+                                            </option>
+                                          ))}
+                                      </select>
+                                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={style['select-arrow']}>
+                                        <path d="M4 6L8 10L12 6" stroke="#717182" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+                              {item.isOnSale && (
+                                <div className={style['discount-box']}>
+                                  <div className="d-flex align-items-center gap-2">
+                                    <div className={style['discount-icon']}>
+                                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M13.3337 4L6.00033 11.3333L2.66699 8" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                      </svg>
+                                    </div>
+                                    <div>
+                                      <div className={style['discount-title']}>{item.salePercentage}% Discount Applied</div>
+                                      <div className={style['discount-subtitle']}>
+                                        You're saving EGP {(itTotal.discountAmount || 0).toFixed(2)} with your commitment
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className={style['divider-custom']}></div>
+
+                            <div className={style['cost-breakdown-section']}>
+                              <h4 className={style['section-title-breakdown']}>Cost Breakdown</h4>
+                              <div className={style['cost-item']}>
+                                <span className={style['cost-label']}>Duration commitment</span>
+                                <span className={style['cost-value']}>
+                                  {itTotal.durationMonths.toFixed(2)}
+                                  {itTotal.durationMonths === 1 ? ' month' : ' months'}
+                                </span>
+                              </div>
+                              <div className={style['cost-item']}>
+                                <span className={style['cost-label']}>Base Service Price</span>
+                                <span className={style['cost-value']}>EGP {(itTotal.basePrice || 0).toFixed(2)}</span>
+                              </div>
+                              <div className={style['cost-item']}>
+                                <span className={style['cost-label']}>Token Allocation Price ({itTotal.tokenAmount || 0} tokens)</span>
+                                <span className={style['cost-value']}>EGP {(itTotal.tokenPrice || 0).toFixed(2)}</span>
+                              </div>
+                              <div className={style['cost-divider-thin']}></div>
+                              <div className={style['cost-item']}>
+                                <span className={style['cost-label']}>Subtotal before discount</span>
+                                <span className={style['cost-value']}>EGP {(itTotal.subtotalBeforeDiscount || 0).toFixed(2)}</span>
+                              </div>
+                              {item.isOnSale && (
+                                <div className={`${style['cost-item']} ${style['discount-row']}`}>
+                                  <span className={style['cost-label-green']}>Commitment discount ({item.salePercentage}%)</span>
+                                  <span className={style['cost-value-green']}>-EGP {(itTotal.discountAmount || 0).toFixed(2)}</span>
+                                </div>
+                              )}
+                              <div className={style['cost-divider-thick']}></div>
+                              <div className={style['total-cost-row']}>
+                                <span className={style['total-label']}>Total Cost</span>
+                                <div className={style['total-value-wrapper']}>
+                                  <div className={style['total-value']}>EGP {(itTotal.finalTotal || 0).toFixed(2)}</div>
+                                  <div className={style['total-subtitle']}>for entire period</div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       );
                     })}
+                  </div>
+                </div>
 
-                    <hr className={`${style.divider} my-4`} />
-
-                    {/* <!-- Totals --> */}
-                    <div className="d-flex justify-content-between mb-2">
-                      <span className={`text-muted ${style['text-sm']}`}>Subtotal</span>
-                      <span className={`fw-bold ${style['text-sm']}`}>${summary.subtotal.toFixed(2)}</span>
-                    </div>
-                    {summary.discount > 0 && (
-                      <div className="d-flex justify-content-between mb-4">
-                        <span className={`${style['text-green']} ${style['text-sm']}`}>Commitment savings</span>
-                        <span className={`fw-bold ${style['text-green']} ${style['text-sm']}`}>-${summary.discount.toFixed(2)}</span>
-                      </div>
-                    )}
-
-                    <hr className={`${style.divider} my-4`} />
-
-                    <div className="d-flex justify-content-between align-items-start mb-4">
-                      <span className={`fw-bold text-dark ${style['text-sm']}`}>Total</span>
-                      <div className="text-end">
-                        <div className={`${style['text-purple']} fs-4 fw-bold mb-0`}>${summary.total.toFixed(2)}</div>
-                        <div className="text-muted" style={{ fontSize: '12px' }}>Total for commitment period</div>
+                {/* Right Column: Summary */}
+                <div className="col-lg-4">
+                  <div className={`card ${style['summary-card']} border-0 shadow-sm rounded-4`}>
+                    <div className={`card-header ${style['bg-light-gray']} border-bottom p-4 rounded-top-4`}>
+                      <div className="d-flex align-items-center gap-2">
+                        <i className="bi bi-clipboard-data text-muted"></i>
+                        <h6 className={`fw-bold mb-0 ${style['text-sm']}`}>Total Estimate</h6>
                       </div>
                     </div>
-
-                    <button className={`btn ${style['btn-gradient']} w-100 text-white mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
-                      Proceed to payment <i className="bi bi-arrow-right"></i>
-                    </button>
-                    <button className={`btn ${style['btn-outline-custom']} w-100 p-2 rounded-2 text-dark border`}>Add more features</button>
-
-                    <div className="mt-4 pt-3 border-top">
-                      <p className="text-muted mb-0" style={{ fontSize: '12px' }}>Final pricing subject to terms. Annual prepayment may be required for certain commitments.</p>
+                    <div className="card-body p-4 bg-white rounded-bottom-4">
+                      {cartItems.map((item) => {
+                        const itTotal = itemTotals.find(it => it.cartItemId === item.cartItemId) || {};
+                        return (
+                          <div key={item.cartItemId} className="summary-item mb-3">
+                            <div className="d-flex justify-content-between mb-1">
+                              <span className={`text-muted ${style['text-sm']}`} style={{ fontFamily: "'Arimo', sans-serif" }}>{item.name}</span>
+                              <span className={`fw-bold ${style['text-sm']}`}>EGP {(itTotal.finalTotal || 0).toFixed(2)}</span>
+                            </div>
+                            <div className="text-muted" style={{ fontSize: '12px' }}>
+                              EGP {(itTotal.monthlyPrice || 0).toFixed(2)} × {itTotal.durationMonths.toFixed(2)} {itTotal.durationMonths === 1 ? 'month' : 'months'} {item.isOnSale ? `(Discount applied)` : ''}
+                            </div>
+                          </div>
+                        );
+                      })}
+                      <hr className={`${style.divider} my-4`} />
+                      <div className="d-flex justify-content-between mb-2">
+                        <span className={`text-muted ${style['text-sm']}`}>Subtotal</span>
+                        <span className={`fw-bold ${style['text-sm']}`}>EGP {(summary.subtotal || 0).toFixed(2)}</span>
+                      </div>
+                      {(summary.discount || 0) > 0 && (
+                        <div className="d-flex justify-content-between mb-4">
+                          <span className={`${style['text-green']} ${style['text-sm']}`}>Commitment savings</span>
+                          <span className={`fw-bold ${style['text-green']} ${style['text-sm']}`}>-EGP {(summary.discount || 0).toFixed(2)}</span>
+                        </div>
+                      )}
+                      <hr className={`${style.divider} my-4`} />
+                      <div className="d-flex justify-content-between align-items-start mb-4">
+                        <span className={`fw-bold text-dark ${style['text-sm']}`}>Total</span>
+                        <div className="text-end">
+                          <div className={`${style['text-purple']} fs-4 fw-bold mb-0`}>EGP {(summary.total || 0).toFixed(2)}</div>
+                          <div className="text-muted" style={{ fontSize: '12px' }}>Total for commitment period</div>
+                        </div>
+                      </div>
+                      <button className={`btn ${style['btn-gradient']} w-100 text-white mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
+                        Proceed to payment <i className="bi bi-arrow-right"></i>
+                      </button>
+                      <button onClick={() => navigate('/features')} className={`btn ${style['btn-outline-custom']} w-100 p-2 rounded-2 text-dark border`}>Add more features</button>
+                      <div className="mt-4 pt-3 border-top">
+                        <p className="text-muted mb-0" style={{ fontSize: '12px' }}>Final pricing subject to terms. Annual prepayment may be required for certain commitments.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* <!-- End Content Wrapper --> */}
+            )}
           </div>
         </div>
       </main>

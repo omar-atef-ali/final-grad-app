@@ -149,25 +149,27 @@
 }
 
 @media (max-width: 768px) {
-  
-.HeaderActions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+
+  .HeaderActions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
 }
 
 .IconBtn {
   background: none;
   border: 1px solid #e5e7eb;
-  border-radius: 50%;
-  padding: 8px;
+  padding: 5px 15px;
+  border-radius: 9px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #717182;
+  transition: all 0.2s ease;
+
 }
 
 .IconBtn:hover {
@@ -188,28 +190,47 @@
 }
 
 .btnPrimaryCustom {
-    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
-    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
-    color: white;
-    border: 1px solid var(--primary-purple);
-    /* padding: 12px 24px; */
-    height: 35px;
-    width: 95px;
-    border-radius: 9px;
-    font-weight: 400;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 16px;
+  background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+  box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
+  color: white;
+  border: 1px solid var(--primary-purple);
+  /* padding: 12px 24px; */
+  height: 35px;
+  width: 95px;
+  border-radius: 9px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
 }
 
 .btnPrimaryCustom:hover {
-    /* background: linear-gradient(to right, #4b277a, #5c398a, #8A45B2); */
-    border-color: var(--primary-dark);
-    color: white;
-    transform: translateY(-.5px);
-    /* box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1); */
+  /* background: linear-gradient(to right, #4b277a, #5c398a, #8A45B2); */
+  border-color: var(--primary-dark);
+  color: white;
+  transform: translateY(-.5px);
+  /* box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1); */
+}
+
+
+.navDemo {
+  overflow: hidden;
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-gray);
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  padding: 4px 19px;
+  border-radius: 9px;
+  transition: all 0.2s ease;
+}
+
+.navDemo:hover {
+  background-color: #f9fafb;
+  color: #0a0a0a;
 }
