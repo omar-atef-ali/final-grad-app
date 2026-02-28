@@ -3,9 +3,10 @@ import style from "./NavBar.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../../context/userContext";
 import { getImageUrl } from "../../utils/imageUrl";
+import { CartContext } from '../../context/CartContextProvider';
 
 export default function NavBar() {
-
+  const { cartvalue } = useContext(CartContext)
   const [isOpen, setIsOpen] = useState(false);
   const { userProfileImage, userToken } = useContext(userContext);
   const [displayedImage, setDisplayedImage] = useState(userProfileImage);
@@ -76,27 +77,35 @@ export default function NavBar() {
 
             {/* <!-- Mobile Header Actions --> */}
             <div className={style.HeaderActions} style={{ marginLeft: "auto" }}>
-              <button onClick={() => navigate("/cart")} className={style.IconBtn}>
-                {/* <!-- Shopping Cart --> */}
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="9" cy="21" r="1"></circle>
-                  <circle cx="20" cy="21" r="1"></circle>
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-              </button>
-              <span onClick={() => navigate("/demo")}
-                className={style.navDemo}
-              >
-                Demo
+
+
+
+              <div className={`${style.cart_parent}`}>
+                <button className={style.IconBtn} onClick={() => navigate("/cart")}>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                </button>
+                {cartvalue.length > 0 && (
+                  <span className={style.count}>
+                    {cartvalue.length}
+                  </span>
+                )}
+              </div>
+
+              <span className={style.navDemo} onClick={() => navigate("/demo")}>
+                <span>demo</span>
               </span>
               {userToken ? (
                 <button className={style.UserAvatarSmall} onClick={() => navigate("/profile/info")} style={{ overflow: "hidden", padding: 0 }}>

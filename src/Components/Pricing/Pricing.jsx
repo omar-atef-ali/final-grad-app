@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import style from './pricing.module.css'
 import { FaCheck } from "react-icons/fa";
 import toast from 'react-hot-toast';
 import api from "../../api";
+import { userContext } from '../../context/userContext';
+import { CartContext } from '../../context/CartContextProvider';
 
 
 const icons = {
@@ -45,12 +47,17 @@ const TokenIcon = () => (
 )
 
 export default function Pricing() {
+  const { userToken } = useContext(userContext)
+  const { getCart } = useContext(CartContext)
+
   const [activeIndex, setActiveIndex] = useState(0)
   const [activeIndividualIndex, setActiveIndividualIndex] = useState(0)
 
   const [individualFeatures, setindividualFeatures] = useState([])
   const [bundles, setbundles] = useState([])
   const [review, setReview] = useState([])
+
+
 
   // Bundle carousel
   // const goNext = () => setActiveIndex((prev) => (prev + 1) % bundles.length)
@@ -97,7 +104,7 @@ export default function Pricing() {
   async function getPackages() {
     try {
       let { data } = await api.get(`/Packages`)
-      console.log(data)
+      // console.log(data)
       setbundles(data)
 
     }
@@ -136,7 +143,7 @@ export default function Pricing() {
   async function getServiceCards() {
     try {
       let { data } = await api.get(`/Services/cards`)
-      console.log(data)
+      // console.log(data)
       setindividualFeatures(data)
 
     }
@@ -150,6 +157,49 @@ export default function Pricing() {
     getPackages()
     getServiceCards()
   }, [])
+
+  async function addToCart(id) {
+    try {
+      let response = await api.post(`/Cart`, {
+        serviceId: id
+      }, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
+      console.log(response)
+      toast.success("Added to cart");
+      getCart()
+
+    }
+    catch (error) {
+      console.log(error)
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while registration.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+    }
+  }
   useEffect(() => {
     if (!bundles.length) return
 
@@ -590,7 +640,7 @@ export default function Pricing() {
                           ))}
                         </ul>
 
-                        <button className={`${style.btn} ${style.btn_individual}`}>Add To Estimate</button>
+                        <button onClick={() => addToCart(feat.id)} className={`${style.btn} ${style.btn_individual}`}>Add To Estimate</button>
                       </div>
                     </div>
                   )

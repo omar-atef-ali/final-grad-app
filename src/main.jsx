@@ -9,12 +9,15 @@ import UserContextProvider from "./context/userContext.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import CartContextProvider from "./context/CartContextProvider.jsx";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <UserContextProvider>
-      <App />
+      <CartContextProvider>
+        <App />
+      </CartContextProvider>
     </UserContextProvider>
-  </StrictMode>,
+  </StrictMode>
 );
