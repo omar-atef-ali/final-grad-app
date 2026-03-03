@@ -5,28 +5,49 @@ const api = axios.create({
 });
 
 
+const refreshClient = axios.create({
+  baseURL: "/api",
+});
+
+/* =========================
+   Refresh State
+========================= */
+
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach((p) => {
-    if (error) p.reject(error);
-    else p.resolve(token);
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(token);
+    }
   });
+
   failedQueue = [];
 };
+
+/* =========================
+   Request Interceptor
+========================= */
 
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
+
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    // console.log("📤 Sending request:", config.url);
+
     return config;
   },
   (error) => Promise.reject(error)
 );
+
+/* =========================
+   Response Interceptor
+========================= */
 
 api.interceptors.response.use(
   (response) => response,
@@ -34,84 +55,80 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (!error.response) return Promise.reject(error);
+    if (!error.response) {
+      return Promise.reject(error);
+    }
 
-    // === 401 AND not retried before ===
+    /* =========================
+       Handle 401
+    ========================= */
+
     if (error.response.status === 401 && !originalRequest._retry) {
-      console.log("⛔ 401 detected for:", originalRequest.url);
-
       const refreshToken = localStorage.getItem("refreshToken");
       const oldToken = localStorage.getItem("token");
 
       if (!refreshToken) {
-        console.log("❌ No refresh token → rejecting request");
-        // No hard redirect here, let the UI or caller handle it
         return Promise.reject(error);
       }
 
       originalRequest._retry = true;
 
+      /* =========================
+         If refresh already running
+      ========================= */
+
       if (isRefreshing) {
-        console.log("⏳ Refresh already in progress → queue request");
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
           .then((newToken) => {
-            originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-            console.log("🔁 Retrying queued request:", originalRequest.url);
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return api(originalRequest);
           })
           .catch((err) => Promise.reject(err));
       }
 
+      /* =========================
+         Start Refresh Flow
+      ========================= */
+
       isRefreshing = true;
-      console.log("♻️ Starting refresh flow...");
 
       try {
-        const res = await api.post("/Auth/refresh", {
+        const res = await refreshClient.post("/Auth/refresh", {
           oldToken,
           refreshToken,
         });
 
-        const { token: newAccessToken, refreshToken: newRefreshToken } =
-          res.data;
+        const {
+          token: newAccessToken,
+          refreshToken: newRefreshToken,
+        } = res.data;
 
+        /* Save new tokens */
         localStorage.setItem("token", newAccessToken);
         localStorage.setItem("refreshToken", newRefreshToken);
 
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
-
-        console.log("✅ Refresh success");
-
+        /* Resolve queued requests */
         processQueue(null, newAccessToken);
-        isRefreshing = false;
 
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        console.log("🔁 Retrying original request:", originalRequest.url);
+        /* Retry original request */
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
         return api(originalRequest);
       } catch (refreshError) {
-        isRefreshing = false;
+        processQueue(refreshError, null);
 
-        // Log the error for debugging
-        console.log("❌ Refresh failed:", refreshError.response?.status || refreshError.message);
+        const status = refreshError.response?.status;
 
-        // ONLY logout if the server specifically rejects the refresh token
-        // usually 401 (Unauthorized) or 403 (Forbidden) or 400 (Bad Request)
-        const refreshStatus = refreshError.response?.status;
-        if (refreshStatus === 401 || refreshStatus === 403 || refreshStatus === 400) {
-          console.log("🔥 Refresh token expired or invalid. Logging out...");
-          processQueue(refreshError, null);
+        if ([400, 401, 403].includes(status)) {
           localStorage.clear();
-          window.location.href = "/login";
-          return Promise.reject(refreshError);
+          window.location.replace("/login");
         }
 
-        // If it's a network error or 500, just fail the queue but don't logout
-        console.log("⚠️ Token refresh failed due to network/server issue. No logout.");
-        processQueue(refreshError, null);
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false; // 🔥 مهم جدًا
       }
     }
 

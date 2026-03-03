@@ -3,6 +3,8 @@ import style from "./Cart.module.css";
 import { userContext } from '../../context/userContext';
 import api from '../../api';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import CartContextProvider, { CartContext } from '../../context/CartContextProvider';
 
 
 export default function Cart() {
@@ -95,24 +97,28 @@ export default function Cart() {
     localStorage.setItem('cart_selections', JSON.stringify(saved));
   };
 
-  useEffect(() => {
-    async function getCartItems() {
-      try {
-        const { data } = await api.get('Cart', {
-          headers: {
-            Authorization: `Bearer ${userToken}`
-          }
-        });
-        setCartItems(data);
-        console.log("Cart Data:", data);
-      } catch (error) {
-        console.error("Error fetching cart items:", error);
-      }
+  async function getCartItems() {
+    try {
+      const { data } = await api.get('Cart', {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        }
+      });
+      setCartItems(data);
+      console.log("Cart Data:", data);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
     }
+  }
+
+
+
+  useEffect(() => {
     if (userToken) {
       getCartItems();
     }
-  }, [userToken]);
+
+  }, [userToken])
 
 
 
@@ -161,6 +167,49 @@ export default function Cart() {
       total: acc.total + item.finalTotal
     }), { subtotal: 0, discount: 0, total: 0 });
   }, [itemTotals]);
+
+
+
+  ///////////////////////////////////////////////////////////////
+  const{ getCart } = useContext(CartContext);
+  async function DeleteCartItem(cartItemId) {
+    try {
+      await api.delete(`/Cart/${cartItemId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        }
+      });
+      getCartItems();
+      getCart();
+      toast.success("Cart item deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while deleting the cart item.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+    }
+  }
 
 
 
@@ -236,7 +285,7 @@ export default function Cart() {
                                   <p className={style['card-subtitle-custom']}>{item.subTitle}</p>
                                 </div>
                               </div>
-                              <button className={style['btn-close-custom']} aria-label="Close">
+                              <button className={style['btn-close-custom']} aria-label="Close" onClick={() => DeleteCartItem(item.cartItemId)}>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                   <path d="M12 4L4 12" stroke="#302F31" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                                   <path d="M4 4L12 12" stroke="#302F31" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
