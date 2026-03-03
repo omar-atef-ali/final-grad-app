@@ -53,7 +53,7 @@ let routers = createBrowserRouter([
        { path: "demo", element: <Demo /> },
        { path: "pricing", element: <Pricing /> },
       { path: "features", element: <Features /> },
-      { path: "complete", element: <Complete /> },
+      { path: "complete-data", element: <Complete /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
 
       {
