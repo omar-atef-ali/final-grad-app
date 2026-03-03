@@ -28,6 +28,7 @@ import ConfirmEmail from "./Components/ConfirmEmail/ConfirmEmail";
 import FeatureDetails from "./Components/FeatureDetails/FeatureDetails";
 import Demo from "./Components/Demo/Demo";
 import Pricing from "./Components/Pricing/Pricing";
+import Complete from "./Components/Complete/Complete";
 
 let routers = createBrowserRouter([
   { index: true, element: <Register /> },
@@ -52,6 +53,7 @@ let routers = createBrowserRouter([
        { path: "demo", element: <Demo /> },
        { path: "pricing", element: <Pricing /> },
       { path: "features", element: <Features /> },
+      { path: "complete", element: <Complete /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
 
       {
