@@ -56,6 +56,7 @@ export default function Pricing() {
   const [individualFeatures, setindividualFeatures] = useState([])
   const [bundles, setbundles] = useState([])
   const [review, setReview] = useState([])
+  const [loadingPackageId, setLoadingPackageId] = useState(null)
 
   // direction state — drives which animation class gets applied
   const [bundleDir, setBundleDir] = useState('next')
@@ -169,6 +170,47 @@ export default function Pricing() {
       toast.error(error.response?.data?.errors?.[1])
     }
   }
+
+
+  const PackagePayment = async (id) => {
+    try {
+      setLoadingPackageId(id)
+      let { data } = await api.post(`/Orders/package`, {
+        packageId: id,
+        autoRenewal: false,
+        paymentMethodId: 0
+      }, { headers: { Authorization: `Bearer ${userToken}` } })
+
+      console.log(data)
+      if (data?.paymentCheckoutUrl) {
+        window.location.href = data.paymentCheckoutUrl
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error)
+      toast.error(
+        error.response?.data?.errors[1] || "Error fetching reviews.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
+        }
+      )
+    } finally {
+      setLoadingPackageId(null)
+    }
+  }
+
+
 
   useEffect(() => {
     if (!bundles.length) return
@@ -364,8 +406,33 @@ export default function Pricing() {
                       ))}
                     </div>
 
-                    <button className={`${style.btn} ${style.btn_individual}`}>
-                      Proceed to Checkout
+                    {/* <button onClick={()=>PackagePayment(bundle.id)} className={`${style.btn} ${style.btn_individual}`}>
+
+                      {Isloading ? (
+                      <span
+                        className="spinner-border spinner-border-sm text-light"
+                        role="status"
+                      />
+                    ) : (
+                      "Proceed to Checkout"
+                    )}
+                      
+                    </button> */}
+                    <button
+                      onClick={() => PackagePayment(bundle.id)}
+                      className={`${style.btn} ${style.btn_individual}`}
+                    >
+                      {loadingPackageId === bundle.id ? (
+                        <span
+                          className="spinner-border spinner-border-sm"
+                          style={{
+                            filter: "brightness(0)",
+                            WebkitFilter: "brightness(0)"
+                          }}
+                        />
+                      ) : (
+                        "Proceed to Checkout"
+                      )}
                     </button>
                   </div>
                 )

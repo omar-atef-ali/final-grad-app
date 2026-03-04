@@ -1,6 +1,8 @@
 import React from 'react'
 import style from "./Complete.module.css"
+import { useNavigate } from 'react-router-dom'
 export default function Complete() {
+    const navigate=useNavigate()
   return (
     <>
 
@@ -126,7 +128,7 @@ export default function Complete() {
             </div>
 
             
-            <button className={`${style.setup_btn}`}>Complete your Setup</button>
+            <button onClick={()=>navigate('/setup-page')} className={`${style.setup_btn}`}>Complete your Setup</button>
             <p className={`${style.help_text}`}>Need help? <a href="#contact">Contact Us</a></p>
         </div>
     </main>

@@ -29,6 +29,7 @@ import FeatureDetails from "./Components/FeatureDetails/FeatureDetails";
 import Demo from "./Components/Demo/Demo";
 import Pricing from "./Components/Pricing/Pricing";
 import Complete from "./Components/Complete/Complete";
+import Setup from "./Components/Setup/Setup";
 
 let routers = createBrowserRouter([
   { index: true, element: <Register /> },
@@ -54,6 +55,7 @@ let routers = createBrowserRouter([
        { path: "pricing", element: <Pricing /> },
       { path: "features", element: <Features /> },
       { path: "complete-data", element: <Complete /> },
+      { path: "Setup-page", element: <Setup /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
 
       {
