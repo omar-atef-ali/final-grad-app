@@ -14,7 +14,7 @@ export default function SucessfulPaymet() {
 
   async function handleSubscriptionDetails() {
     try{
-      const {data} = await api.get("/Payments/last-details",{
+      const {data} = await api.get("/orders/last-details",{
         headers:{
           "Authorization": `Bearer ${userToken}`
         }
