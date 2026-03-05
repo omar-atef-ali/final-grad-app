@@ -30,6 +30,8 @@ import FeatureDetails from "./Components/FeatureDetails/FeatureDetails";
 import Cart from "./Components/Cart/Cart";
 import Demo from "./Components/Demo/Demo";
 import Pricing from "./Components/Pricing/Pricing";
+import Complete from "./Components/Complete/Complete";
+import SucessfulPaymet from "./Components/SucessfulPaymet/SucessfulPaymet";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -55,6 +57,8 @@ let routers = createBrowserRouter([
       { path: "demo", element: <Demo /> },
       { path: "pricing", element: <Pricing /> },
       { path: "features", element: <Features /> },
+      { path: "complete-data", element: <Complete /> },
+      { path: "success-payment", element: <SucessfulPaymet /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
       { path: "/cart", element: <Cart /> },
 

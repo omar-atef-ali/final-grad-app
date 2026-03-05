@@ -13,6 +13,7 @@ export default function Cart() {
   const { userToken } = useContext(userContext);
   const [localSelections, setLocalSelections] = useState({});
   const [selectedTokenIds, setSelectedTokenIds] = useState({});
+  const [finalcheckout, setfinalcheckout] = useState(null)
 
   useEffect(() => {
     if (cartItems.length > 0) {
@@ -55,6 +56,57 @@ export default function Cart() {
       setSelectedTokenIds(initialTokens);
     }
   }, [cartItems]);
+
+
+  /////////////////////////////////////
+
+
+  const selectedServicesPayload = React.useMemo(() => {
+    return cartItems.map((item) => {
+      const currentDurationDays = localSelections[item.cartItemId] || Math.round((item.duration || 0) * 30);
+      const currentTokenId = selectedTokenIds[item.cartItemId];
+
+      const sp = item.servicePrices?.find(sp => sp.durationInDays === currentDurationDays);
+
+      return {
+        serviceId: item.serviceId,        // أو item.id حسب اسم الفيلد عندك
+        servicePriceId: sp?.id,               // الـ id بتاع الـ servicePrice
+        serviceTokensId: Number(currentTokenId) || null,
+      };
+    });
+  }, [cartItems, localSelections, selectedTokenIds]);
+  console.log(selectedServicesPayload);
+  // useEffect(() => {
+  //   setfinalcheckout({
+  //     "serviceItems": [
+  //       selectedServicesPayload
+  //     ],
+  //     "autoRenewal": false,
+  //   "paymentMethodId": 0
+  // }) 
+  // },[selectedServicesPayload])
+
+
+  async function payment() {
+    try {
+      const { data } = await api.post('/Orders/services',
+        {
+          serviceItems: selectedServicesPayload,
+          autoRenewal: false,
+          paymentMethodId: 0
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        }
+      );
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  //////////////////////////
 
   const handleDurationChange = (cartItemId, duration) => {
     const numDuration = Number(duration);
@@ -171,7 +223,7 @@ export default function Cart() {
 
 
   ///////////////////////////////////////////////////////////////
-  const{ getCart } = useContext(CartContext);
+  const { getCart } = useContext(CartContext);
   async function DeleteCartItem(cartItemId) {
     try {
       await api.delete(`/Cart/${cartItemId}`, {
@@ -479,7 +531,7 @@ export default function Cart() {
                           <div className="text-muted" style={{ fontSize: '12px' }}>Total for commitment period</div>
                         </div>
                       </div>
-                      <button className={`btn ${style['btn-gradient']} w-100 text-white mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
+                      <button onClick={payment} className={`btn ${style['btn-gradient']} w-100 text-white mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
                         Proceed to payment <i className="bi bi-arrow-right"></i>
                       </button>
                       <button onClick={() => navigate('/features')} className={`btn ${style['btn-outline-custom']} w-100 p-2 rounded-2 text-dark border`}>Add more features</button>

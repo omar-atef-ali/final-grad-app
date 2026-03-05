@@ -104,6 +104,8 @@ api.interceptors.response.use(
           token: newAccessToken,
           refreshToken: newRefreshToken,
         } = res.data;
+        console.log("newToken added");
+        
 
         /* Save new tokens */
         localStorage.setItem("token", newAccessToken);

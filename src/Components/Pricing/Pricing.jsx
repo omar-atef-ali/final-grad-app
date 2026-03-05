@@ -48,7 +48,8 @@ const TokenIcon = () => (
 
 export default function Pricing() {
   const { userToken } = useContext(userContext)
-  const { getCart } = useContext(CartContext)
+
+  const { getCart, cartvalue } = useContext(CartContext)
 
   const [activeIndex, setActiveIndex] = useState(0)
   const [activeIndividualIndex, setActiveIndividualIndex] = useState(0)
@@ -58,57 +59,69 @@ export default function Pricing() {
   const [review, setReview] = useState([])
 
 
+  // direction state — drives which animation class gets applied
+  const [bundleDir, setBundleDir] = useState('next')
+  const [indivDir, setIndivDir] = useState('next')
 
-  // Bundle carousel
-  // const goNext = () => setActiveIndex((prev) => (prev + 1) % bundles.length)
-  // const goPrev = () => setActiveIndex((prev) => (prev - 1 + bundles.length) % bundles.length)
+  const isFeatureInCart = (id) => {
+    return cartvalue?.some(item => item.serviceId === id)
+  }
+  const formatDuration = (days) => {
+    if (!days) return "";
 
-  const goNext = () =>
-    setActiveIndex(prev =>
-      bundles.length ? (prev + 1) % bundles.length : 0
-    )
+    if (days > 30 && days % 30 === 0) {
+      const months = days / 30;
+      return `${months} months`;
+    }
 
-  const goPrev = () =>
-    setActiveIndex(prev =>
-      bundles.length ? (prev - 1 + bundles.length) % bundles.length : 0
-    )
+    return `${days} days`;
+  };
+
+  // ─── Bundle navigation ────────────────────────────────────────
+  const goNext = () => {
+    setBundleDir('next')
+    setActiveIndex(prev => bundles.length ? (prev + 1) % bundles.length : 0)
+  }
+
+  const goPrev = () => {
+    setBundleDir('prev')
+    setActiveIndex(prev => bundles.length ? (prev - 1 + bundles.length) % bundles.length : 0)
+  }
 
   const getVisibleIndices = () => {
     if (!bundles.length) return []
-
     const prev = (activeIndex - 1 + bundles.length) % bundles.length
     const next = (activeIndex + 1) % bundles.length
-
     return [prev, activeIndex, next]
   }
-
   const visibleIndices = bundles.length ? getVisibleIndices() : []
-  // const getVisibleIndices = () => {
-  //   const prev = (activeIndex - 1 + bundles.length) % bundles.length
-  //   const next = (activeIndex + 1) % bundles.length
-  //   return [prev, activeIndex, next]
-  // }
-  // const visibleIndices = getVisibleIndices()
 
-  // Individual features carousel
-  const goIndividualNext = () => setActiveIndividualIndex((prev) => (prev + 1) % individualFeatures.length)
-  const goIndividualPrev = () => setActiveIndividualIndex((prev) => (prev - 1 + individualFeatures.length) % individualFeatures.length)
+  // ─── Individual navigation ────────────────────────────────────
+  const goIndividualNext = () => {
+    setIndivDir('next')
+    setActiveIndividualIndex(prev => (prev + 1) % individualFeatures.length)
+  }
+
+  const goIndividualPrev = () => {
+    setIndivDir('prev')
+    setActiveIndividualIndex(prev => (prev - 1 + individualFeatures.length) % individualFeatures.length)
+  }
 
   const getVisibleIndividualIndices = () => {
+    if (!individualFeatures.length) return []
     const prev = (activeIndividualIndex - 1 + individualFeatures.length) % individualFeatures.length
     const next = (activeIndividualIndex + 1) % individualFeatures.length
     return [prev, activeIndividualIndex, next]
   }
-  const visibleIndividualIndices = getVisibleIndividualIndices()
+  const visibleIndividualIndices = individualFeatures.length ? getVisibleIndividualIndices() : []
 
+  // ─── Data fetching ────────────────────────────────────────────
   async function getPackages() {
     try {
       let { data } = await api.get(`/Packages`)
-      // console.log(data)
       setbundles(data)
-
-    }
-    catch (error) {
+      // console.log(data)
+    } catch (error) {
       console.log(error)
       toast.error(
         error.response?.data?.errors[1] ||
@@ -134,30 +147,39 @@ export default function Pricing() {
           },
         },
       );
+
     }
-
   }
-
-
 
   async function getServiceCards() {
     try {
       let { data } = await api.get(`/Services/cards`)
       // console.log(data)
       setindividualFeatures(data)
-
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error)
-      toast.error(
-        error.response?.data?.errors[1])
+      toast.error(error.response?.data?.errors[1])
     }
   }
+
   useEffect(() => {
     getPackages()
     getServiceCards()
   }, [])
 
+  // async function addToCart(id) {
+  //   try {
+  //     let response = await api.post(`/Cart`, { serviceId: id }, {
+  //       headers: { Authorization: `Bearer ${userToken}` },
+  //     })
+  //     console.log(response)
+  //     toast.success("Added to cart");
+  //     getCart()
+  //   } catch (error) {
+  //     console.log(error)
+  //     toast.error(error.response?.data?.errors[1])
+  //   }
+  // }
   async function addToCart(id) {
     try {
       let response = await api.post(`/Cart`, {
@@ -198,51 +220,52 @@ export default function Pricing() {
           },
         },
       );
+
     }
   }
+
   useEffect(() => {
     if (!bundles.length) return
-
     const selctedBundle = bundles[activeIndex]
-    if (!selctedBundle?.id) return;
+    if (!selctedBundle?.id) return
 
     const fetchReviews = async () => {
       try {
-
-        let { data } = await api.get(`/Reviews/package/${selctedBundle.id}`);
-        setReview(data);
-        console.log(data);
-
+        let { data } = await api.get(`/Reviews/package/${selctedBundle.id}`)
+        setReview(data)
       } catch (error) {
-        console.error("Error fetching reviews:", error);
+        console.error("Error fetching reviews:", error)
         toast.error(
-          error.response?.data?.errors[1] ||
-          "Error fetching reviews.",
+          error.response?.data?.errors[1] || "Error fetching reviews.",
           {
             position: "top-center",
             duration: 4000,
             style: {
-              background:
-                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
               border: "1px solid rgba(255, 255, 255, 0.1)",
               padding: "16px 20px",
               color: "#ffffff",
               fontSize: "0.95rem",
               borderRadius: "5px",
               width: "300px",
-              height: "100%",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
             },
-            iconTheme: {
-              primary: "#FF4D4F",
-              secondary: "#ffffff",
-            },
-          },
-        );
+            iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
+          }
+        )
       }
-    };
+    }
     fetchReviews()
-  }, [activeIndex, bundles]);
+  }, [activeIndex, bundles])
+
+  // ─── per-card animation class ─────────────────────────────────
+  // Each position (left/center/right) gets its own unique keyframe
+  // so they move independently, not as a block
+  const getCardAnimClass = (position, dir) => {
+    if (position === 0) return dir === 'next' ? style.card_left_next : style.card_left_prev
+    if (position === 1) return dir === 'next' ? style.card_center_next : style.card_center_prev
+    if (position === 2) return dir === 'next' ? style.card_right_next : style.card_right_prev
+  }
 
 
   ////////////////////////////////////FAQS////////////////////////////////////////
@@ -258,7 +281,7 @@ export default function Pricing() {
     async function getFAQs() {
       try {
         let { data } = await api.get(`/FAQs`)
-        console.log(data)
+        // console.log(data)
         setFAQs(data)
       }
       catch (error) {
@@ -370,17 +393,24 @@ export default function Pricing() {
             <div className={style.carousel_track}>
               {visibleIndices.map((bundleIdx, position) => {
                 const bundle = bundles[bundleIdx]
-
                 if (!bundle) return null
-
                 const isCenter = position === 1
                 return (
                   <div
-                    key={bundleIdx}
-                    className={`${style.pricing_card} ${bundle.featured ? style.featured : ''} ${isCenter ? style.carousel_card_active : style.carousel_card_side}`}
-                    onClick={() => !isCenter && setActiveIndex(bundleIdx)}
+                    key={`${bundleIdx}-${activeIndex}`}
+                    className={`
+                      ${style.pricing_card}
+                      ${bundle.featured ? style.featured : ''}
+                      ${isCenter ? style.carousel_card_active : style.carousel_card_side}
+                      ${getCardAnimClass(position, bundleDir)}
+                    `}
+                    onClick={() => {
+                      if (!isCenter) {
+                        position === 2 ? goNext() : goPrev()
+                      }
+                    }}
                   >
-                    {bundle.featured && <div className={style.featured_badge}>POPULAR</div>}
+                    {bundle.priority == "1" ? <div className={style.featured_badge}>Most Popular</div> : ""}
 
                     <div className={style.pricing_header}>
                       <div className={style.pricing_title_row}>
@@ -397,22 +427,28 @@ export default function Pricing() {
 
                     <div className={style.pricing_amount}>
                       <div className={style.price}>
-                        <span className={style.price_value}>EGP {bundle.price}</span>
-                        {bundle?.
-                          salePercentage && bundle.
-                            salePercentage > 0 ? (
-                          <span className={style.individual_old_price}>
-                            EGP {Math.round(bundle.price / (1 - bundle.
-                              salePercentage / 100))}
+                        {bundle?.salePercentage && bundle.salePercentage > 0 ? (
+                          <>
+                            <span className={style.price_value}>
+                              EGP {Math.round(bundle.price * (1 - bundle.salePercentage / 100))}
+                            </span>
+
+                            <span className={style.individual_old_price}>
+                              EGP {bundle.price}
+                            </span>
+                          </>
+                        ) : (
+                          <span className={style.price_value}>
+                            EGP {bundle.price}
                           </span>
-                        ) : null}
+                        )}
                       </div>
                       <div className={style.commitment}>
                         <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
                           <circle cx="8.5" cy="8.5" r="7" stroke="#3D1B6A" strokeWidth="1.36" />
                           <path d="M8.16 4.08V8.16L10.88 9.52" stroke="#3D1B6A" strokeWidth="1.36" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                        <span>{bundle.commitment}</span>
+                        <span>{formatDuration(bundle.durationInDays)} Commitment</span>
                       </div>
                     </div>
 
@@ -424,8 +460,9 @@ export default function Pricing() {
                           <div className={style.feature_item_content}>
                             <div className={style.feature_item_title}>{feat.name}</div>
                             <div className={style.feature_item_detail}>
-                              {feat.detailIcon === 'check' ? <CheckIcon /> : <TokenIcon />}
-                              <span>{feat.tokenAmount} tokens</span>
+                              {feat.tokenAmount ? <TokenIcon /> : <CheckIcon />}
+                              <span>{feat.tokenAmount ? feat.tokenAmount : "Unlimited usage"} tokens</span>
+
                             </div>
                           </div>
                         </div>
@@ -434,7 +471,6 @@ export default function Pricing() {
 
                     <button className={`${style.btn} ${style.btn_individual}`}>
                       Proceed to Checkout
-
                     </button>
                   </div>
                 )
@@ -453,7 +489,10 @@ export default function Pricing() {
               <button
                 key={i}
                 className={`${style.carousel_dot} ${i === activeIndex ? style.carousel_dot_active : ''}`}
-                onClick={() => setActiveIndex(i)}
+                onClick={() => {
+                  setBundleDir(i > activeIndex ? 'next' : 'prev')
+                  setActiveIndex(i)
+                }}
                 aria-label={`Plan ${i + 1}`}
               />
             ))}
@@ -470,66 +509,23 @@ export default function Pricing() {
                 {review.length > 3 ? (
                   <div className={style.marqueeContainer}>
                     <div className={style.marqueeWrapper}>
-
                       {review.map((review, index) => (
                         <div className={style.testimonialCardMarquee} key={`first-${index}`}>
-                          <div className={style.stars}>
-                            {[...Array(Number(review.stars))].map((_, i) => (
-                              <span key={i}>★</span>
-                            ))}
-                          </div>
+                          <div className={style.stars}>{[...Array(Number(review.stars))].map((_, i) => <span key={i}>★</span>)}</div>
                           <p className={style.testimonialText}>{review.comment}</p>
                           <div className={style.testimonialAuthor}>
-                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                              <circle cx="12" cy="7" r="4"></circle>
-                            </svg>}
-
-                            <div className={style.authorInfo}>
-                              <h5>{review.clientName}</h5>
-                              <span>{review.position}</span>
-                            </div>
+                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>}
+                            <div className={style.authorInfo}><h5>{review.clientName}</h5><span>{review.position}</span></div>
                           </div>
                         </div>
                       ))}
-
-
                       {review.map((review, index) => (
                         <div className={style.testimonialCardMarquee} key={`second-${index}`}>
-                          <div className={style.stars}>
-                            {[...Array(Number(review.stars))].map((_, i) => (
-                              <span key={i}>★</span>
-                            ))}
-                          </div>
+                          <div className={style.stars}>{[...Array(Number(review.stars))].map((_, i) => <span key={i}>★</span>)}</div>
                           <p className={style.testimonialText}>{review.comment}</p>
                           <div className={style.testimonialAuthor}>
-                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                              <circle cx="12" cy="7" r="4"></circle>
-                            </svg>}
-
-                            <div className={style.authorInfo}>
-                              <h5>{review.clientName}</h5>
-                              <span>{review.position}</span>
-                            </div>
+                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>}
+                            <div className={style.authorInfo}><h5>{review.clientName}</h5><span>{review.position}</span></div>
                           </div>
                         </div>
                       ))}
@@ -540,31 +536,11 @@ export default function Pricing() {
                     {review.map((review, index) => (
                       <div className="col-md-4 mb-5" key={index}>
                         <div className={style.testimonialCard}>
-                          <div className={style.stars}>
-                            {[...Array(Number(review.stars))].map((_, i) => (
-                              <span key={i}>★</span>
-                            ))}
-                          </div>
+                          <div className={style.stars}>{[...Array(Number(review.stars))].map((_, i) => <span key={i}>★</span>)}</div>
                           <p className={style.testimonialText}>{review.comment}</p>
                           <div className={style.testimonialAuthor}>
-                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                              <circle cx="12" cy="7" r="4"></circle>
-                            </svg>}
-
-                            <div className={style.authorInfo}>
-                              <h5>{review.clientName}</h5>
-                              <span>{review.position}</span>
-                            </div>
+                            {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>}
+                            <div className={style.authorInfo}><h5>{review.clientName}</h5><span>{review.position}</span></div>
                           </div>
                         </div>
                       </div>
@@ -576,7 +552,6 @@ export default function Pricing() {
           }
         </div>
       </section>
-      {/* ===================== END BUNDLES CAROUSEL ===================== */}
 
       {/* ===================== INDIVIDUAL FEATURES CAROUSEL ===================== */}
       <section id="individual-features" className={`${style.individual_features_section}`}>
@@ -587,14 +562,12 @@ export default function Pricing() {
           </div>
 
           <div className={style.carousel_wrapper}>
-            {/* Arrow Left */}
             <button className={style.carousel_arrow} onClick={goIndividualPrev} aria-label="Previous">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M15 18L9 12L15 6" stroke="#3D1B6A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
 
-            {/* 3 visible cards */}
             {individualFeatures.length > 0 && (
               <div className={style.carousel_track}>
                 {visibleIndividualIndices.map((featIdx, position) => {
@@ -602,17 +575,32 @@ export default function Pricing() {
                   const isCenter = position === 1
                   return (
                     <div
-                      key={featIdx}
-                      className={`${style.individual_card} ${isCenter ? style.carousel_card_active : style.carousel_card_side}`}
-                      onClick={() => !isCenter && setActiveIndividualIndex(featIdx)}
+                      key={`${featIdx}-${activeIndividualIndex}`}
+                      className={`
+                        ${style.individual_card}
+                        ${isCenter ? style.carousel_card_active : style.carousel_card_side}
+                        ${getCardAnimClass(position, indivDir)}
+                      `}
+                      onClick={() => {
+                        if (!isCenter) {
+                          position === 2 ? goIndividualNext() : goIndividualPrev()
+                        }
+                      }}
                     >
-                      {feat.isBestValue && <div className={`${style.individual_badge}`}>Best Value</div>}
+                      {/* {<div className={`${style.individual_badge}`}>Best Value</div>} */}
 
-                      <div className={`${style.individual_icon}`}>
+                      <div className={`${style.individual_discount}`}>
+                        <div className={`${style.individual_icon}`}>
+                          {icons[featureIcons[featIdx]]}
 
-                        {icons[featureIcons[featIdx]]}
-
+                        </div>
+                        {feat?.isOnSale && feat?.salePercentage > 0 && (
+                          <span className={style.discount_badge}>
+                            {Math.round(feat.salePercentage)}% OFF
+                          </span>
+                        )}
                       </div>
+
 
                       <div className={`${style.individual_content}`}>
                         <h3 className={`${style.individual_name}`}>{feat.name}</h3>
@@ -621,16 +609,35 @@ export default function Pricing() {
                         <div className={`${style.parent_individual_price}`}>
                           <div className={`${style.individual_price_parent}`}>
                             <span className={`${style.start}`}>starting from</span>
-                            <div className={`${style.individual_price}`}>
-                              <span className={`${style.individual_price_value}`}>EGP {feat.price}</span>
-                              <span className={`${style.individual_price_period}`}>/month</span>
+                            <div className={style.individual_price_parent}>
+
+                              {feat?.salePercentage && feat.salePercentage > 0 ? (
+                                <>
+                                  {/* السعر بعد الخصم */}
+                                  <div className={style.individual_price}>
+                                    <span className={style.individual_price_value}>
+                                      EGP {Math.round(feat.price * (1 - feat.salePercentage / 100))}
+                                    </span>
+                                    <span className={style.individual_price_period}>/month</span>
+                                  </div>
+
+                                  {/* السعر قبل الخصم */}
+                                  <span className={style.individual_old_price}>
+                                    EGP {feat.price} /month
+                                  </span>
+                                </>
+                              ) : (
+                                <div className={style.individual_price}>
+                                  <span className={style.individual_price_value}>
+                                    EGP {feat.price}
+                                  </span>
+                                  <span className={style.individual_price_period}>/month</span>
+                                </div>
+                              )}
+
                             </div>
-                            {feat?.salePercentage && feat.salePercentage > 0 ? (
-                              <span className={style.individual_old_price}>
-                                EGP {Math.round(feat.price / (1 - feat.salePercentage / 100))} /month
-                              </span>
-                            ) : null}
-                            <span className={`${style.custom}`}>Customizable by duration &amp; tokens</span>
+                            {/* <span className={`${style.custom}`}>Customizable by duration &amp; tokens</span> */}
+                            <span>{formatDuration(feat.durationInDays)} Commitment</span>
                           </div>
                         </div>
 
@@ -640,7 +647,15 @@ export default function Pricing() {
                           ))}
                         </ul>
 
-                        <button onClick={() => addToCart(feat.id)} className={`${style.btn} ${style.btn_individual}`}>Add To Estimate</button>
+                        <button
+                          onClick={() => addToCart(feat.id)}
+                          className={`${style.btn} ${style.btn_individual} ${isFeatureInCart(feat.id) ? style.btn_disabled : ""}`}
+                          disabled={isFeatureInCart(feat.id)}
+                        >
+                          {isFeatureInCart(feat.id)
+                            ? "Already Added"
+                            : "Add To Estimate"}
+                        </button>
                       </div>
                     </div>
                   )
@@ -648,7 +663,6 @@ export default function Pricing() {
               </div>
             )}
 
-            {/* Arrow Right */}
             <button className={style.carousel_arrow} onClick={goIndividualNext} aria-label="Next">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M9 18L15 12L9 6" stroke="#3D1B6A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -656,20 +670,21 @@ export default function Pricing() {
             </button>
           </div>
 
-          {/* Dot Indicators */}
           <div className={style.carousel_dots}>
             {individualFeatures.map((_, i) => (
               <button
                 key={i}
                 className={`${style.carousel_dot} ${i === activeIndividualIndex ? style.carousel_dot_active : ''}`}
-                onClick={() => setActiveIndividualIndex(i)}
+                onClick={() => {
+                  setIndivDir(i > activeIndividualIndex ? 'next' : 'prev')
+                  setActiveIndividualIndex(i)
+                }}
                 aria-label={`Feature ${i + 1}`}
               />
             ))}
           </div>
         </div>
       </section>
-      {/* ===================== END INDIVIDUAL FEATURES CAROUSEL ===================== */}
 
       <section className={`${style.comparison_section}`}>
         <div className={`${style.container}`}>
