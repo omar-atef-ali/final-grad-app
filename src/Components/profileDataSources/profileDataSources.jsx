@@ -1,6 +1,6 @@
 
 import React from 'react'
-import style from "../profileDataSources/ProfileDataSources.module.css"
+import style from './ProfileDataSources.module.css'
 
 export default function ProfileDataSources() {
   return <>
