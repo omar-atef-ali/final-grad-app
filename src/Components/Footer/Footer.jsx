@@ -24,7 +24,7 @@ export default function Footer() {
                     <div className={`${style.footer_column}`} >
                         <h3 className={`${style.footer_heading }`} >Product</h3>
                         <ul className={`${style.footer_links}`} >
-                            <li><a href="#">Features</a></li>
+                            <li><a href="/features">Features</a></li>
                             <li><a href="#">Pricing</a></li>
                             <li><a href="#">Free Demo</a></li>
                         </ul>

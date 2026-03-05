@@ -4,11 +4,12 @@ import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
+  useNavigate,
 } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import Layout from "./Components/Layout/Layout";
 import { Toaster } from "react-hot-toast";
-// import Protected from './Components/Protected/Protected'
+import Protected from './Components/Protected/Protected'
 import { userContext } from "./context/userContext";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import Register from "./Components/Register/Register";
@@ -26,47 +27,54 @@ import ProfileBilling from "./Components/ProfileBilling/ProfileBilling";
 import CheckEmail from "./Components/CheckEmail/CheckEmail";
 import ConfirmEmail from "./Components/ConfirmEmail/ConfirmEmail";
 import FeatureDetails from "./Components/FeatureDetails/FeatureDetails";
+import Cart from "./Components/Cart/Cart";
 import Demo from "./Components/Demo/Demo";
 import Pricing from "./Components/Pricing/Pricing";
 import Complete from "./Components/Complete/Complete";
+import SucessfulPaymet from "./Components/SucessfulPaymet/SucessfulPaymet";
 import Setup from "./Components/Setup/Setup";
+import ProfileDataSources from "./Components/profileDataSources/profileDataSources";
 
 let routers = createBrowserRouter([
-  { index: true, element: <Register /> },
+  { index: true, element: <Navigate to="/home" replace /> },
   { path: "/check-email", element: <CheckEmail /> },
   { path: "/confirm-email", element: <ConfirmEmail /> },
   { path: "/reset-password", element: <ResetPassword /> },
-   { path: "/change-password", element: <ChangePassword /> },
+  { path: "/change-password", element: <ChangePassword /> },
 
   { path: "google/callback", element: <GoogleCallback /> },
- 
+
 
   { path: "login", element: <Login /> },
   {
     path: "register",
-    element: <Navigate to="/" replace />,
+    element: <Register />,
   },
   {
     path: "/",
     element: <Layout />,
     children: [
+      { index: true, element: <Home /> },
       { path: "home", element: <Home /> },
-       { path: "demo", element: <Demo /> },
-       { path: "pricing", element: <Pricing /> },
+      { path: "demo", element: <Demo /> },
+      { path: "pricing", element: <Pricing /> },
       { path: "features", element: <Features /> },
       { path: "complete-data", element: <Complete /> },
+      { path: "success-payment", element: <SucessfulPaymet /> },
       { path: "Setup-page", element: <Setup /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
+      { path: "/cart", element: <Cart /> },
 
       {
         path: "profile",
-        element: <ProfileLayout />,
+        element: <Protected><ProfileLayout /></Protected>,
         children: [
-          { index: true, element: <ProfileInfo /> }, // /profile
-          { path: "info", element: <ProfileInfo /> }, // /profile/info
-          { path: "security", element: <ProfileSecurity /> }, // /profile/security
-          { path: "subscription", element: <ProfileSubscription /> }, // /profile/subscription
-          { path: "billing", element: <ProfileBilling /> }, // /profile/billing
+          { index: true, element: <Protected><ProfileInfo /></Protected> }, // /profile
+          { path: "info", element: <Protected> <ProfileInfo /> </Protected> }, // /profile/info
+          { path: "security", element: <Protected><ProfileSecurity /></Protected> }, // /profile/security
+          { path: "subscription", element: <Protected> <ProfileSubscription /> </Protected> }, // /profile/subscription
+          { path: "billing", element: <Protected> <ProfileBilling /> </Protected> }, // /profile/billing
+          { path: "data-sources", element: <Protected> <ProfileDataSources /> </Protected> }, // /profile/data-sources
         ],
       },
     ],
@@ -80,6 +88,7 @@ function App() {
       setUserToken(localStorage.getItem("token"));
     }
   }, []);
+
 
   return (
     <>

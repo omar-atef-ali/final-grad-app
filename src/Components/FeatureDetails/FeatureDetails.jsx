@@ -15,12 +15,8 @@ export default function FeatureDetails() {
   async function getFeatureeDetails() {
 
     try {
-      let { data } = await api.get(`/Services/${id}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`
-        }
-      });
-      console.log(data);
+      let { data } = await api.get(`/Services/${id}`);
+      // console.log(data);
       setfeatureDetails(data)
     } catch (error) {
       console.log(error);
@@ -52,23 +48,19 @@ export default function FeatureDetails() {
   }
 
   useEffect(() => {
-    if (id && userToken) {
+    if (id ) {
       getFeatureeDetails();
     }
-  }, [id, userToken]);
+  }, [id]);
 
   // console.log(id)
 
   useEffect(() => {
-    if (!id || !userToken) return
+    if (!id ) return
     const fetchReviews = async () => {
       try {
 
-        let { data } = await api.get(`/Reviews/service/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${userToken}`
-          }
-        });
+        let { data } = await api.get(`/Reviews/service/${id}`);
         setReview(data);
         console.log(data);
 
@@ -100,10 +92,9 @@ export default function FeatureDetails() {
         );
       }
     };
-    if (userToken) {
+
       fetchReviews();
-    }
-  }, [userToken, id]);
+  }, [id]);
 
 
 
@@ -295,6 +286,7 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
+
                           {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
@@ -311,7 +303,7 @@ export default function FeatureDetails() {
 
                           <div className={style.authorInfo}>
                             <h5>{review.clientName}</h5>
-                            <span>{review.position}</span>
+                            <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                           </div>
                         </div>
                       </div>
@@ -327,6 +319,7 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
+
                           {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
@@ -343,7 +336,7 @@ export default function FeatureDetails() {
 
                           <div className={style.authorInfo}>
                             <h5>{review.clientName}</h5>
-                            <span>{review.position}</span>
+                            <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                           </div>
                         </div>
                       </div>
@@ -362,6 +355,7 @@ export default function FeatureDetails() {
                         </div>
                         <p className={style.testimonialText}>{review.comment}</p>
                         <div className={style.testimonialAuthor}>
+
                           {review.imageURL ? <img src={`https://deebai.runasp.net${review?.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                             width="20"
                             height="20"
@@ -378,7 +372,7 @@ export default function FeatureDetails() {
 
                           <div className={style.authorInfo}>
                             <h5>{review.clientName}</h5>
-                            <span>{review.position}</span>
+                            <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                           </div>
                         </div>
                       </div>

@@ -9,6 +9,7 @@ export default function Complete() {
     const [completeData,setCompleteData]=useState([])
     const { userToken } = useContext(userContext)
 
+
     async function getCompleteData() {
         try {
             let { data } = await api.get(`/Orders/last-services`,
@@ -18,7 +19,7 @@ export default function Complete() {
             console.log(data)
         } catch (error) {
             console.log(error)
-            toast.error(error.response?.data?.errors[1])
+            // toast.error(error.response?.data?.errors[1])
         }
     }
     useEffect(()=>{
@@ -78,8 +79,8 @@ export default function Complete() {
                             }
                             {/* <button className={`${style.action_btn} ${style.secondary}`}>
                         <svg viewBox="0 0 16 16" fill="none">
-                            <path d="M11 3.5L6.75 7.75L4.25 5.25L1 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M1.5 1.5V9.5C1.5 9.76522 1.60536 10.0196 1.79289 10.2071C1.98043 10.3946 2.23478 10.5 2.5 10.5H10.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11 3.5L6.75 7.75L4.25 5.25L1 8.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M1.5 1.5V9.5C1.5 9.76522 1.60536 10.0196 1.79289 10.2071C1.98043 10.3946 2.23478 10.5 2.5 10.5H10.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                         Dashboard
                         <i className={`fa-regular fa-circle-check ${style.action_btn_icon}`}></i>

@@ -18,20 +18,14 @@ export default function Login() {
 
   let [showPassword, setShowPassword] = useState(false);
 
-  const [rememberMe, setRememberMe] = useState(false);
+
 
   async function submit(values) {
     try {
       setLoading(true);
       const { data } = await api.post("/Auth", values);
-      if (rememberMe) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("refreshToken", data.refreshToken);
-      } else {
-        sessionStorage.setItem("token", data.token);
-        sessionStorage.setItem("refreshToken", data.refreshToken);
-      }
-
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
       setUserToken(data.token);
       navigate("/home");
       setLoading(false);
@@ -83,6 +77,7 @@ export default function Login() {
     initialValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
     validationSchema: validationLogin,
     onSubmit: submit,
@@ -93,7 +88,8 @@ export default function Login() {
   const loginWithGoogle = () => {
     const clientId =
       "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
-    const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    // const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    const redirectUri = `http://localhost:5173/google/callback`;
     const scope = "openid email profile";
     const responseType = "code";
 
@@ -300,9 +296,10 @@ export default function Login() {
                     <label className={`${style.rememberMe}`}>
                       <input
                         type="checkbox"
+                        name="rememberMe"
                         className={`${style.checkbox}`}
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
+                        checked={formik.values.rememberMe}
+                        onChange={formik.handleChange}
                       />
                       <span className={`${style.rememberText}`}>
                         Remember Me

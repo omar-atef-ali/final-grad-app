@@ -1,0 +1,951 @@
+:root {
+    --purple-main: #8239ac;
+    --purple-dark: #3d1b6a;
+    --purple-light-bg: #f3f3f5;
+    --text-dark: #323130;
+    --text-black: #0a0a0a;
+    --text-grey: #605e5c;
+    --text-light-grey: #8a8886;
+    --green-main: #107c10;
+    --green-bg: #dff6dd;
+    --border-color: #e1dfdd;
+    --font-primary: 'Roboto', sans-serif;
+    --font-secondary: 'Arimo', sans-serif;
+    --primary-purple: #3D1B6A;
+    --secondary-purple: #8A45B2;
+    --mid-purple: #4E3074;
+    --light-purple: rgba(138, 69, 178, 0.1);
+    --border-purple: rgba(138, 69, 178, 0.2);
+    --dark-text: #0A0A0A;
+    --gray-text: #717182;
+    --success-green: #00A63E;
+    --light-green: #DCfce7;
+    --white: #FFFFFF;
+    --shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+
+
+
+
+/* Typography Overrides */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-primary);
+    color: var(--text-black);
+}
+
+.text-purple {
+    color: var(--purple-main) !important;
+}
+
+.text-green {
+    color: var(--green-main) !important;
+}
+
+.bg-purple-main {
+    background-color: var(--purple-main) !important;
+}
+
+
+.bg-light-gray {
+    background-color: var(--purple-light-bg) !important;
+}
+
+
+/* Layout */
+.container-custom {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+
+/* Buttons */
+.btn-gradient {
+    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
+    color: white;
+    border: 1px solid var(--primary-purple);
+    /* padding: 12px 24px; */
+    height: 35px;
+    width: 170px;
+    border-radius: 8px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-gradient:hover {
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1);
+}
+
+
+.btn-outline-custom {
+    background-color: white;
+    height: 35px;
+    width: 170px;
+    border-radius: 8px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    background: var(--white);
+    color: var(--primary-purple);
+    border: 0.8px solid var(--secondary-purple) !important;
+    box-shadow: var(--shadow);
+    width: 100%;
+}
+
+.btn-outline-custom:hover {
+    background-color: #f7f7f7;
+    color: var(--text-dark);
+}
+
+.btnBack {
+    padding: 3px 5px !important;
+    margin-right: 9px !important;
+}
+
+.btnBack:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+
+
+/* Main Content */
+.main-content {
+    min-height: calc(100vh - 64px - 300px);
+    /* Adjust based on footer */
+}
+
+.page-header {
+    background-color: var(--purple-light-bg);
+    border-radius: 8px;
+    padding: 16px 24px !important;
+}
+
+
+.summary-card {
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: none;
+    position: sticky !important;
+    top: 80px !important;
+    z-index: 10 !important;
+
+
+}
+
+.summary-card .card-header {
+    background-color: var(--purple-light-bg);
+    border-bottom: 1px solid var(--border-color);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 30px 24px;
+}
+
+.summary-card .card-body {
+    padding: 16px 24px 24px 24px;
+}
+
+
+/* Slider Customization */
+.slider-container {
+    position: relative;
+    height: 44px;
+    padding-top: 10px;
+}
+
+.slider-track {
+    height: 8px;
+    border-radius: 10px;
+    /* Gradient matches the design: Purple for progress, Light Grey for remaining */
+    background: linear-gradient(90deg, rgb(78, 48, 116) 0%, rgb(138, 69, 178) 25%, rgb(225, 223, 221) 25%, rgb(225, 223, 221) 100%);
+    width: 100%;
+    position: absolute;
+    top: 10px;
+}
+
+/* Invisible Range Input for Interaction */
+.range-input {
+    width: 100%;
+    position: absolute;
+    top: 5px;
+    /* Aligned with track/thumb */
+    height: 18px;
+    /* Match thumb height for touch area */
+    opacity: 0;
+    cursor: pointer;
+    z-index: 20;
+    /* On top of everything */
+    margin: 0;
+    pointer-events: auto;
+    /* Ensure it captures clicks */
+}
+
+/* Ensure visual elements don't block clicks if needed, 
+   but thumb needs z-index for visual layering. 
+   Input having higher z-index solves it. */
+
+.slider-thumb {
+    width: 18px;
+    height: 18px;
+    background-color: transparent;
+    background-color: white;
+    border: 4px solid var(--purple-dark);
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    /* left is handled by inline style now */
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    /* Let clicks pass through to input */
+}
+
+.slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    transform: translateX(-50%);
+    background-color: rgb(225, 223, 221);
+    transition: background-color 0.1s;
+    pointer-events: none;
+    /* Let clicks pass through to input */
+}
+
+/* Labels */
+.slider-labels span {
+    width: 20px;
+    text-align: center;
+    color: var(--text-grey);
+    font-size: 12px;
+}
+
+.slider-labels span.fw-bold {
+    color: var(--text-dark);
+}
+
+
+
+/* Utilities */
+
+.text-sm {
+    font-size: 14px !important;
+}
+
+.divider {
+    border-color: var(--border-color);
+    opacity: 1;
+}
+
+/* Input override */
+
+
+
+.pricing-card {
+    width: 100%;
+    max-width: 832px;
+    background: white;
+    border-radius: 16px;
+    border: 0.8px solid #eeecef;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* ===========================
+   CARD HEADER
+   =========================== */
+
+.card-header-custom {
+    background-color: #f5f4f6;
+    padding: 24px;
+    padding-bottom: 32px;
+}
+
+.icon-box-gradient {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(180deg, #3d1b6a 0%, #4e3074 50%, #8a45b2 100%);
+    border-radius: 14px;
+    border: 0.8px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.card-title-custom {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #302f31;
+    margin: 0;
+    margin-bottom: 8px;
+}
+
+.card-subtitle-custom {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #302f31;
+    margin: 0;
+}
+
+.btn-close-custom {
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.btn-close-custom:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ===========================
+   CARD BODY
+   =========================== */
+
+.card-body-custom {
+    padding: 24px;
+    padding-top: 24px;
+    padding-bottom: 40px;
+}
+
+/* ===========================
+   CONFIG SECTION
+   =========================== */
+
+.config-section {
+    margin-bottom: 24px;
+}
+
+.section-title-custom {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #3d1b6a;
+    margin: 0;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+
+/* ===========================
+   FORM ELEMENTS
+   =========================== */
+
+.form-label-custom {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #3d1b6a;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.form-select-custom {
+    width: 100%;
+    height: 36px;
+    background: white;
+    border: 1.6px solid rgba(138, 69, 178, 0.3);
+    border-radius: 10px;
+    padding: 0 13.6px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #0a0a0a;
+    appearance: none;
+    cursor: pointer;
+}
+
+.form-select-custom:focus {
+    outline: none;
+    border-color: #8a45b2;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 13.6px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* ===========================
+   DISCOUNT BOX
+   =========================== */
+
+.discount-box {
+    margin-top: 16px;
+    background: #f0fdf4;
+    border: 1.6px solid #b9f8cf;
+    border-radius: 14px;
+    padding: 17.6px;
+}
+
+.discount-icon {
+    width: 32px;
+    height: 32px;
+    background: #00c950;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.discount-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #016630;
+    margin: 0;
+}
+
+.discount-subtitle {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #00a63e;
+    margin: 0;
+}
+
+/* ===========================
+   DIVIDER
+   =========================== */
+
+.divider-custom {
+    height: 1px;
+    background: rgba(138, 69, 178, 0.2);
+    margin-bottom: 24px;
+}
+
+/* ===========================
+   COST BREAKDOWN
+   =========================== */
+
+.cost-breakdown-section {
+    background: linear-gradient(158.299deg, rgba(61, 27, 106, 0.05) 0%, rgba(138, 69, 178, 0.05) 100%);
+    border: 1.6px solid rgba(138, 69, 178, 0.2);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.section-title-breakdown {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #3d1b6a;
+    margin: 0;
+    margin-bottom: 12px;
+}
+
+.cost-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
+.cost-label {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #717182;
+}
+
+.cost-value {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #3d1b6a;
+    text-align: right;
+}
+
+.cost-label-green {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #008236;
+}
+
+.cost-value-green {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #008236;
+    text-align: right;
+}
+
+.cost-divider-thin {
+    height: 1px;
+    background: rgba(138, 69, 178, 0.2);
+    margin: 10px 0;
+}
+
+.cost-divider-thick {
+    height: 1px;
+    background: rgba(138, 69, 178, 0.3);
+    margin: 10px 0;
+}
+
+.total-cost-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    min-height: 56px;
+}
+
+.total-label {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #3d1b6a;
+}
+
+.total-value-wrapper {
+    text-align: right;
+}
+
+.total-value {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    background: linear-gradient(90deg, #3d1b6a 0%, #8a45b2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.total-subtitle {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #717182;
+    margin-top: -4px;
+}
+
+/* ===========================
+   RESPONSIVE STYLES
+   =========================== */
+
+@media (max-width: 991px) {
+    .pricing-card {
+        width: 100%;
+        max-width: 832px;
+    }
+}
+
+@media (max-width: 767px) {
+    .pricing-card {
+        border-radius: 12px;
+    }
+
+    .card-header-custom {
+        padding: 20px;
+        padding-bottom: 28px;
+    }
+
+    .card-body-custom {
+        padding: 20px;
+        padding-bottom: 32px;
+    }
+
+    .icon-box-gradient {
+        width: 48px;
+        height: 48px;
+    }
+
+    .icon-box-gradient svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .card-title-custom {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .card-subtitle-custom {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .cost-breakdown-section {
+        padding: 20px;
+    }
+
+    .total-value {
+        font-size: 20px;
+        line-height: 28px;
+    }
+}
+
+@media (max-width: 575px) {
+    .card-header-custom {
+        padding: 16px;
+        padding-bottom: 24px;
+    }
+
+    .card-body-custom {
+        padding: 16px;
+        padding-bottom: 24px;
+    }
+
+    .d-flex.gap-3 {
+        gap: 12px !important;
+    }
+
+    .icon-box-gradient {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+    }
+
+    .icon-box-gradient svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .card-title-custom {
+        font-size: 16px;
+        line-height: 22px;
+        margin-bottom: 6px;
+    }
+
+    .card-subtitle-custom {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .section-title-custom {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .form-label-custom {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .form-select-custom {
+        font-size: 13px;
+        padding: 0 12px;
+    }
+
+    .discount-box {
+        padding: 14px;
+    }
+
+    .discount-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .discount-icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .discount-title {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .discount-subtitle {
+        font-size: 11px;
+        line-height: 14px;
+    }
+
+    .cost-breakdown-section {
+        padding: 16px;
+    }
+
+    .section-title-breakdown {
+        font-size: 15px;
+        line-height: 22px;
+    }
+
+    .cost-label,
+    .cost-value,
+    .cost-label-green,
+    .cost-value-green {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .total-label {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .total-value {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .total-subtitle {
+        font-size: 11px;
+        line-height: 14px;
+    }
+
+    .total-cost-row {
+        min-height: 48px;
+    }
+}
+
+
+
+.empty-state-card {
+    background: white;
+    border-radius: 16px;
+    border: 0.8px solid #e1dfdd;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+    padding: 56px 80px;
+    max-width: 100%;
+    width: 100%;
+}
+
+/* ===========================
+   ICON CIRCLE
+   =========================== */
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(61, 27, 106, 0.1) 0%, rgba(138, 69, 178, 0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===========================
+   TYPOGRAPHY
+   =========================== */
+
+.empty-state-heading {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: #3d1b6a;
+    margin-bottom: 0;
+}
+
+.empty-state-description {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #717182;
+    max-width: 448px;
+    margin: 0 auto;
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+
+.btn-primary-gradient {
+    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    height: 36px;
+    width: 136px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary-gradient:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary-gradient:active {
+    transform: translateY(0);
+    box-shadow: 0px 8px 12px 0px rgba(0, 0, 0, 0.1), 0px 3px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary-outline {
+    background: white;
+    border: 1.6px solid #8a45b2;
+    border-radius: 8px;
+    padding: 9.6px 17.6px;
+    height: 36px;
+    width: 136px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #3d1b6a;
+    cursor: pointer;
+    box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-secondary-outline:hover {
+    background-color: #f7f7f7;
+}
+
+.btn-secondary-outline:active {
+    transform: translateY(0);
+    box-shadow: 1px 3px 3px 0px rgba(0, 0, 0, 0.25);
+}
+
+/* ===========================
+   BOOTSTRAP UTILITIES OVERRIDE
+   =========================== */
+
+.gap-3 {
+    gap: 16px !important;
+}
+
+.mb-4 {
+    margin-bottom: 24px !important;
+}
+
+/* ===========================
+   RESPONSIVE STYLES
+   =========================== */
+
+@media (max-width: 991px) {
+    .empty-state-card {
+        max-width: 100%;
+        padding: 48px 60px;
+    }
+}
+
+@media (max-width: 767px) {
+    .empty-state-card {
+        padding: 40px 32px;
+    }
+
+    .empty-state-heading {
+        font-size: 22px;
+        line-height: 28px;
+    }
+
+    .empty-state-description {
+        font-size: 15px;
+        line-height: 22px;
+        max-width: 100%;
+    }
+
+    .icon-circle {
+        width: 72px;
+        height: 72px;
+    }
+
+    .icon-circle svg {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 575px) {
+    .empty-state-card {
+        padding: 32px 24px;
+        border-radius: 12px;
+    }
+
+    .empty-state-heading {
+        font-size: 20px;
+        line-height: 26px;
+    }
+
+    .empty-state-description {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .icon-circle {
+        width: 64px;
+        height: 64px;
+    }
+
+    .icon-circle svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-primary-gradient,
+    .btn-secondary-outline {
+        width: 130px;
+        font-size: 13px;
+    }
+
+    .d-flex.gap-3 {
+        flex-wrap: wrap;
+        gap: 12px !important;
+    }
+
+    .btn-primary-gradient,
+    .btn-secondary-outline {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 400px) {
+    .empty-state-card {
+        padding: 24px 16px;
+    }
+
+    .empty-state-heading {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .empty-state-description {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .icon-circle {
+        width: 56px;
+        height: 56px;
+    }
+
+    .icon-circle svg {
+        width: 28px;
+        height: 28px;
+    }
+}

@@ -35,14 +35,9 @@ export default function Home() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        // مش محتاج تبعت الهيدر لو الـ api.js بيحطه تلقائي، بس لو عايز تأكد عليه تمام
-        let { data } = await api.get("Reviews/landing-page", {
-          headers: {
-            "Authorization": `Bearer ${userToken}`
-          }
-        });
+        let { data } = await api.get("Reviews/landing-page");
         setReview(data);
-        // console.log(data);
+        console.log(data);
 
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -72,10 +67,10 @@ export default function Home() {
         );
       }
     };
-    if (userToken) { // تأكد إن التوكن موجود قبل الطلب لو ضروري
+    
       fetchReviews();
-    }
-  }, [userToken]);
+  
+  }, []);
 
   ///////////////////////////////////////////////////////////////
 
@@ -85,11 +80,7 @@ export default function Home() {
   useEffect(() => {
     const fetchFeatures = async () => {
       try {
-        const { data } = await api.get("Services", {
-          headers: {
-            Authorization: `Bearer ${userToken}`
-          }
-        })
+        const { data } = await api.get("Services")
         // console.log(data);
         setFeature(data)
 
@@ -122,11 +113,11 @@ export default function Home() {
 
       }
     }
-    if (userToken) { // تأكد إن التوكن موجود قبل الطلب لو ضروري
+     // تأكد إن التوكن موجود قبل الطلب لو ضروري
       fetchFeatures()
-    }
+  
 
-  }, [userToken])
+  }, [])
 
 
 
@@ -145,8 +136,10 @@ export default function Home() {
                 Namaa helps you understand your data with AI dashboards and smart assistants—so you can act faster and grow with confidence.
               </p>
               <div className="d-flex gap-3">
-                <button className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}>Try Free Demo →</button>
-                <button className={`btn ${style.btnSecondaryCustom}`} style={{ fontSize: "14px" }}>Explore Features</button>
+                <button onClick={() => navigate("/demo")} className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3.33333 3.33335C3.33326 3.09874 3.3951 2.86827 3.51259 2.66521C3.63008 2.46214 3.79907 2.29368 4.0025 2.17681C4.20593 2.05995 4.43659 1.99883 4.67119 1.99963C4.9058 2.00042 5.13604 2.06311 5.33867 2.18135L13.3367 6.84668C13.5385 6.9638 13.7061 7.13185 13.8226 7.33402C13.9392 7.53619 14.0006 7.76541 14.0008 7.99877C14.001 8.23213 13.94 8.46146 13.8238 8.66384C13.7076 8.86621 13.5403 9.03455 13.3387 9.15202L5.33867 13.8187C5.13604 13.9369 4.9058 13.9996 4.67119 14.0004C4.43659 14.0012 4.20593 13.9401 4.0025 13.8232C3.79907 13.7064 3.63008 13.5379 3.51259 13.3348C3.3951 13.1318 3.33326 12.9013 3.33333 12.6667V3.33335Z" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                </svg> Try Free Demo</button>
+                <button onClick={() => navigate("/features")} className={` ${style.btnSecondaryCustom}`} style={{ fontSize: "14px" }}>Explore Features</button>
               </div>
             </div>
             <div className="col-lg-6">
@@ -237,17 +230,26 @@ export default function Home() {
               <div className={style.featureShowcase}>
                 <div className="row justify-content-between h-100">
                   <div className="col-lg-5 mb-4 mb-lg-0" style={{ paddingLeft: "64px", paddingTop: "64px" }}>
-                    <div className="d-inline-flex align-items-center justify-content-center rounded-3 bg-light">
-                      {activeFeature.icon && iconMap[activeFeature.icon] ?
-                        React.createElement(iconMap[activeFeature.icon], {
-                          style: { width: "32px", height: "32px", color: "var(--primary-purple)", marginBottom: "24px" }
-                        }) :
-                        <Sparkles style={{ width: "32px", height: "32px", color: "var(--primary-purple)", marginBottom: "24px" }} />
-                      }
+                    <div className={`${style.featureIconSmall} mb-4`} style={{ margin: "0 0 24px 0" }}>
+                      {activeFeature.iconURL && (activeFeature.iconURL.startsWith('/') || activeFeature.iconURL.startsWith('http')) ? (
+                        <img
+                          src={activeFeature.iconURL.startsWith('http') ? activeFeature.iconURL : `https://deebai.runasp.net${activeFeature.iconURL}`}
+                          className={style.featureIcon}
+                          alt=""
+                        />
+                      ) : activeFeature.iconURL && iconMap[activeFeature.iconURL] ? (
+                        React.createElement(iconMap[activeFeature.iconURL], {
+                          className: style.featureIcon
+                        })
+                      ) : (
+                        <Sparkles className={style.featureIcon} />
+                      )}
                     </div>
                     <h3 className="mb-3 fw-bold">{activeFeature.name || activeFeature.title}</h3>
-                    <p style={{ marginBottom: "44px" }}>{activeFeature.description}</p>
-                    <button onClick={() => navigate(`/feature-details/${activeFeature.id}`)} className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}>Learn More →</button>
+                    <p style={{ marginBottom: "44px" }}>{activeFeature.subTitle}</p>
+                    <button onClick={() => navigate(`/feature-details/${activeFeature.id}`)} className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3.33333 3.33335C3.33326 3.09874 3.3951 2.86827 3.51259 2.66521C3.63008 2.46214 3.79907 2.29368 4.0025 2.17681C4.20593 2.05995 4.43659 1.99883 4.67119 1.99963C4.9058 2.00042 5.13604 2.06311 5.33867 2.18135L13.3367 6.84668C13.5385 6.9638 13.7061 7.13185 13.8226 7.33402C13.9392 7.53619 14.0006 7.76541 14.0008 7.99877C14.001 8.23213 13.94 8.46146 13.8238 8.66384C13.7076 8.86621 13.5403 9.03455 13.3387 9.15202L5.33867 13.8187C5.13604 13.9369 4.9058 13.9996 4.67119 14.0004C4.43659 14.0012 4.20593 13.9401 4.0025 13.8232C3.79907 13.7064 3.63008 13.5379 3.51259 13.3348C3.3951 13.1318 3.33326 12.9013 3.33333 12.6667V3.33335Z" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg> Learn More</button>
                   </div>
                   <div className="col-lg-5 h-100">
                     <div className={`${style.featureImageContainer} overflow-hidden border shadow-sm`}>
@@ -390,7 +392,7 @@ export default function Home() {
                       </div>
                       <p className={style.testimonialText}>{review.comment}</p>
                       <div className={style.testimonialAuthor}>
-                        {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                        {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                           width="20"
                           height="20"
                           viewBox="0 0 24 24"
@@ -406,7 +408,7 @@ export default function Home() {
 
                         <div className={style.authorInfo}>
                           <h5>{review.clientName}</h5>
-                          <span>{review.position}</span>
+                          <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                         </div>
                       </div>
                     </div>
@@ -422,7 +424,7 @@ export default function Home() {
                       </div>
                       <p className={style.testimonialText}>{review.comment}</p>
                       <div className={style.testimonialAuthor}>
-                        {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                        {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                           width="20"
                           height="20"
                           viewBox="0 0 24 24"
@@ -438,7 +440,8 @@ export default function Home() {
 
                         <div className={style.authorInfo}>
                           <h5>{review.clientName}</h5>
-                          <span>{review.position}</span>
+                          <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
+
                         </div>
                       </div>
                     </div>
@@ -457,7 +460,7 @@ export default function Home() {
                       </div>
                       <p className={style.testimonialText}>{review.comment}</p>
                       <div className={style.testimonialAuthor}>
-                        {review.imageURL ? <img src={review.imageURL} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
+                        {review.imageURL ? <img src={`https://deebai.runasp.net${review.imageURL}`} className={style.reviewImg} style={{ overflow: "hidden", padding: 0 }} alt="" /> : <svg
                           width="20"
                           height="20"
                           viewBox="0 0 24 24"
@@ -473,7 +476,7 @@ export default function Home() {
 
                         <div className={style.authorInfo}>
                           <h5>{review.clientName}</h5>
-                          <span>{review.position}</span>
+                          <span>{review.position}{review.position && review.companyName ? `,` : ""} {review.companyName}</span>
                         </div>
                       </div>
                     </div>
@@ -492,8 +495,8 @@ export default function Home() {
             <h2 className="fw-bold mb-4" style={{ fontSize: "36px", color: "var(--text-dark)" }}>Ready to Transform Your Business Data?</h2>
             <p className="mb-5 mx-auto" style={{ maxWidth: "600px", color: "var(--text-gray)", fontSize: "18px" }}>Join 1,000+ businesses using Namaa to make smarter, data-driven decisions today.</p>
             <div className="d-flex justify-content-center gap-3">
-              <button className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}>Try Free Demo</button>
-              <button className={`${style.btnSecondaryCustom}`} style={{ fontSize: "14px" }}>View Pricing</button>
+              <button onClick={() => navigate("/demo")} className={` ${style.btnPrimaryCustom}`} style={{ fontSize: "14px" }}>Try Free Demo</button>
+              <button onClick={() => navigate("/pricing")} className={`${style.btnSecondaryCustom}`} style={{ fontSize: "14px" }}>View Pricing</button>
             </div>
           </div>
         </div>

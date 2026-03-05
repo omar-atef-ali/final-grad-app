@@ -5,6 +5,7 @@ import { userContext } from "../../context/userContext";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../../utils/imageUrl";
+import { CartContext } from "../../context/CartContextProvider";
 
 export default function ProfileLayout() {
 
@@ -138,28 +139,56 @@ export default function ProfileLayout() {
 
   /////////////////////////////////////////////////////////////
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const {setcartvalue} = useContext(CartContext);
+  const handleLogout = async () => {
     try {
-      const { data } = api.post("/Auth/sign-out", {
-        token: userToken,
-        refreshToken: localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken"),
+      const refreshToken = localStorage.getItem("refreshToken");
+      const res = await api.post("/Auth/sign-out", {
+        refreshToken: refreshToken,
       }, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
       });
+
+      // Clear data and redirect ONLY on success
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("refreshToken");
       setUserToken(null);
-      navigate("/login");
-      console.log(data);
+      navigate("/");
+      setcartvalue([]);
+
+      // toast.success("Successfully signed out");
+      // console.log(res);
+
     } catch (error) {
       console.log(error);
-
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Error signing out",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
     }
-  }
+  };
   return (
     <>
 
@@ -169,7 +198,7 @@ export default function ProfileLayout() {
 
           <div className={`${style.profile_header}`} >
             <div className={`${style.profile_header_left}`} >
-              <button className={`${style.back_btn}`} aria-label="Go back">
+              <button onClick={() => navigate(-1)} className={`${style.back_btn}`} aria-label="Go back">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 19L5 12L12 5" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M19 12H5" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
@@ -290,6 +319,14 @@ export default function ProfileLayout() {
                     }
                   >
                     Profile
+                  </NavLink>
+                  <NavLink
+                    to="/profile/data-sources"
+                    className={({ isActive }) =>
+                      `${style.Tab} ${isActive ? style.Active : ""}`
+                    }
+                  >
+                    Data Sources
                   </NavLink>
                   <NavLink
                     to="/profile/subscription"

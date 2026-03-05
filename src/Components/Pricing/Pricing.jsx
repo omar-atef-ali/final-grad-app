@@ -48,6 +48,7 @@ const TokenIcon = () => (
 
 export default function Pricing() {
   const { userToken } = useContext(userContext)
+
   const { getCart, cartvalue } = useContext(CartContext)
 
   const [activeIndex, setActiveIndex] = useState(0)
@@ -57,6 +58,7 @@ export default function Pricing() {
   const [bundles, setbundles] = useState([])
   const [review, setReview] = useState([])
   const [loadingPackageId, setLoadingPackageId] = useState(null)
+
 
   // direction state — drives which animation class gets applied
   const [bundleDir, setBundleDir] = useState('next')
@@ -119,17 +121,41 @@ export default function Pricing() {
     try {
       let { data } = await api.get(`/Packages`)
       setbundles(data)
-      console.log(data)
+      // console.log(data)
     } catch (error) {
       console.log(error)
-      toast.error(error.response?.data?.errors[1])
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while registration.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+
     }
   }
 
   async function getServiceCards() {
     try {
       let { data } = await api.get(`/Services/cards`)
-      console.log(data)
+      // console.log(data)
       setindividualFeatures(data)
     } catch (error) {
       console.log(error)
@@ -157,17 +183,45 @@ export default function Pricing() {
   // }
   async function addToCart(id) {
     try {
-      await api.post(`/Cart`,
-        { serviceId: id },
-        { headers: { Authorization: `Bearer ${userToken}` } }
-      )
-
-      toast.success("Added to cart")
-
+      let response = await api.post(`/Cart`, {
+        serviceId: id
+      }, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
+      console.log(response)
+      toast.success("Added to cart successfully");
       getCart()
 
-    } catch (error) {
-      toast.error(error.response?.data?.errors?.[1])
+    }
+    catch (error) {
+      console.log(error)
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while registration.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+
     }
   }
 
@@ -255,6 +309,54 @@ export default function Pricing() {
     if (position === 2) return dir === 'next' ? style.card_right_next : style.card_right_prev
   }
 
+
+  ////////////////////////////////////FAQS////////////////////////////////////////
+  let [FAQS, setFAQs] = useState([])
+  const [openFaqIndex, setOpenFaqIndex] = useState(null)
+
+  const toggleFaq = (index) => {
+    setOpenFaqIndex(openFaqIndex === index ? null : index)
+  }
+
+  useEffect(() => {
+
+    async function getFAQs() {
+      try {
+        let { data } = await api.get(`/FAQs`)
+        // console.log(data)
+        setFAQs(data)
+      }
+      catch (error) {
+        console.log(error)
+        toast.error(
+          error.response?.data?.errors[1] ||
+          "Something went wrong while registration.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "100%",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+      }
+    }
+    getFAQs()
+  }, [])
+
   return (
     <>
       <section className={`${style.hero_section}`}>
@@ -264,14 +366,17 @@ export default function Pricing() {
             <h1 className={`${style.hero_title}`}>Pay as you go</h1>
             <p className={`${style.hero_description}`}>Customize your plan based on duration and token usage. No lock-in, cancel anytime.</p>
             <div className={`${style.hero_buttons}`}>
-              <button className={`${style.btn} ${style.btn_gradient}`}>
-                <span>Build Your Custom Plan</span>
+              <button
+                className={`${style.btn} ${style.btn_gradient}`}
+                onClick={() => document.getElementById('individual-features')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <span >Build Your Custom Plan</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3.33301 8H12.6663" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M8 3.33333L12.6667 8L8 12.6667" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <button className={`${style.btn} ${style.btn_outline}`}>Start a Free Trial</button>
+              <button onClick={() => navigate("/demo")} className={`${style.btn} ${style.btn_outline}`}>Start a Free Trial</button>
             </div>
           </div>
         </div>
@@ -358,8 +463,8 @@ export default function Pricing() {
                           </span>
                         )}
                       </div>
-                      <p className={style.pricing_description}>{bundle.description}</p>
-                      {bundle.save && <span className={style.save_badge}>{bundle.save}</span>}
+                      <p className={`${style.pricing_description} mb-0`}>{bundle.description}</p>
+                      {bundle.saleAmount && <span className={style.save_badge}>Save EGP {bundle.saleAmount}/mo</span>}
                     </div>
 
                     <div className={style.pricing_amount}>
@@ -516,7 +621,7 @@ export default function Pricing() {
       </section>
 
       {/* ===================== INDIVIDUAL FEATURES CAROUSEL ===================== */}
-      <section className={`${style.individual_features_section}`}>
+      <section id="individual-features" className={`${style.individual_features_section}`}>
         <div className={`${style.container}`}>
           <div className={`${style.section_header}`}>
             <h2 className={`${style.section_title}`}>Individual Features</h2>
@@ -609,7 +714,6 @@ export default function Pricing() {
                           ))}
                         </ul>
 
-                        {/* <button onClick={() => addToCart(feat.id)} className={`${style.btn} ${style.btn_individual}`}>Add To Estimate</button> */}
                         <button
                           onClick={() => addToCart(feat.id)}
                           className={`${style.btn} ${style.btn_individual} ${isFeatureInCart(feat.id) ? style.btn_disabled : ""}`}
@@ -659,42 +763,27 @@ export default function Pricing() {
             <table className={`${style.comparison_table}`}>
               <thead>
                 <tr>
-                  <th>Feature</th><th>Start Bundle</th><th>Professional</th><th>Save Bundle</th><th>Individual</th>
+                  <th>Feature</th>{bundles.map((bundle, i) => <th key={bundle.id}>{bundle.name}</th>)}
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className={style.feature_name}>Smart Dashboards</td>
-                  <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></td>
-                  <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></td>
-                  <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></td>
-                  <td><span className={style.text_muted}>Add-on</span></td>
-                </tr>
-                <tr>
-                  <td className={style.feature_name}>AI Recommendations</td>
-                  <td><span className={style.text_muted}>100K tokens</span></td>
-                  <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></td>
-                  <td>-</td>
-                  <td><span className={style.text_muted}>Add-on</span></td>
-                </tr>
-                <tr>
-                  <td className={style.feature_name}>Code Automation</td>
-                  <td>-</td>
-                  <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></td>
-                  <td>-</td>
-                  <td><span className={style.text_muted}>Add-on</span></td>
-                </tr>
-                <tr>
-                  <td className={style.feature_name}>Priority Support</td>
-                  <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></td>
-                  <td><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></td>
-                  <td>-</td>
-                  <td><span className={style.text_muted}>Add-on</span></td>
-                </tr>
-                <tr>
-                  <td className={style.feature_name}>Usage Limits</td>
-                  <td>Unlimited</td><td>Unlimited</td><td>Limited</td><td>Varies</td>
-                </tr>
+                {individualFeatures.map((feature) => (
+                  <tr key={feature.id}>
+                    <td className={style.feature_name}>{feature.name}</td>
+                    {bundles.map(bundle => {
+                      const service = bundle.services?.find(s => s.name === feature.name);
+                      return (
+                        <td key={bundle.id}>
+                          {service ? (
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                              <path d="M16.6663 5L7.49967 14.1667L3.33301 10" stroke="#00A63E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          ) : "-"}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -708,13 +797,28 @@ export default function Pricing() {
             <p className={`${style.section_description}`}>Find answers to common questions about pricing</p>
           </div>
           <div className={`${style.faq_list}`}>
-            {[1, 2, 3, 4].map((_, i) => (
-              <div key={i} className={`${style.faq_item}`}>
-                <div className={`${style.faq_question}`}>
-                  <h3>Can I switch between plans?</h3>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            {FAQS.map((faq, i) => (
+              <div
+                key={faq.id}
+                className={`${style.faq_item} ${openFaqIndex === i ? style.active : ''}`}
+              >
+                <div
+                  className={`${style.faq_question}`}
+                  onClick={() => toggleFaq(i)}
+                >
+                  <h3>{faq.question}</h3>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    style={{ transform: openFaqIndex === i ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }}
+                  >
                     <path d="M19 9L12 16L5 9" stroke="#3D1B6A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
+                </div>
+                <div className={`${style.faq_answer}`}>
+                  <p>{faq.answer}</p>
                 </div>
               </div>
             ))}

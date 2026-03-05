@@ -1,0 +1,354 @@
+.mainContainer{
+    margin-top: 25px;
+}
+
+.tabPanel {
+    max-width: 1002px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Main Frame */
+.mainFrame {
+    background: white;
+    border-radius: 14px;
+    border: 1.6px solid rgba(138, 69, 178, 0.2);
+    overflow: hidden;
+}
+
+/* Header Section */
+.headerSection {
+    background: white;
+}
+
+.containerHeader {
+    padding: 15px 24px;
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.headerTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.headerText {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #0a0a0a;
+}
+
+.badgesWrapper {
+    display: flex;
+    gap: 16px;
+}
+
+/* Badge Styles */
+.badgeActive,
+.badgePending {
+    display: flex;
+    align-items: center;
+    gap: 8.8px;
+    padding: 3px 12px 3px 8.8px;
+    border-radius: 8px;
+    height: 22px;
+}
+
+.badgeActive {
+    background-color: #f0fdf4;
+    border: 0.8px solid #7bf1a8;
+}
+
+.badgeActive span {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #016630;
+}
+
+.badgePending {
+    background-color: #fef9c2;
+    border: 0.8px solid #ffdf20;
+}
+
+.badgePending span {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #a65f00;
+}
+
+/* Content Section */
+.contentSection {
+    padding: 0 24px 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* SQL Server Card */
+.sqlServerCard {
+    background: linear-gradient(158.439deg, rgba(61, 27, 106, 0.027) 0%, rgba(138, 69, 178, 0.055) 100%);
+    border: 1.6px solid rgba(138, 69, 178, 0.2);
+    border-radius: 14px;
+    padding: 25.6px;
+}
+
+.cardInner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Server Header */
+.serverHeader {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.serverIcon {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #3d1b6a 0%, #8a45b2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.serverInfo {
+    flex: 1;
+}
+
+.serverTitle {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: #3d1b6a;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.serverDate {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #717182;
+    margin: 8px 0 0 0;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+/* Connection Details */
+.connectionDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detailsHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detailsTitle {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #0a0a0a;
+    margin: 0;
+}
+
+.detailsGrid {
+    margin-top: 0;
+}
+
+/* Detail Item */
+.detailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.detailLabel {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #717182;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0;
+}
+
+.detailValue {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #0a0a0a;
+    margin: 0;
+    padding-top: 0;
+}
+
+.passwordField {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Warning Alert */
+.warningAlert {
+    background-color: #fef9c2;
+    border: 0.8px solid #ffdf20;
+    border-radius: 10px;
+    padding: 12.8px 16.8px;
+    display: flex;
+    gap: 12px;
+    min-height: 88px;
+    align-items: flex-start;
+}
+
+.alertIcon {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.alertContent {
+    flex: 1;
+}
+
+.alertTitle {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #a65f00;
+    margin: 0 0 3px 0;
+    letter-spacing: -0.35px;
+}
+
+.alertDescription {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #57544f;
+    margin: 0;
+}
+
+/* Security Box */
+.securityBox {
+    background-color: #f0fdf4;
+    border: 0.8px solid #b9f8cf;
+    border-radius: 14px;
+    padding: 24.8px;
+}
+
+.securityContent {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.securityIcon {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.securityText {
+    flex: 1;
+}
+
+.securityTitle {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #0d542b;
+    margin: 0 0 8px 0;
+}
+
+.securityDescription {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #016630;
+    margin: 0 0 16px 0;
+}
+
+.securityFeatures {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.featureItem span {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #008236;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .headerContent {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .badgesWrapper {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .serverHeader {
+        flex-direction: column;
+    }
+
+    .securityFeatures {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sqlServerCard {
+        padding: 20px;
+    }
+
+    .contentSection {
+        padding: 0 16px 24px 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .detailsGrid .col-md-6 {
+        margin-bottom: 16px;
+    }
+
+    .detailsGrid .col-md-6:last-child {
+        margin-bottom: 0;
+    }
+}

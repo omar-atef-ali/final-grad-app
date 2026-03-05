@@ -5,29 +5,49 @@ const api = axios.create({
 });
 
 
+const refreshClient = axios.create({
+  baseURL: "/api",
+});
+
+/* =========================
+   Refresh State
+========================= */
 
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach((p) => {
-    if (error) p.reject(error);
-    else p.resolve(token);
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(token);
+    }
   });
+
   failedQueue = [];
 };
 
+/* =========================
+   Request Interceptor
+========================= */
+
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
+
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    // console.log("📤 Sending request:", config.url);
+
     return config;
   },
   (error) => Promise.reject(error)
 );
+
+/* =========================
+   Response Interceptor
+========================= */
 
 api.interceptors.response.use(
   (response) => response,
@@ -35,102 +55,87 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (!error.response) return Promise.reject(error);
+    if (!error.response) {
+      return Promise.reject(error);
+    }
 
-    // === 401 AND not retried before ===
+    /* =========================
+       Handle 401
+    ========================= */
+
     if (error.response.status === 401 && !originalRequest._retry) {
-      console.log("⛔ 401 detected for:", originalRequest.url);
-      
-      let isLocal = null;
-      if(localStorage.getItem("token") !== null){
-        isLocal = true;
-      }else{
-        isLocal = false;
-      }
-    
-      const refreshToken = isLocal ? localStorage.getItem("refreshToken") : sessionStorage.getItem("refreshToken");
-      const oldToken = isLocal ? localStorage.getItem("token") : sessionStorage.getItem("token");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const oldToken = localStorage.getItem("token");
 
       if (!refreshToken) {
-        console.log("❌ No refresh token → logout");
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = "/";
         return Promise.reject(error);
       }
 
       originalRequest._retry = true;
 
+      /* =========================
+         If refresh already running
+      ========================= */
+
       if (isRefreshing) {
-        console.log("⏳ Refresh already in progress → queue request");
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
           .then((newToken) => {
-            originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-            console.log("🔁 Retrying queued request:", originalRequest.url);
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return api(originalRequest);
           })
           .catch((err) => Promise.reject(err));
       }
 
+      /* =========================
+         Start Refresh Flow
+      ========================= */
+
       isRefreshing = true;
-      console.log("♻️ Starting refresh flow...");
 
       try {
-        // أهم نقطة — استخدم نفس instance (api) مش axios
-        const res = await api.post("/Auth/refresh", {
-          token: oldToken,
+        const res = await refreshClient.post("/Auth/refresh", {
+          oldToken,
           refreshToken,
         });
 
-        const { token: newAccessToken, refreshToken: newRefreshToken } =
-          res.data;
+        const {
+          token: newAccessToken,
+          refreshToken: newRefreshToken,
+        } = res.data;
+        console.log("newToken added");
+        
 
-        if(isLocal){
-          localStorage.setItem("token", newAccessToken);
-          localStorage.setItem("refreshToken", newRefreshToken);
-        }else{
-          sessionStorage.setItem("token", newAccessToken);
-          sessionStorage.setItem("refreshToken", newRefreshToken);
-        }
+        /* Save new tokens */
+        localStorage.setItem("token", newAccessToken);
+        localStorage.setItem("refreshToken", newRefreshToken);
 
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
-
-        console.log("✅ Refresh success");
-        console.log("🔐 New token:", newAccessToken);
-
-        // حل كل requests اللي كانت مستنية
+        /* Resolve queued requests */
         processQueue(null, newAccessToken);
-        isRefreshing = false;
 
-        // retry للطلب اللي فشل
-        originalRequest.headers[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
+        /* Retry original request */
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-        console.log("🔁 Retrying original request:", originalRequest.url);
         return api(originalRequest);
       } catch (refreshError) {
-        console.log("❌ Refresh failed. Logging out...");
-        console.log("🔥 Full error:", refreshError);
-
         processQueue(refreshError, null);
-        isRefreshing = false;
 
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = "/";
+        const status = refreshError.response?.status;
+
+        if ([400, 401, 403].includes(status)) {
+          localStorage.clear();
+          window.location.replace("/login");
+        }
 
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false; // 🔥 مهم جدًا
       }
     }
 
     return Promise.reject(error);
   }
 );
-
 
 export default api;

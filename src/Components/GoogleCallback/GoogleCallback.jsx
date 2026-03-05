@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import style from "./GoogleCallback.module.css";
 import { useEffect } from "react";
 import { data, useNavigate } from "react-router-dom";
@@ -12,87 +12,24 @@ export default function GoogleCallback() {
   const { setUserToken } = useContext(userContext);
 
   const [loading, setLoading] = useState(true);
+  const isProcessed = useRef(false);
 
   useEffect(() => {
+    if (isProcessed.current) return;
+
     const handleGoogleCallback = async () => {
-      const code = new URLSearchParams(window.location.search).get("code");
-      const from = new URLSearchParams(window.location.search).get("state");
-      const error = new URLSearchParams(window.location.search).get("error");
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+      const from = urlParams.get("state");
+      const error = urlParams.get("error");
 
-      if (error) {
-        toast.error("Google login was cancelled", {
-          position: "top-center",
-          duration: 4000,
-          style: {
-            background:
-              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            padding: "16px 20px",
-            color: "#ffffff",
-            fontSize: "0.95rem",
-            borderRadius: "5px",
-            width: "300px",
-            height: "60px",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
-          },
-          iconTheme: {
-            primary: "#FF4D4F",
-            secondary: "#ffffff",
-          },
-        });
-
-        setTimeout(() => {
-          navigate(from === "register" ? "/" : "/login");
-        }, 1000);
-
-        setLoading(false);
-        return;
-      }
-      if (!code) {
-        console.log("No authorization code received");
-
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-
-        setLoading(false);
-        return;
-      }
-
-      console.log(code);
-
-      try {
-        const endpoint =
-          from === "register" ? "/Auth/google/register" : "/Auth/google/login";
-        const res = await api.post(endpoint, {
-          code,
-          redirectUri: "https://finalgradapp.netlify.app/google/callback",
-        });
-
-        const data = res.data;
-        console.log(data);
-
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          if (data.refreshToken) {
-            localStorage.setItem("refreshToken", data.refreshToken);
-          }
-          console.log(data.token);
-
-          setUserToken(data.token);
-          navigate("/home");
-          // setPageLaoding(false)
-        }
-      } catch (error) {
-        console.error("Google login error:", error.response?.data?.errors[1]);
-        toast.error(
-          error.response?.data?.errors[1] || "Something went wrong.",
-          {
+      if (error || !code) {
+        if (error) {
+          toast.error("Google login was cancelled", {
             position: "top-center",
             duration: 4000,
             style: {
-              background:
-                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
               border: "1px solid rgba(255, 255, 255, 0.1)",
               padding: "16px 20px",
               color: "#ffffff",
@@ -102,21 +39,61 @@ export default function GoogleCallback() {
               height: "60px",
               boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
             },
-            iconTheme: {
-              primary: "#FF4D4F",
-              secondary: "#ffffff",
-            },
+            iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
+          });
+        }
+
+        isProcessed.current = true;
+        setTimeout(() => navigate(from === "register" ? "/" : "/login"), 1000);
+        setLoading(false);
+        return;
+      }
+
+      isProcessed.current = true;
+      // console.log("Processing code:", code);
+
+      try {
+        const endpoint = from === "register" ? "/Auth/google/register" : "/Auth/google/login";
+        const res = await api.post(endpoint, {
+          code,
+          redirectUri: "http://localhost:5173/google/callback",
+          // redirectUri: `https://finalgradapp.netlify.app/google/callback`,
+
+        });
+
+        const data = res.data;
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
+          setUserToken(data.token);
+          navigate("/home");
+        }
+      } catch (error) {
+        console.error("Google  error:", error.response?.data?.errors?.[1]);
+        toast.error(error.response?.data?.errors?.[1] || "Something went wrong.", {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background: "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "60px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
           },
-          { id: "google-login-error" },
-        );
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
+          iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
+        });
+        setTimeout(() => navigate("/"), 1000);
+      } finally {
+        setLoading(false);
       }
     };
 
     handleGoogleCallback();
-  }, [navigate]);
+  }, [navigate, setUserToken]);
 
   return (
     <>

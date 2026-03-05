@@ -13,6 +13,20 @@
     --primary-gradient: linear-gradient(to right, var(--primary-purple), var(--secondary-purple));
 }
 
+:root {
+    --primary-purple: #3D1B6A;
+    --secondary-purple: #8A45B2;
+    --mid-purple: #4E3074;
+    --light-purple: rgba(138, 69, 178, 0.1);
+    --border-purple: rgba(138, 69, 178, 0.2);
+    --dark-text: #0A0A0A;
+    --gray-text: #717182;
+    --success-green: #00A63E;
+    --light-green: #DCfce7;
+    --white: #FFFFFF;
+    --shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
 body {
     /* Ideally change to Inter if possible, but keeping Roboto as per import */
     color: var(--text-dark);
@@ -74,11 +88,13 @@ p {
     font-weight: 400;
     transition: all 0.2s ease;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btnPrimaryCustom:hover {
-    /* background: linear-gradient(to right, #4b277a, #5c398a, #8A45B2); */
-    border-color: var(--primary-dark);
     color: white;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1);
@@ -86,14 +102,20 @@ p {
 
 .btnSecondaryCustom {
     background-color: white;
-    color: var(--text-dark);
-    border: 1px solid #D0D5DD;
     height: 35px;
     width: 170px;
     border-radius: 8px;
     font-weight: 400;
     transition: all 0.2s ease;
-    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
+    background: var(--white);
+    color: var(--primary-purple);
+    border: 0.8px solid var(--secondary-purple);
+    box-shadow: var(--shadow);
+}
+
+.btnSecondaryCustom:hover {
+    background-color: #f7f7f7;
+    color: var(--text-dark);
 }
 
 .btnOutlineCustom:hover {
@@ -363,6 +385,20 @@ p {
     color: white;
     border: none;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    animation: tabPop 0.25s ease;
+
+}
+
+@keyframes tabPop {
+    from {
+        transform: scale(0.92);
+        opacity: 0.6;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .featureShowcase {
@@ -560,14 +596,12 @@ p {
 }
 
 .reviewImg {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     background-color: #3F1C6E;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+    object-fit: cover;
+    display: block;
     border: none;
 }
 
