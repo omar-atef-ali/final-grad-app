@@ -1,11 +1,62 @@
 
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import style from "./SucessfulPaymet.module.css"
 import { useNavigate } from "react-router-dom"
+import api from '../../api'
+import { userContext } from '../../context/userContext'
+import toast from 'react-hot-toast'
 
 export default function SucessfulPaymet() {
 
   const navigate = useNavigate()
+  const [subscriptionDetails, setSubscriptionDetails] = useState(null)
+  const {userToken} = useContext(userContext)
+
+  async function handleSubscriptionDetails() {
+    try{
+      const {data} = await api.get("/Payments/last-details",{
+        headers:{
+          "Authorization": `Bearer ${userToken}`
+        }
+      })
+      console.log(data)
+      setSubscriptionDetails(data)
+    }
+    catch(error){
+      console.log(error)
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while deleting the cart item.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+    }
+    
+  }
+
+  useEffect(()=>{
+    if(userToken){
+      handleSubscriptionDetails()
+    }
+  },[userToken])
 
   return <>
 
@@ -60,24 +111,24 @@ export default function SucessfulPaymet() {
           <div className={style.cardBodyCustom}>
             <div className={style.detailRow}>
               <span className={style.detailLabel}>Plan Type</span>
-              <span className={style.detailValue}>Package</span>
+              <span className={style.detailValue}>{subscriptionDetails?.orderType}</span>
             </div>
             <div className={style.detailRow}>
               <span className={style.detailLabel}>Subscription Date</span>
-              <span className={style.detailValue}>February 26, 2026</span>
+              <span className={style.detailValue}>{subscriptionDetails?.orderDate}</span>
             </div>
             <div className={style.detailRow}>
               <span className={style.detailLabel}>Next Billing Date</span>
-              <span className={style.detailValue}>August 26, 2026</span>
+              <span className={style.detailValue}>{subscriptionDetails?.nextBillingDate}</span>
             </div>
             <div className={style.detailRow}>
               <span className={style.detailLabel}>Transaction Reference ID</span>
-              <span className={style.detailValue}>932155068010100-1</span>
+              <span className={style.detailValue}>{subscriptionDetails?.transactionReferenceId}</span>
             </div>
             <div className={style.divider}></div>
             <div className={style.detailRowTotal}>
               <span className={style.totalLabel}>Amount Paid</span>
-              <span className={style.totalValue}>EGP 11500.00</span>
+              <span className={style.totalValue}>EGP {subscriptionDetails?.totalAmount}</span>
             </div>
           </div>
         </div>

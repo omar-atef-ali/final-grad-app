@@ -32,6 +32,8 @@ import Demo from "./Components/Demo/Demo";
 import Pricing from "./Components/Pricing/Pricing";
 import Complete from "./Components/Complete/Complete";
 import SucessfulPaymet from "./Components/SucessfulPaymet/SucessfulPaymet";
+import Setup from "./Components/Setup/Setup";
+import ProfileDataSources from "./Components/profileDataSources/profileDataSources";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -59,6 +61,7 @@ let routers = createBrowserRouter([
       { path: "features", element: <Features /> },
       { path: "complete-data", element: <Complete /> },
       { path: "success-payment", element: <SucessfulPaymet /> },
+      { path: "Setup-page", element: <Setup /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
       { path: "/cart", element: <Cart /> },
 
@@ -67,10 +70,11 @@ let routers = createBrowserRouter([
         element: <Protected><ProfileLayout /></Protected>,
         children: [
           { index: true, element: <Protected><ProfileInfo /></Protected> }, // /profile
-          { path: "info", element:<Protected> <ProfileInfo /> </Protected>}, // /profile/info
+          { path: "info", element: <Protected> <ProfileInfo /> </Protected> }, // /profile/info
           { path: "security", element: <Protected><ProfileSecurity /></Protected> }, // /profile/security
-          { path: "subscription", element:<Protected> <ProfileSubscription /> </Protected>}, // /profile/subscription
-          { path: "billing", element:<Protected> <ProfileBilling /> </Protected> }, // /profile/billing
+          { path: "subscription", element: <Protected> <ProfileSubscription /> </Protected> }, // /profile/subscription
+          { path: "billing", element: <Protected> <ProfileBilling /> </Protected> }, // /profile/billing
+          { path: "data-sources", element: <Protected> <ProfileDataSources /> </Protected> }, // /profile/data-sources
         ],
       },
     ],

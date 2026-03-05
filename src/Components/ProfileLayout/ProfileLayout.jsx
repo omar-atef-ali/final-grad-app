@@ -5,6 +5,7 @@ import { userContext } from "../../context/userContext";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../../utils/imageUrl";
+import { CartContext } from "../../context/CartContextProvider";
 
 export default function ProfileLayout() {
 
@@ -138,6 +139,7 @@ export default function ProfileLayout() {
 
   /////////////////////////////////////////////////////////////
   const navigate = useNavigate();
+  const {setcartvalue} = useContext(CartContext);
   const handleLogout = async () => {
     try {
       const refreshToken = localStorage.getItem("refreshToken");
@@ -154,6 +156,8 @@ export default function ProfileLayout() {
       localStorage.removeItem("refreshToken");
       setUserToken(null);
       navigate("/");
+      setcartvalue([]);
+
       // toast.success("Successfully signed out");
       // console.log(res);
 
@@ -194,7 +198,7 @@ export default function ProfileLayout() {
 
           <div className={`${style.profile_header}`} >
             <div className={`${style.profile_header_left}`} >
-              <button className={`${style.back_btn}`} aria-label="Go back">
+              <button onClick={() => navigate(-1)} className={`${style.back_btn}`} aria-label="Go back">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 19L5 12L12 5" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M19 12H5" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
@@ -315,6 +319,14 @@ export default function ProfileLayout() {
                     }
                   >
                     Profile
+                  </NavLink>
+                  <NavLink
+                    to="/profile/data-sources"
+                    className={({ isActive }) =>
+                      `${style.Tab} ${isActive ? style.Active : ""}`
+                    }
+                  >
+                    Data Sources
                   </NavLink>
                   <NavLink
                     to="/profile/subscription"

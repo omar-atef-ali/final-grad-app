@@ -4,13 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../../context/userContext";
 import { getImageUrl } from "../../utils/imageUrl";
 import { CartContext } from '../../context/CartContextProvider';
+import toast from "react-hot-toast";
 
 export default function NavBar() {
   const { cartvalue } = useContext(CartContext)
   const [isOpen, setIsOpen] = useState(false);
   const { userProfileImage, userToken } = useContext(userContext);
   const [displayedImage, setDisplayedImage] = useState(userProfileImage);
-
+  const navigate = useNavigate();
   // Sync displayedImage with userProfileImage, but only after loading the new image
   useEffect(() => {
     if (!userProfileImage) {
@@ -37,8 +38,33 @@ export default function NavBar() {
     }
   }, [userProfileImage]);
 
+  function noToken() {
+    toast.error(
+      "You need to be logged in to access this page",
+      {
+        position: "top-center",
+        duration: 4000,
+        style: {
+          background:
+            "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          padding: "16px 20px",
+          color: "#ffffff",
+          fontSize: "0.95rem",
+          borderRadius: "5px",
+          width: "300px",
+          height: "60px",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+        },
+        iconTheme: {
+          primary: "#FF4D4F",
+          secondary: "#ffffff",
+        },
+      },
+    );
+  }
 
-  const navigate = useNavigate();
+
 
   return (
     <>
@@ -81,7 +107,7 @@ export default function NavBar() {
 
 
               <div className={`${style.cart_parent}`}>
-                <button className={style.IconBtn} onClick={() => navigate("/cart")}>
+                <button className={style.IconBtn} onClick={() => { if (userToken) { navigate("/cart") } else { noToken() } }}>
                   <svg
                     width="20"
                     height="20"

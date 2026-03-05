@@ -4,6 +4,10 @@
   padding: 16px 24px;
   position: relative;
   /* Needed for absolute positioning of NavLinks */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
 }
 
 @media (max-width: 768px) {

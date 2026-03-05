@@ -102,8 +102,35 @@ export default function Cart() {
         }
       );
       console.log(data);
+      if (data.paymentCheckoutUrl) {
+        window.location.href = data.paymentCheckoutUrl;
+      }
     } catch (error) {
       console.log(error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while deleting the cart item.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
     }
   }
   //////////////////////////
@@ -160,6 +187,30 @@ export default function Cart() {
       console.log("Cart Data:", data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while deleting the cart item.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
     }
   }
 
@@ -193,7 +244,8 @@ export default function Cart() {
       const durationMonths = currentDurationDays / 30; // Pro-rated exact months
 
       const subtotalBeforeDiscount = basePrice + tokenPrice;
-      const discountPercentage = item.isOnSale ? (item.salePercentage || 0) : 0;
+      const isOnSale = sp ? sp.isOnSale : false;
+      const discountPercentage = isOnSale ? (sp.salePercentage || 0) : 0;
       const discountAmount = subtotalBeforeDiscount * (discountPercentage / 100);
       const finalTotal = subtotalBeforeDiscount - discountAmount;
 
@@ -207,7 +259,8 @@ export default function Cart() {
         discountAmount,
         finalTotal,
         tokenAmount: token ? token.amount : item.tokenAmount,
-        discountPercentage
+        discountPercentage,
+        isOnSale
       };
     });
   }, [cartItems, localSelections, selectedTokenIds]);
@@ -274,7 +327,7 @@ export default function Cart() {
           <div className=" p-4 rounded-4">
             {/* <!-- Header --> */}
             <div className={`${style['page-header']} d-flex align-items-center mb-4 p-3 ${style['bg-light-gray']}`}>
-              <button className="btn btn-back border-0 bg-transparent text-muted ">
+              <button onClick={() => navigate(-1)} className={`btn btn-back border-0 bg-transparent text-muted  ${style.btnBack}`}>
                 <i className="fa-solid fa-arrow-left"></i>
               </button>
               <div>
@@ -423,7 +476,7 @@ export default function Cart() {
                                 )}
                               </div>
 
-                              {item.isOnSale && (
+                              {itTotal.isOnSale && (
                                 <div className={style['discount-box']}>
                                   <div className="d-flex align-items-center gap-2">
                                     <div className={style['discount-icon']}>
@@ -432,7 +485,7 @@ export default function Cart() {
                                       </svg>
                                     </div>
                                     <div>
-                                      <div className={style['discount-title']}>{item.salePercentage}% Discount Applied</div>
+                                      <div className={style['discount-title']}>{itTotal.discountPercentage}% Discount Applied</div>
                                       <div className={style['discount-subtitle']}>
                                         You're saving EGP {(itTotal.discountAmount || 0).toFixed(2)} with your commitment
                                       </div>
@@ -466,9 +519,9 @@ export default function Cart() {
                                 <span className={style['cost-label']}>Subtotal before discount</span>
                                 <span className={style['cost-value']}>EGP {(itTotal.subtotalBeforeDiscount || 0).toFixed(2)}</span>
                               </div>
-                              {item.isOnSale && (
+                              {itTotal.isOnSale && (
                                 <div className={`${style['cost-item']} ${style['discount-row']}`}>
-                                  <span className={style['cost-label-green']}>Commitment discount ({item.salePercentage}%)</span>
+                                  <span className={style['cost-label-green']}>Commitment discount ({itTotal.discountPercentage}%)</span>
                                   <span className={style['cost-value-green']}>-EGP {(itTotal.discountAmount || 0).toFixed(2)}</span>
                                 </div>
                               )}
@@ -507,7 +560,7 @@ export default function Cart() {
                               <span className={`fw-bold ${style['text-sm']}`}>EGP {(itTotal.finalTotal || 0).toFixed(2)}</span>
                             </div>
                             <div className="text-muted" style={{ fontSize: '12px' }}>
-                              EGP {(itTotal.monthlyPrice || 0).toFixed(2)} × {itTotal.durationMonths.toFixed(2)} {itTotal.durationMonths === 1 ? 'month' : 'months'} {item.isOnSale ? `(Discount applied)` : ''}
+                              EGP {(itTotal.monthlyPrice || 0).toFixed(2)} × {itTotal.durationMonths.toFixed(2)} {itTotal.durationMonths === 1 ? 'month' : 'months'} {itTotal.isOnSale ? `(Discount applied)` : ''}
                             </div>
                           </div>
                         );
@@ -531,10 +584,10 @@ export default function Cart() {
                           <div className="text-muted" style={{ fontSize: '12px' }}>Total for commitment period</div>
                         </div>
                       </div>
-                      <button onClick={payment} className={`btn ${style['btn-gradient']} w-100 text-white mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
-                        Proceed to payment <i className="bi bi-arrow-right"></i>
+                      <button onClick={payment} className={` ${style['btn-gradient']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
+                        Proceed to payment
                       </button>
-                      <button onClick={() => navigate('/features')} className={`btn ${style['btn-outline-custom']} w-100 p-2 rounded-2 text-dark border`}>Add more features</button>
+                      <button onClick={() => navigate('/features')} className={` ${style['btn-outline-custom']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2 text-dark border`}>Add more features</button>
                       <div className="mt-4 pt-3 border-top">
                         <p className="text-muted mb-0" style={{ fontSize: '12px' }}>Final pricing subject to terms. Annual prepayment may be required for certain commitments.</p>
                       </div>

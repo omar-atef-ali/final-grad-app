@@ -31,7 +31,7 @@ export default function CartContextProvider(props) {
   return (
     <>
 
-      <CartContext.Provider value={{cartvalue,getCart}}>
+      <CartContext.Provider value={{cartvalue,getCart,setcartvalue}}>
         {props.children}
       </CartContext.Provider>
 

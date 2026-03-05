@@ -11,7 +11,20 @@
     --border-color: #e1dfdd;
     --font-primary: 'Roboto', sans-serif;
     --font-secondary: 'Arimo', sans-serif;
+    --primary-purple: #3D1B6A;
+    --secondary-purple: #8A45B2;
+    --mid-purple: #4E3074;
+    --light-purple: rgba(138, 69, 178, 0.1);
+    --border-purple: rgba(138, 69, 178, 0.2);
+    --dark-text: #0A0A0A;
+    --gray-text: #717182;
+    --success-green: #00A63E;
+    --light-green: #DCfce7;
+    --white: #FFFFFF;
+    --shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
+
+
 
 
 
@@ -55,39 +68,60 @@ h6 {
 
 /* Buttons */
 .btn-gradient {
-    background: linear-gradient(90deg, #3f1c6e 0%, #8a45b2 100%);
+    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    box-shadow: 0 3px 5px rgba(13, 15, 20, 0.212);
     color: white;
-    border: none;
+    border: 1px solid var(--primary-purple);
+    /* padding: 12px 24px; */
+    height: 35px;
+    width: 170px;
     border-radius: 8px;
-    font-weight: 500;
-    height: 36px;
-    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    width: 100%;
 }
 
 .btn-gradient:hover {
     color: white;
-    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1);
 }
 
+
 .btn-outline-custom {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-dark);
+    background-color: white;
+    height: 35px;
+    width: 170px;
     border-radius: 8px;
-    height: 36px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    background: var(--white);
+    color: var(--primary-purple);
+    border: 0.8px solid var(--secondary-purple) !important;
+    box-shadow: var(--shadow);
+    width: 100%;
 }
 
 .btn-outline-custom:hover {
-    background-color: var(--bg-light);
+    background-color: #f7f7f7;
     color: var(--text-dark);
 }
+
+.btnBack {
+    padding: 3px 5px !important;
+    margin-right: 9px !important;
+}
+
+.btnBack:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+
 
 /* Main Content */
 .main-content {
@@ -106,6 +140,11 @@ h6 {
     border: 1px solid var(--border-color);
     border-radius: 16px;
     box-shadow: none;
+    position: sticky !important;
+    top: 80px !important;
+    z-index: 10 !important;
+
+
 }
 
 .summary-card .card-header {
