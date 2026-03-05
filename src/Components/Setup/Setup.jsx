@@ -21,7 +21,7 @@ export default function Setup() {
                 { headers: { Authorization: `Bearer ${userToken}` } });
             console.log(response);
 
-            navigate("/features");
+            navigate("/data-sources");
         } catch (error) {
             console.log(error);
             toast.error(
