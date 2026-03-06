@@ -10,19 +10,19 @@ export default function SucessfulPaymet() {
 
   const navigate = useNavigate()
   const [subscriptionDetails, setSubscriptionDetails] = useState(null)
-  const {userToken} = useContext(userContext)
+  const { userToken } = useContext(userContext)
 
   async function handleSubscriptionDetails() {
-    try{
-      const {data} = await api.get("/Payments/last-details",{
-        headers:{
+    try {
+      const { data } = await api.get("/orders/last-details", {
+        headers: {
           "Authorization": `Bearer ${userToken}`
         }
       })
       console.log(data)
       setSubscriptionDetails(data)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
       toast.error(
         error.response?.data?.errors[1] ||
@@ -49,14 +49,22 @@ export default function SucessfulPaymet() {
         },
       );
     }
-    
+
   }
 
-  useEffect(()=>{
-    if(userToken){
+  useEffect(() => {
+    if (userToken) {
       handleSubscriptionDetails()
     }
-  },[userToken])
+  }, [userToken])
+
+  const formattedDate = new Date(subscriptionDetails?.orderDate).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return <>
 
@@ -109,33 +117,49 @@ export default function SucessfulPaymet() {
             <div className={style.divider}></div>
           </div>
           <div className={style.cardBodyCustom}>
-            <div className={style.detailRow}>
-              <span className={style.detailLabel}>Plan Type</span>
-              <span className={style.detailValue}>{subscriptionDetails?.orderType}</span>
-            </div>
-            <div className={style.detailRow}>
-              <span className={style.detailLabel}>Subscription Date</span>
-              <span className={style.detailValue}>{subscriptionDetails?.orderDate}</span>
-            </div>
-            <div className={style.detailRow}>
-              <span className={style.detailLabel}>Next Billing Date</span>
-              <span className={style.detailValue}>{subscriptionDetails?.nextBillingDate}</span>
-            </div>
-            <div className={style.detailRow}>
-              <span className={style.detailLabel}>Transaction Reference ID</span>
-              <span className={style.detailValue}>{subscriptionDetails?.transactionReferenceId}</span>
-            </div>
+            {subscriptionDetails?.orderType !== null && (
+              <div className={style.detailRow}>
+                <span className={style.detailLabel}>Plan Type</span>
+                <span className={style.detailValue}>{subscriptionDetails?.orderType}</span>
+              </div>
+            )}
+            {formattedDate !== null && (
+              <div className={style.detailRow}>
+                <span className={style.detailLabel}>Subscription Date</span>
+                <span className={style.detailValue}>{formattedDate}</span>
+              </div>
+            )}
+            {subscriptionDetails?.nextBillingDate !== null && (
+              <div className={style.detailRow}>
+                <span className={style.detailLabel}>Next Billing Date</span>
+                <span className={style.detailValue}>{subscriptionDetails?.nextBillingDate}</span>
+              </div>
+            )}
+            {subscriptionDetails?.transactionReferenceId !== null && (
+              <div className={style.detailRow}>
+                <span className={style.detailLabel}>Transaction Reference ID</span>
+                <span className={style.detailValue}>{subscriptionDetails?.transactionReferenceId}</span>
+              </div>
+            )}
+
             <div className={style.divider}></div>
-            <div className={style.detailRowTotal}>
-              <span className={style.totalLabel}>Amount Paid</span>
-              <span className={style.totalValue}>EGP {subscriptionDetails?.totalAmount}</span>
-            </div>
+            {subscriptionDetails?.totalAmount !== null ? (
+              <div className={style.detailRowTotal}>
+                <span className={style.totalLabel}>Amount Paid</span>
+                <span className={style.totalValue}>EGP {subscriptionDetails?.totalAmount}</span>
+              </div>
+            ) : (
+              <div className={style.detailRowTotal}>
+                <span className={style.totalLabel}>Amount Paid</span>
+                <span className={style.totalValue}>EGP 0</span>
+              </div>
+            )}
           </div>
         </div>
 
         {/* <!-- Action Buttons --> */}
         <div className={style.actionButtons}>
-          <button onClick={() => navigate("/complete-data")} className={style.btnUpload}>Upload your Data</button>
+          <button onClick={() => navigate("/complete-data")} className={style.btnUpload}>Complete your Data</button>
           <button className={style.btnDownload}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="#3D1B6A" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />

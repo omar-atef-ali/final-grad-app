@@ -1,8 +1,59 @@
 
-import React from 'react'
-import style from "./ProfileDataSources.module.css"
+import React, { useEffect } from 'react'
+import style from './profileDataSources.module.css'
+import { useContext } from 'react'
+import { userContext } from '../../context/userContext'
+import api from '../../api'
+import toast from 'react-hot-toast'
 
 export default function ProfileDataSources() {
+
+  const { userToken } = useContext(userContext)
+
+  async function handleDataSources() {
+    try {
+      const { data } = await api.get("/UserDatabaseCredentials/decrypted", {
+        headers: {
+          "Authorization": `Bearer ${userToken}`
+        }
+      })
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while deleting the cart item.",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+    }
+  }
+
+  useEffect(() => {
+    if (userToken) {
+      handleDataSources()
+    }
+  }, [userToken])
+
+
   return <>
 
     <div className={`container-fluid p-0 ${style.mainContainer}`}>
