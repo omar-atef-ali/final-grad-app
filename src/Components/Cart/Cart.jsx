@@ -13,7 +13,8 @@ export default function Cart() {
   const { userToken } = useContext(userContext);
   const [localSelections, setLocalSelections] = useState({});
   const [selectedTokenIds, setSelectedTokenIds] = useState({});
-  const [finalcheckout, setfinalcheckout] = useState(null)
+  const [promoCode, setPromoCode] = useState('');
+  const [discountAmount, setDiscountAmount] = useState(0);
 
   useEffect(() => {
     if (cartItems.length > 0) {
@@ -75,7 +76,7 @@ export default function Cart() {
       };
     });
   }, [cartItems, localSelections, selectedTokenIds]);
-  console.log(selectedServicesPayload);
+  // console.log(selectedServicesPayload);
   // useEffect(() => {
   //   setfinalcheckout({
   //     "serviceItems": [
@@ -184,7 +185,7 @@ export default function Cart() {
         }
       });
       setCartItems(data);
-      console.log("Cart Data:", data);
+      // console.log("Cart Data:", data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
       toast.error(
@@ -273,6 +274,10 @@ export default function Cart() {
     }), { subtotal: 0, discount: 0, total: 0 });
   }, [itemTotals]);
 
+  async function applyPromoCode() {
+    console.log("okkkkk");
+
+  }
 
 
   ///////////////////////////////////////////////////////////////
@@ -429,7 +434,7 @@ export default function Cart() {
                                   <div className={style['select-wrapper']}>
                                     <select
                                       className={style['form-select-custom']}
-                                      value={localSelections[item.cartItemId] || Math.round(item.duration * 30)}
+                                      value={localSelections[item.cartItemId] || Math.round((item.duration || 0) * 30) || ""}
                                       onChange={(e) => handleDurationChange(item.cartItemId, e.target.value)}
                                     >
                                       {Array.from(new Set(item?.servicePrices?.map(sp => sp.durationInDays)))
@@ -460,7 +465,7 @@ export default function Cart() {
                                         onChange={(e) => handleTokenChange(item.cartItemId, e.target.value)}
                                       >
                                         {item?.servicePrices
-                                          ?.filter(sp => sp.durationInDays === (localSelections[item.cartItemId] || Math.round(item.duration * 30)))
+                                          ?.filter(sp => sp.durationInDays === (localSelections[item.cartItemId] || Math.round((item.duration || 0) * 30)))
                                           ?.flatMap(sp => sp.tokens || [])
                                           ?.map((token) => (
                                             <option key={token.id} value={token.id}>
@@ -534,6 +539,7 @@ export default function Cart() {
                                 </div>
                               </div>
                             </div>
+
                           </div>
                         </div>
                       );
@@ -542,56 +548,102 @@ export default function Cart() {
                 </div>
 
                 {/* Right Column: Summary */}
-                <div className="col-lg-4">
-                  <div className={`card ${style['summary-card']} border-0 shadow-sm rounded-4`}>
-                    <div className={`card-header ${style['bg-light-gray']} border-bottom p-4 rounded-top-4`}>
-                      <div className="d-flex align-items-center gap-2">
-                        <i className="bi bi-clipboard-data text-muted"></i>
-                        <h6 className={`fw-bold mb-0 ${style['text-sm']}`}>Total Estimate</h6>
+                <div className='col-lg-4'>
+                  <div className="col-lg-4 w-100">
+                    <div className={`card ${style['summary-card']} border-0 shadow-sm rounded-4`}>
+                      <div className={`card-header ${style['bg-light-gray']} border-bottom p-4 rounded-top-4`}>
+                        <div className="d-flex align-items-center gap-2">
+                          <i className="bi bi-clipboard-data text-muted"></i>
+                          <h6 className={`fw-bold mb-0 ${style['text-sm']}`}>Total Estimate</h6>
+                        </div>
                       </div>
-                    </div>
-                    <div className="card-body p-4 bg-white rounded-bottom-4">
-                      {cartItems.map((item) => {
-                        const itTotal = itemTotals.find(it => it.cartItemId === item.cartItemId) || {};
-                        return (
-                          <div key={item.cartItemId} className="summary-item mb-3">
-                            <div className="d-flex justify-content-between mb-1">
-                              <span className={`text-muted ${style['text-sm']}`} style={{ fontFamily: "'Arimo', sans-serif" }}>{item.name}</span>
-                              <span className={`fw-bold ${style['text-sm']}`}>EGP {(itTotal.finalTotal || 0).toFixed(2)}</span>
+                      <div className="card-body p-4 bg-white rounded-bottom-4">
+                        {cartItems.map((item) => {
+                          const itTotal = itemTotals.find(it => it.cartItemId === item.cartItemId) || {};
+                          return (
+                            <div key={item.cartItemId} className="summary-item mb-3">
+                              <div className="d-flex justify-content-between mb-1">
+                                <span className={`text-muted ${style['text-sm']}`} style={{ fontFamily: "'Arimo', sans-serif" }}>{item.name}</span>
+                                <span className={`fw-bold ${style['text-sm']}`}>EGP {(itTotal.finalTotal || 0).toFixed(2)}</span>
+                              </div>
+                              <div className="text-muted" style={{ fontSize: '12px' }}>
+                                EGP {(itTotal.monthlyPrice || 0).toFixed(2)} × {itTotal.durationMonths.toFixed(2)} {itTotal.durationMonths === 1 ? 'month' : 'months'} {itTotal.isOnSale ? `(Discount applied)` : ''}
+                              </div>
                             </div>
-                            <div className="text-muted" style={{ fontSize: '12px' }}>
-                              EGP {(itTotal.monthlyPrice || 0).toFixed(2)} × {itTotal.durationMonths.toFixed(2)} {itTotal.durationMonths === 1 ? 'month' : 'months'} {itTotal.isOnSale ? `(Discount applied)` : ''}
-                            </div>
+                          );
+                        })}
+                        <hr className={`${style.divider} my-4`} />
+                        <div className="d-flex justify-content-between mb-2">
+                          <span className={`text-muted ${style['text-sm']}`}>Subtotal</span>
+                          <span className={`fw-bold ${style['text-sm']}`}>EGP {(summary.subtotal || 0).toFixed(2)}</span>
+                        </div>
+                        {(summary.discount || 0) > 0 && (
+                          <div className="d-flex justify-content-between mb-4">
+                            <span className={`${style['text-green']} ${style['text-sm']}`}>Commitment savings</span>
+                            <span className={`fw-bold ${style['text-green']} ${style['text-sm']}`}>-EGP {(summary.discount || 0).toFixed(2)}</span>
                           </div>
-                        );
-                      })}
-                      <hr className={`${style.divider} my-4`} />
-                      <div className="d-flex justify-content-between mb-2">
-                        <span className={`text-muted ${style['text-sm']}`}>Subtotal</span>
-                        <span className={`fw-bold ${style['text-sm']}`}>EGP {(summary.subtotal || 0).toFixed(2)}</span>
-                      </div>
-                      {(summary.discount || 0) > 0 && (
-                        <div className="d-flex justify-content-between mb-4">
-                          <span className={`${style['text-green']} ${style['text-sm']}`}>Commitment savings</span>
-                          <span className={`fw-bold ${style['text-green']} ${style['text-sm']}`}>-EGP {(summary.discount || 0).toFixed(2)}</span>
+                        )}
+                        <hr className={`${style.divider} my-4`} />
+                        <div className="d-flex justify-content-between align-items-start mb-4">
+                          <span className={`fw-bold text-dark ${style['text-sm']}`}>Total</span>
+                          <div className="text-end">
+                            <div className={`${style['text-purple']} fs-4 fw-bold mb-0`}>EGP {(summary.total || 0).toFixed(2)}</div>
+                            <div className="text-muted" style={{ fontSize: '12px' }}>Total for commitment period</div>
+
+                          </div>
                         </div>
-                      )}
-                      <hr className={`${style.divider} my-4`} />
-                      <div className="d-flex justify-content-between align-items-start mb-4">
-                        <span className={`fw-bold text-dark ${style['text-sm']}`}>Total</span>
-                        <div className="text-end">
-                          <div className={`${style['text-purple']} fs-4 fw-bold mb-0`}>EGP {(summary.total || 0).toFixed(2)}</div>
-                          <div className="text-muted" style={{ fontSize: '12px' }}>Total for commitment period</div>
+                        <div className={`${style['promo-section']} `}>
+                          <div className="d-flex gap-2">
+                            <input value={promoCode} onChange={(e) => setPromoCode(e.target.value)} type="text" className={`${style['promo-input']} `} placeholder="Enter a promo code" />
+                            <button disabled={!promoCode.trim()} onClick={applyPromoCode} className={`${style['apply-button']} ${!promoCode.trim() ? style['apply-button-disabled'] : ''}  `}>Apply</button>
+                          </div>
                         </div>
-                      </div>
-                      <button onClick={payment} className={` ${style['btn-gradient']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
-                        Proceed to payment
-                      </button>
-                      <button onClick={() => navigate('/features')} className={` ${style['btn-outline-custom']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2 text-dark border`}>Add more features</button>
-                      <div className="mt-4 pt-3 border-top">
-                        <p className="text-muted mb-0" style={{ fontSize: '12px' }}>Final pricing subject to terms. Annual prepayment may be required for certain commitments.</p>
+                        <hr className={`${style.divider} my-4`} />
+
+                        <button onClick={payment} className={` ${style['btn-gradient']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
+                          Proceed to payment
+                        </button>
+                        <button onClick={() => navigate('/features')} className={` ${style['btn-outline-custom']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2 text-dark border`}>Add more features</button>
+                        <div className="mt-4 pt-3 border-top">
+                          <p className="text-muted mb-0" style={{ fontSize: '12px' }}>Final pricing subject to terms. Annual prepayment may be required for certain commitments.</p>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                  <div className={`${style.help_card}`}>
+                    <h4 className={`${style.help_title}`} >Need Help?</h4>
+                    <p className={`${style.help_text}`}>Contact our support team for assistance</p>
+                    <button className={`${style.btn_contact}`}>
+                      <svg
+                        width="18"
+                        height="16"
+                        viewBox="0 0 18 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        {/* <!-- Imported SVG paths for Support Icon --> */}
+                        <path
+                          d="M12.7501 6.99387C12.7501 6.71707 12.7501 6.57868 12.7917 6.45548C12.9125 6.09709 13.2317 5.95869 13.5517 5.8131C13.9101 5.6491 14.0893 5.5675 14.2676 5.5531C14.4692 5.5371 14.6716 5.5803 14.8444 5.6771C15.0732 5.8051 15.2332 6.04989 15.3964 6.24828C16.1508 7.16506 16.5284 7.62345 16.666 8.12824C16.778 8.53623 16.778 8.96342 16.666 9.37061C16.4652 10.1082 15.8292 10.7258 15.358 11.2986C15.1172 11.5906 14.9964 11.7369 14.8444 11.8225C14.6687 11.92 14.4679 11.9632 14.2676 11.9465C14.0893 11.9321 13.9101 11.8505 13.5509 11.6866C13.2309 11.541 12.9125 11.4026 12.7917 11.0442C12.7501 10.921 12.7501 10.7826 12.7501 10.5058V6.99387ZM4.75024 6.99387C4.75024 6.64508 4.74064 6.33228 4.45904 6.08749C4.35665 5.99869 4.22065 5.93709 3.94945 5.8131C3.59026 5.6499 3.41106 5.5675 3.23267 5.5531C2.69908 5.5099 2.41188 5.87469 2.10469 6.24908C1.34951 7.16506 0.971913 7.62345 0.833515 8.12904C0.722162 8.53568 0.722162 8.96477 0.833515 9.37141C1.03511 10.1082 1.6719 10.7266 2.14229 11.2986C2.43908 11.6586 2.72308 11.9873 3.23267 11.9465C3.41106 11.9321 3.59026 11.8505 3.94945 11.6866C4.22145 11.5634 4.35665 11.501 4.45904 11.4122C4.74064 11.1674 4.75024 10.8546 4.75024 10.5066V6.99387Z"
+                          stroke="black"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M3.15027 5.54988C3.15027 2.89875 5.65742 0.75 8.75016 0.75C11.8429 0.75 14.3501 2.89875 14.3501 5.54988"
+                          stroke="black"
+                          strokeLinecap="square"
+                          strokeLinejoin="round"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M14.3501 11.9498V12.5898C14.3501 14.0033 12.9181 15.1497 11.1501 15.1497H9.55015"
+                          stroke="black"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.5"
+                        />
+                      </svg>
+                      <span>Contact Support</span>
+                    </button>
                   </div>
                 </div>
               </div>
