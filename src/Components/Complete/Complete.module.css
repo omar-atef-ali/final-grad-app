@@ -133,7 +133,8 @@ body {
     border: none;
     font-size: 16px;
     font-weight: 500;
-    cursor: pointer;
+    cursor: not-allowed;
+    pointer-events: none;
     transition: all 0.3s ease;
 }
 .action_btn_icon{
