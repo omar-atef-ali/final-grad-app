@@ -15,8 +15,15 @@ export default function ProfileSecurity() {
   const [userSessions, setuserSessions] = useState([])
   const [searchParams] = useSearchParams()
 
+  // const UserId = searchParams.get('UserId') ?? ""
+  // const Code = searchParams.get('Code') ?? ""
+  // console.log("UserId =>", UserId);
+  // console.log("Code =>", Code);
+
   const UserId = searchParams.get('UserId') ?? ""
-  const Code = searchParams.get('Code') ?? ""
+  const rawCode = window.location.search
+  const codeMatch = rawCode.match(/[?&]Code=(.+?)(&|$)/)
+  const Code = codeMatch ? codeMatch[1] : ""
   console.log("UserId =>", UserId);
   console.log("Code =>", Code);
 
@@ -83,12 +90,12 @@ export default function ProfileSecurity() {
   async function getUserSessions() {
     try {
 
-      let response = await api.get(`/UserSessions`,{
-         headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
+      let response = await api.get(`/UserSessions`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
       })
-      console.log(response)
+      console.log(response.data)
       setuserSessions(response.data)
     }
     catch (error) {
@@ -98,9 +105,9 @@ export default function ProfileSecurity() {
     }
   }
 
-  async function trustDevice(userid) {
+  async function trustDevice(sessionId) {
     try {
-      let response = await api.put(`/UserSessions/${userid}/trust`, {}, {
+      let response = await api.put(`/UserSessions/${sessionId}/trust`, {}, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         }
@@ -264,18 +271,20 @@ export default function ProfileSecurity() {
   //   }
   // }, [UserId, Code, verified]);
 
-//   useEffect(() => {
-//   if (UserId && Code && !verified) {
-//     setVerified(true);       
-//     putTrustedDevice();      
-//   }
-// }, [UserId, Code]);
-useEffect(() => {
-  if (UserId && Code && !verified && userToken) {  // ← اضيف userToken هنا
-    setVerified(true);       
-    putTrustedDevice();      
-  }
-}, [UserId, Code, userToken]);  // ← اضيف userToken في الـ dependencies
+  //   useEffect(() => {
+  //   if (UserId && Code && !verified) {
+  //     setVerified(true);       
+  //     putTrustedDevice();      
+  //   }
+  // }, [UserId, Code]);
+  useEffect(() => {
+    if (UserId && Code && !verified && userToken) {  // ← اضيف userToken هنا
+      setVerified(true);
+      putTrustedDevice();
+    }
+  }, [UserId, Code, userToken]);  // ← اضيف userToken في الـ dependencies
+
+
   return <>
 
 
