@@ -97,6 +97,7 @@ export default function ProfileSecurity() {
         error.response?.data?.errors[1])
     }
   }
+
   async function trustDevice(userid) {
     try {
       let response = await api.put(`/UserSessions/${userid}/trust`, {}, {
@@ -263,12 +264,18 @@ export default function ProfileSecurity() {
   //   }
   // }, [UserId, Code, verified]);
 
-  useEffect(() => {
-  if (UserId && Code && !verified) {
+//   useEffect(() => {
+//   if (UserId && Code && !verified) {
+//     setVerified(true);       
+//     putTrustedDevice();      
+//   }
+// }, [UserId, Code]);
+useEffect(() => {
+  if (UserId && Code && !verified && userToken) {  // ← اضيف userToken هنا
     setVerified(true);       
     putTrustedDevice();      
   }
-}, [UserId, Code]);
+}, [UserId, Code, userToken]);  // ← اضيف userToken في الـ dependencies
   return <>
 
 
