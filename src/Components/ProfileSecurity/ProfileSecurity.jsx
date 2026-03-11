@@ -82,7 +82,11 @@ export default function ProfileSecurity() {
 
   async function getUserSessions() {
     try {
-      let response = await api.get(`/UserSessions`)
+      let response = await api.get(`/UserSessions`,{},{
+         headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+      })
       console.log(response)
       setuserSessions(response.data)
     }
@@ -94,7 +98,11 @@ export default function ProfileSecurity() {
   }
   async function trustDevice(userid) {
     try {
-      let response = await api.put(`/UserSessions/${userid}/trust`)
+      let response = await api.put(`/UserSessions/${userid}/trust`, {}, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        }
+      })
       console.log(response)
       toast.success(response.data.message)
 
@@ -111,6 +119,10 @@ export default function ProfileSecurity() {
       let response = await api.put(`/UserSessions/verify-trust`, {
         UserId,
         Code
+      }, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        }
       })
       await getUserSessions();
       console.log(response)
@@ -120,7 +132,10 @@ export default function ProfileSecurity() {
     catch (error) {
       console.log(error)
       toast.error(
-        error.response?.data?.errors[1])
+        error.response?.data?.errors?.[0] ||
+        error.response?.data?.message ||
+        "Something went wrong"
+      )
     }
   }
 
@@ -158,20 +173,20 @@ export default function ProfileSecurity() {
     }
   }
 
-   async function deleteUserSession(id) {
+  async function deleteUserSession(id) {
     try {
       let response = await api.delete(`/UserSessions/${id}`, {
         headers: {
           Authorization: `Bearer ${userToken}`
         }
       })
-        console.log(response)
-        setuserSessions(prev => prev.filter(s=>s.id !==id))
-         toast.success("Session removed");
+      console.log(response)
+      setuserSessions(prev => prev.filter(s => s.id !== id))
+      toast.success("Session removed");
     }
     catch (error) {
       console.log(error)
-       toast.error(
+      toast.error(
         error.response?.data?.errors[1] || "Failed to remove session")
     }
   }
@@ -259,12 +274,19 @@ export default function ProfileSecurity() {
   useEffect(() => {
     getUserSessions()
   }, [])
+  // useEffect(() => {
+  //   if (UserId && Code && !verified) {
+  //     putTrustedDevice();
+  //     setVerified(true);
+  //   }
+  // }, [UserId, Code, verified]);
+
   useEffect(() => {
-    if (UserId && Code && !verified) {
-      putTrustedDevice();
-      setVerified(true);
-    }
-  }, [UserId, Code,verified]);
+  if (UserId && Code && !verified) {
+    setVerified(true);       
+    putTrustedDevice();      
+  }
+}, [UserId, Code]);
   return <>
 
 
@@ -388,8 +410,8 @@ export default function ProfileSecurity() {
                   <div>
                     {
                       users.isCurrent ? <button className={`${style.current_btn}`}>Current</button>
-                        : <button onClick={()=>deleteUserSession(users.id)} className={`${style.no_current_btn}`}>Sign Out</button>
-                       
+                        : <button onClick={() => deleteUserSession(users.id)} className={`${style.no_current_btn}`}>Sign Out</button>
+
                     }
                   </div>
                 </div>
@@ -433,7 +455,7 @@ export default function ProfileSecurity() {
               users.isTrusted ? "" : <div className={`${style.divider2}`}></div>
             }
 
-            
+
             {
               users.isTrusted ? "" : <div onClick={() => trustDevice(users.id)} className={`${style.trust_device}`}>
                 <div>

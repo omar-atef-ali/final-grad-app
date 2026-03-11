@@ -261,6 +261,9 @@ body {
   font-size: 14px;
   font-weight: 400;
   box-shadow: 0px 2px 5px rgba(34, 31, 31, 0.158);
+  cursor: not-allowed;
+  pointer-events: none;
+
 }
 .no_current_btn {
   background-color:#fffefe;
