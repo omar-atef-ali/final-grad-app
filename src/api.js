@@ -49,7 +49,7 @@ api.interceptors.response.use(
     const url = originalRequest?.url || "";
     const status = error.response?.status;
 
-    console.log(`❌ [ERROR] ${status} ${url}`);
+    // console.log(`❌ [ERROR] ${status} ${url}`);
 
     if (!error.response) {
       console.warn("🌐 [NETWORK ERROR] No response from server");
@@ -84,7 +84,7 @@ api.interceptors.response.use(
       }
 
       isRefreshing = true;
-      console.log("🔄 [REFRESH] Starting token refresh...");
+      // console.log("🔄 [REFRESH] Starting token refresh...");
 
       return new Promise(async (resolve, reject) => {
         try {
@@ -100,7 +100,7 @@ api.interceptors.response.use(
             throw new Error("No token returned from refresh endpoint");
           }
 
-          console.log("🎉 [REFRESH] New token received successfully");
+          // console.log("🎉 [REFRESH] New token received successfully");
 
           localStorage.setItem("token", newAccessToken);
           if (newRefreshToken) {
@@ -111,7 +111,7 @@ api.interceptors.response.use(
             `Bearer ${newAccessToken}`;
 
           processQueue(null, newAccessToken);
-          console.log(`📬 [QUEUE] Processed ${failedQueue.length} queued requests`);
+          // console.log(`📬 [QUEUE] Processed ${failedQueue.length} queued requests`);
 
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           resolve(api(originalRequest));

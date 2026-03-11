@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import style from "./GoogleCallback.module.css";
 import { useEffect } from "react";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { userContext } from "../../context/userContext";
 import toast from "react-hot-toast";
@@ -44,7 +44,7 @@ export default function GoogleCallback() {
         }
 
         isProcessed.current = true;
-        setTimeout(() => navigate(from === "register" ? "/" : "/login"), 1000);
+        setTimeout(() => navigate(from === "register" ? "/register" : "/login"), 1000);
         setLoading(false);
         return;
       }
@@ -58,19 +58,32 @@ export default function GoogleCallback() {
           code,
           // redirectUri: "http://localhost:5173/google/callback",
           redirectUri: `https://finalgradapp.netlify.app/google/callback`,
-
         });
 
-        const data = res.data;
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          if (data.refreshToken) localStorage.setItem("refreshToken", data.refreshToken);
-          setUserToken(data.token);
+        const responseData = res.data;
+        if (responseData && responseData.token) {
+          localStorage.setItem("token", responseData.token);
+          if (responseData.refreshToken) localStorage.setItem("refreshToken", responseData.refreshToken);
+          setUserToken(responseData.token);
           navigate("/home");
+        } else {
+          // If the request succeeds but there's no token
+          if (from === "register") {
+            toast.success("Registration successful! Please login.");
+            navigate("/login");
+          } else {
+            toast.error("Authentication failed. No token received.");
+            navigate("/login");
+          }
         }
       } catch (error) {
-        console.error("Google  error:", error.response?.data?.errors?.[1]);
-        toast.error(error.response?.data?.errors?.[1] || "Something went wrong.", {
+        console.error("Google auth error:", error);
+        const errorMessage = error.response?.data?.message ||
+          error.response?.data?.errors?.[1] ||
+          error.response?.data?.errors?.[0] ||
+          "Something went wrong during authentication.";
+
+        toast.error(errorMessage, {
           position: "top-center",
           duration: 4000,
           style: {
@@ -86,7 +99,7 @@ export default function GoogleCallback() {
           },
           iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
         });
-        setTimeout(() => navigate("/"), 1000);
+        setTimeout(() => navigate(from === "register" ? "/register" : "/login"), 1000);
       } finally {
         setLoading(false);
       }

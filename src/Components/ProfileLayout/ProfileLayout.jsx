@@ -266,7 +266,7 @@ export default function ProfileLayout() {
                   </div>
                 </div>
 
-                <button className={`${style.btn_choose_plan}`}>Choose a Plan</button>
+                <button onClick={() => navigate('/pricing')} className={`${style.btn_choose_plan}`}>Choose a Plan</button>
               </div>
 
 
