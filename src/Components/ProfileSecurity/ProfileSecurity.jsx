@@ -15,17 +15,12 @@ export default function ProfileSecurity() {
   const [userSessions, setuserSessions] = useState([])
   const [searchParams] = useSearchParams()
 
-  // const UserId = searchParams.get('UserId') ?? ""
-  // const Code = searchParams.get('Code') ?? ""
-  // console.log("UserId =>", UserId);
-  // console.log("Code =>", Code);
-
   const UserId = searchParams.get('UserId') ?? ""
-  const rawCode = window.location.search
-  const codeMatch = rawCode.match(/[?&]Code=(.+?)(&|$)/)
-  const Code = codeMatch ? codeMatch[1] : ""
+  const Code = searchParams.get('Code') ?? ""
   console.log("UserId =>", UserId);
   console.log("Code =>", Code);
+
+
 
   async function handleChangePassword(values) {
     const { confirmNewPassword, ...dataToSend } = values;
@@ -123,30 +118,51 @@ export default function ProfileSecurity() {
     }
   }
 
-  async function putTrustedDevice() {
-    try {
-      let response = await api.put(`/UserSessions/verify-trust`, {
-        UserId,
-        Code
-      }, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        }
-      })
-      await getUserSessions();
-      console.log(response)
-      toast.success(response.data.message)
+  // async function putTrustedDevice() {
+  //   try {
+  //     let response = await api.put(`/UserSessions/verify-trust`, {
+  //       UserId,
+  //       Code
+  //     }, {
+  //       headers: {
+  //         Authorization: `Bearer ${userToken}`,
+  //       }
+  //     })
+  //     await getUserSessions();
+  //     console.log(response)
+  //     toast.success(response.data.message)
 
-    }
-    catch (error) {
-      console.log(error)
-      toast.error(
-        error.response?.data?.errors?.[0] ||
-        error.response?.data?.message ||
-        "Something went wrong"
-      )
-    }
+  //   }
+  //   catch (error) {
+  //     console.log(error)
+  //     toast.error(
+  //       error.response?.data?.errors?.[0] ||
+  //       error.response?.data?.message ||
+  //       "Something went wrong"
+  //     )
+  //   }
+  // }
+
+  async function putTrustedDevice() {
+  try {
+    let response = await api.put(`/UserSessions/verify-trust?UserId=${UserId}&Code=${encodeURIComponent(Code)}`, {}, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      }
+    })
+    await getUserSessions();
+    console.log(response)
+    toast.success(response.data.message)
   }
+  catch (error) {
+    console.log(error)
+    toast.error(
+      error.response?.data?.errors?.[0] ||
+      error.response?.data?.message ||
+      "Something went wrong"
+    )
+  }
+}
 
 
 
