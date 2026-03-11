@@ -34,6 +34,7 @@ import Complete from "./Components/Complete/Complete";
 import SucessfulPaymet from "./Components/SucessfulPaymet/SucessfulPaymet";
 import Setup from "./Components/Setup/Setup";
 import ProfileDataSources from "./Components/profileDataSources/profileDataSources";
+import Privacy from "./Components/Privacy/Privacy";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -61,6 +62,7 @@ let routers = createBrowserRouter([
       { path: "features", element: <Features /> },
       { path: "complete-data", element: <Complete /> },
       { path: "success-payment", element: <SucessfulPaymet /> },
+      { path: "privacy", element: <Privacy /> },
       { path: "Setup-page", element: <Setup /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
       { path: "/cart", element: <Cart /> },
