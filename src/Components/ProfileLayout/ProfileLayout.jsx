@@ -258,7 +258,7 @@ export default function ProfileLayout() {
                 <div className={`${style.profile_info}`} >
                   <div className={`${style.info_row}`} >
                     <span className={`${style.info_label}`} >Plan</span>
-                    <span className={` ${userData?.hasActiveSubscription ? style.badgeBtn : style.badge}`}>{userData?.hasActiveSubscription ? "View More" : "No Plan"}</span>
+                    <span onClick={() => { if (userData?.hasActiveSubscription) navigate('/pricing') }} className={` ${userData?.hasActiveSubscription ? style.badgeBtn : style.badge}`}>{userData?.hasActiveSubscription ? "View More" : "No Plan"}</span>
                   </div>
                   <div className={`${style.info_row}`} >
                     <span className={`${style.info_label}`} >Status</span>

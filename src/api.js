@@ -7,131 +7,130 @@ const api = axios.create({
 
 const refreshClient = axios.create({
   baseURL: "/api",
+  headers: { "Content-Type": "application/json" },
 });
-
-/* =========================
-   Refresh State
-========================= */
 
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach((promise) => {
-    if (error) {
-      promise.reject(error);
-    } else {
-      promise.resolve(token);
-    }
+  failedQueue.forEach((prom) => {
+    error ? prom.reject(error) : prom.resolve(token);
   });
-
   failedQueue = [];
 };
 
-/* =========================
-   Request Interceptor
-========================= */
+// ✅ القائمة السوداء - endpoints مش هتعمل refresh
+const SKIP_REFRESH_URLS = ["/Auth/login", "/Auth/refresh", "/Auth/register"];
 
+const shouldSkipRefresh = (url = "") =>
+  SKIP_REFRESH_URLS.some((skip) => url.includes(skip));
+
+// Request Interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    // console.log(`📤 [REQUEST] ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-/* =========================
-   Response Interceptor
-========================= */
-
+// Response Interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // console.log(`✅ [RESPONSE] ${response.status} ${response.config.url}`);
+    return response;
+  },
 
   async (error) => {
     const originalRequest = error.config;
+    const url = originalRequest?.url || "";
+    const status = error.response?.status;
+
+    console.log(`❌ [ERROR] ${status} ${url}`);
 
     if (!error.response) {
+      console.warn("🌐 [NETWORK ERROR] No response from server");
       return Promise.reject(error);
     }
 
-    /* =========================
-       Handle 401
-    ========================= */
+    // ✅ لو الـ URL في القائمة السوداء → ارفض على طول
+    if (shouldSkipRefresh(url)) {
+      console.log(`⛔ [SKIP REFRESH] ${url} is in the skip list`);
+      return Promise.reject(error);
+    }
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (status === 401 && !originalRequest._retry) {
       const refreshToken = localStorage.getItem("refreshToken");
       const oldToken = localStorage.getItem("token");
 
-      if (!refreshToken) {
+      if (!refreshToken || !oldToken) {
+        console.warn("⚠️ [REFRESH] No tokens found → rejecting");
         return Promise.reject(error);
       }
 
       originalRequest._retry = true;
 
-      /* =========================
-         If refresh already running
-      ========================= */
-
       if (isRefreshing) {
+        console.log("⏳ [REFRESH] Already refreshing → adding to queue");
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        })
-          .then((newToken) => {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return api(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
+        }).then((newToken) => {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return api(originalRequest);
+        });
       }
-
-      /* =========================
-         Start Refresh Flow
-      ========================= */
 
       isRefreshing = true;
+      console.log("🔄 [REFRESH] Starting token refresh...");
 
-      try {
-        const res = await refreshClient.post("/Auth/refresh", {
-          oldToken,
-          refreshToken,
-        });
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await refreshClient.post("/Auth/refresh", {
+            token: oldToken,
+            refreshToken: refreshToken,
+          });
 
-        const {
-          token: newAccessToken,
-          refreshToken: newRefreshToken,
-        } = res.data;
-        console.log("newToken added");
-        
+          const newAccessToken = res.data?.token;
+          const newRefreshToken = res.data?.refreshToken;
 
-        /* Save new tokens */
-        localStorage.setItem("token", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
+          if (!newAccessToken) {
+            throw new Error("No token returned from refresh endpoint");
+          }
 
-        /* Resolve queued requests */
-        processQueue(null, newAccessToken);
+          console.log("🎉 [REFRESH] New token received successfully");
 
-        /* Retry original request */
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          localStorage.setItem("token", newAccessToken);
+          if (newRefreshToken) {
+            localStorage.setItem("refreshToken", newRefreshToken);
+          }
 
-        return api(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
+          api.defaults.headers.common["Authorization"] =
+            `Bearer ${newAccessToken}`;
 
-        const status = refreshError.response?.status;
+          processQueue(null, newAccessToken);
+          console.log(`📬 [QUEUE] Processed ${failedQueue.length} queued requests`);
 
-        if ([400, 401, 403].includes(status)) {
-          localStorage.clear();
-          window.location.replace("/login");
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          resolve(api(originalRequest));
+        } catch (refreshError) {
+          console.error("💥 [REFRESH FAILED]", refreshError.message);
+          processQueue(refreshError, null);
+
+          const refreshStatus = refreshError.response?.status;
+          if (!refreshStatus || [400, 401, 403].includes(refreshStatus)) {
+            console.warn("🚪 [LOGOUT] Clearing storage and redirecting...");
+            localStorage.clear();
+            window.location.replace("/login");
+          }
+
+          reject(refreshError);
+        } finally {
+          isRefreshing = false;
         }
-
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false; // 🔥 مهم جدًا
-      }
+      });
     }
 
     return Promise.reject(error);

@@ -37,7 +37,7 @@ export default function Home() {
       try {
         let { data } = await api.get("Reviews/landing-page");
         setReview(data);
-        console.log(data);
+        // console.log(data);
 
       } catch (error) {
         console.error("Error fetching reviews:", error);

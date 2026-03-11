@@ -176,11 +176,13 @@ body {
   height: 39px;
 }
 
-.form_input:focus {
-  border-color: #390686;
-}
 .form_input::placeholder{
   font-size: 12px;
+}
+
+.form_input:focus {
+  outline: none;
+  border-color: #8a45b2;
 }
 
 .eye_button {

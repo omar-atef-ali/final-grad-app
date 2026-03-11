@@ -213,7 +213,12 @@
   font-size: 12px;
 }
 
-.text-input::placeholder {
+.textInput:focus {
+  outline: none;
+  border-color: #8a45b2;
+}
+
+.textInput::placeholder {
   color: #686677;
 }
 

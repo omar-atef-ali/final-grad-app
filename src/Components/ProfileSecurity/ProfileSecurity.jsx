@@ -32,7 +32,7 @@ export default function ProfileSecurity() {
         }
       );
       //   console.log(response.data);
-      console.log("sucessful");
+      // console.log("sucessful");
       Swal.fire({
         icon: "success",
         title: "Password changed!",
@@ -82,6 +82,7 @@ export default function ProfileSecurity() {
 
   async function getUserSessions() {
     try {
+
       let response = await api.get(`/UserSessions`,{},{
          headers: {
             Authorization: `Bearer ${userToken}`,
@@ -204,26 +205,7 @@ export default function ProfileSecurity() {
     const year = d.getFullYear();
     return `${month} ${day}, ${year}`;
   }
-  // function timeAgo(dateString) {
-  //   const now = new Date();
-  //   const past = new Date(dateString);
-  //   const diff = Math.floor((now - past) / 1000); // seconds
 
-  //   const minutes = Math.floor(diff / 60);
-  //   const hours = Math.floor(diff / 3600);
-  //   const days = Math.floor(diff / 86400);
-  //   const weeks = Math.floor(diff / 604800);
-  //   const months = Math.floor(diff / 2592000);
-  //   const years = Math.floor(diff / 31536000);
-
-  //   if (diff < 60) return "Just now";
-  //   if (minutes < 60) return `${minutes} minutes ago`;
-  //   if (hours < 24) return `${hours} hours ago`;
-  //   if (days < 7) return `${days} days ago`;
-  //   if (weeks < 4) return `${weeks} weeks ago`;
-  //   if (months < 12) return `${months} months ago`;
-  //   return `${years} years ago`;
-  // }
 
   function timeAgo(dateString) {
     const past = new Date(dateString);
@@ -299,7 +281,7 @@ export default function ProfileSecurity() {
             <label className={`${style.form_label}`}>Current Password</label>
             <div className={`${style.input_wrapper}`}>
               <span className={`${style.input_icon}`} >
-                <i class="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock"></i>
               </span>
               <input id="currentPassword"
                 name="currentPassword"
@@ -332,7 +314,7 @@ export default function ProfileSecurity() {
 
                 className={`${style.form_input}`} type="password" placeholder="Enter your new password" />
               <span className={`${style.input_icon}`}>
-                <i class="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock"></i>
               </span>
             </div>
             <div className={`${style.error_placeholder}`}>
@@ -345,7 +327,7 @@ export default function ProfileSecurity() {
                 </div>
               )}
             </div>
-            <p className={`${style.password_hint}`} class="password-hint">Use at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character (e.g. !@#$%^&*)</p>
+            <p className={`${style.password_hint} password-hint`}>Use at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character (e.g. !@#$%^&*)</p>
           </div>
           <div className={`${style.form_group}`}>
             <label className={`${style.form_label}`}>Confirm New Password</label>
@@ -358,7 +340,7 @@ export default function ProfileSecurity() {
                 value={formik.values.confirmNewPassword}
                 className={`${style.form_input}`} type="password" placeholder="Confirm your new password" />
               <span className={`${style.input_icon}`}>
-                <i class="fa-solid fa-lock"></i>
+                <i className="fa-solid fa-lock"></i>
               </span>
             </div>
             <div className={`${style.error_placeholder}`}>
@@ -459,7 +441,7 @@ export default function ProfileSecurity() {
             {
               users.isTrusted ? "" : <div onClick={() => trustDevice(users.id)} className={`${style.trust_device}`}>
                 <div>
-                  <span className={`${style.trust_device_text}`}><i class={`fa-solid fa-shield ${style.sheild_icon}`}></i> Trust this device</span>
+                  <span className={`${style.trust_device_text}`}><i className={`fa-solid fa-shield ${style.sheild_icon}`}></i> Trust this device</span>
                 </div>
 
               </div>

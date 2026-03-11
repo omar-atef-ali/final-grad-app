@@ -14,7 +14,7 @@ export default function Features() {
         const fetchFeatures = async () => {
             try {
                 const { data } = await api.get("Services")
-                console.log(data);
+                // console.log(data);
                 setFeature(data)
 
             } catch (error) {
