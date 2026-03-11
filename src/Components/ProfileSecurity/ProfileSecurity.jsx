@@ -83,7 +83,7 @@ export default function ProfileSecurity() {
   async function getUserSessions() {
     try {
 
-      let response = await api.get(`/UserSessions`,{},{
+      let response = await api.get(`/UserSessions`,{
          headers: {
             Authorization: `Bearer ${userToken}`,
           },
