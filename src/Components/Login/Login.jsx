@@ -23,9 +23,11 @@ export default function Login() {
   async function submit(values) {
     try {
       setLoading(true);
-      const { data } = await api.post("/Auth", values);
+      const { data } = await api.post("/Auth", values , {
+        withCredentials: true,
+      }
+      );
       localStorage.setItem("token", data.token);
-      localStorage.setItem("refreshToken", data.refreshToken);
       setUserToken(data.token);
       navigate("/home");
       setLoading(false);
@@ -88,8 +90,8 @@ export default function Login() {
   const loginWithGoogle = () => {
     const clientId =
       "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
-    const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
-    // const redirectUri = `http://localhost:5173/google/callback`;
+    // const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    const redirectUri = `http://localhost:5173/google/callback`;
     const scope = "openid email profile";
     const responseType = "code";
 

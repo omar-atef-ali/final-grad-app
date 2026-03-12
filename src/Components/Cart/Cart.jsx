@@ -4,13 +4,14 @@ import { userContext } from '../../context/userContext';
 import api from '../../api';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import CartContextProvider, { CartContext } from '../../context/CartContextProvider';
+import { CartContext } from '../../context/CartContextProvider';
 
 
 export default function Cart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
-  const { userToken } = useContext(userContext);
+  const { userToken } = useContext(userContext);  
+    const { getCart } = useContext(CartContext);
   const [localSelections, setLocalSelections] = useState({});
   const [selectedTokenIds, setSelectedTokenIds] = useState({});
   const [promoCode, setPromoCode] = useState('');
@@ -103,6 +104,7 @@ export default function Cart() {
         }
       );
       console.log(data);
+      getCart()
       if (data.paymentCheckoutUrl) {
         window.location.href = data.paymentCheckoutUrl;
       }
@@ -281,7 +283,6 @@ export default function Cart() {
 
 
   ///////////////////////////////////////////////////////////////
-  const { getCart } = useContext(CartContext);
   async function DeleteCartItem(cartItemId) {
     try {
       await api.delete(`/Cart/${cartItemId}`, {
@@ -549,8 +550,8 @@ export default function Cart() {
 
                 {/* Right Column: Summary */}
                 <div className='col-lg-4'>
-                  <div className="col-lg-4 w-100">
-                    <div className={`card ${style['summary-card']} border-0 shadow-sm rounded-4`}>
+                  <div style={{ position: 'sticky', top: '80px', zIndex: 10 }}>
+                    <div className={`card ${style['summary-card']} border-0 shadow-sm rounded-4`} style={{ position: 'static' }}>
                       <div className={`card-header ${style['bg-light-gray']} border-bottom p-4 rounded-top-4`}>
                         <div className="d-flex align-items-center gap-2">
                           <i className="bi bi-clipboard-data text-muted"></i>
@@ -609,41 +610,8 @@ export default function Cart() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className={`${style.help_card}`}>
-                    <h4 className={`${style.help_title}`} >Need Help?</h4>
-                    <p className={`${style.help_text}`}>Contact our support team for assistance</p>
-                    <button className={`${style.btn_contact}`}>
-                      <svg
-                        width="18"
-                        height="16"
-                        viewBox="0 0 18 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* <!-- Imported SVG paths for Support Icon --> */}
-                        <path
-                          d="M12.7501 6.99387C12.7501 6.71707 12.7501 6.57868 12.7917 6.45548C12.9125 6.09709 13.2317 5.95869 13.5517 5.8131C13.9101 5.6491 14.0893 5.5675 14.2676 5.5531C14.4692 5.5371 14.6716 5.5803 14.8444 5.6771C15.0732 5.8051 15.2332 6.04989 15.3964 6.24828C16.1508 7.16506 16.5284 7.62345 16.666 8.12824C16.778 8.53623 16.778 8.96342 16.666 9.37061C16.4652 10.1082 15.8292 10.7258 15.358 11.2986C15.1172 11.5906 14.9964 11.7369 14.8444 11.8225C14.6687 11.92 14.4679 11.9632 14.2676 11.9465C14.0893 11.9321 13.9101 11.8505 13.5509 11.6866C13.2309 11.541 12.9125 11.4026 12.7917 11.0442C12.7501 10.921 12.7501 10.7826 12.7501 10.5058V6.99387ZM4.75024 6.99387C4.75024 6.64508 4.74064 6.33228 4.45904 6.08749C4.35665 5.99869 4.22065 5.93709 3.94945 5.8131C3.59026 5.6499 3.41106 5.5675 3.23267 5.5531C2.69908 5.5099 2.41188 5.87469 2.10469 6.24908C1.34951 7.16506 0.971913 7.62345 0.833515 8.12904C0.722162 8.53568 0.722162 8.96477 0.833515 9.37141C1.03511 10.1082 1.6719 10.7266 2.14229 11.2986C2.43908 11.6586 2.72308 11.9873 3.23267 11.9465C3.41106 11.9321 3.59026 11.8505 3.94945 11.6866C4.22145 11.5634 4.35665 11.501 4.45904 11.4122C4.74064 11.1674 4.75024 10.8546 4.75024 10.5066V6.99387Z"
-                          stroke="black"
-                          strokeWidth="1.5"
-                        />
-                        <path
-                          d="M3.15027 5.54988C3.15027 2.89875 5.65742 0.75 8.75016 0.75C11.8429 0.75 14.3501 2.89875 14.3501 5.54988"
-                          stroke="black"
-                          strokeLinecap="square"
-                          strokeLinejoin="round"
-                          strokeWidth="1.5"
-                        />
-                        <path
-                          d="M14.3501 11.9498V12.5898C14.3501 14.0033 12.9181 15.1497 11.1501 15.1497H9.55015"
-                          stroke="black"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="1.5"
-                        />
-                      </svg>
-                      <span>Contact Support</span>
-                    </button>
+                  
+                 
                   </div>
                 </div>
               </div>

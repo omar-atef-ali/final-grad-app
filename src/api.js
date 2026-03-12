@@ -2,12 +2,14 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "/api", // relative path → Netlify proxy هيوجهه للسيرفر
+  withCredentials: true,
 });
 
 
 const refreshClient = axios.create({
   baseURL: "/api",
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 let isRefreshing = false;
@@ -31,7 +33,7 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) config.headers.Authorization = `Bearer ${token}`;
-    // console.log(`📤 [REQUEST] ${config.method?.toUpperCase()} ${config.url}`);
+    console.log(`📤 [REQUEST] ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => Promise.reject(error)
@@ -40,7 +42,7 @@ api.interceptors.request.use(
 // Response Interceptor
 api.interceptors.response.use(
   (response) => {
-    // console.log(`✅ [RESPONSE] ${response.status} ${response.config.url}`);
+    console.log(`✅ [RESPONSE] ${response.status} ${response.config.url}`);
     return response;
   },
 
@@ -49,7 +51,7 @@ api.interceptors.response.use(
     const url = originalRequest?.url || "";
     const status = error.response?.status;
 
-    // console.log(`❌ [ERROR] ${status} ${url}`);
+    console.log(`❌ [ERROR] ${status} ${url}`);
 
     if (!error.response) {
       console.warn("🌐 [NETWORK ERROR] No response from server");
@@ -63,10 +65,9 @@ api.interceptors.response.use(
     }
 
     if (status === 401 && !originalRequest._retry) {
-      const refreshToken = localStorage.getItem("refreshToken");
       const oldToken = localStorage.getItem("token");
 
-      if (!refreshToken || !oldToken) {
+      if (!oldToken) {
         console.warn("⚠️ [REFRESH] No tokens found → rejecting");
         return Promise.reject(error);
       }
@@ -84,34 +85,29 @@ api.interceptors.response.use(
       }
 
       isRefreshing = true;
-      // console.log("🔄 [REFRESH] Starting token refresh...");
+      console.log("🔄 [REFRESH] Starting token refresh...");
 
       return new Promise(async (resolve, reject) => {
         try {
           const res = await refreshClient.post("/Auth/refresh", {
             token: oldToken,
-            refreshToken: refreshToken,
           });
 
           const newAccessToken = res.data?.token;
-          const newRefreshToken = res.data?.refreshToken;
 
           if (!newAccessToken) {
             throw new Error("No token returned from refresh endpoint");
           }
 
-          // console.log("🎉 [REFRESH] New token received successfully");
+          console.log("🎉 [REFRESH] New token received successfully");
 
           localStorage.setItem("token", newAccessToken);
-          if (newRefreshToken) {
-            localStorage.setItem("refreshToken", newRefreshToken);
-          }
 
           api.defaults.headers.common["Authorization"] =
             `Bearer ${newAccessToken}`;
 
           processQueue(null, newAccessToken);
-          // console.log(`📬 [QUEUE] Processed ${failedQueue.length} queued requests`);
+          console.log(`📬 [QUEUE] Processed ${failedQueue.length} queued requests`);
 
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           resolve(api(originalRequest));
