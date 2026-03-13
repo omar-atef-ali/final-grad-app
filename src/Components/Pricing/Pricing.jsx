@@ -357,6 +357,12 @@ export default function Pricing() {
     getFAQs()
   }, [])
 
+
+  /////////////////////////////////////////////////////////////////
+  async function addToLocalStorage(id) {
+
+  }
+
   return (
     <>
       <section className={`${style.hero_section}`}>
@@ -715,7 +721,7 @@ export default function Pricing() {
                         </ul>
 
                         <button
-                          onClick={() => addToCart(feat.id)}
+                          onClick={() => {userToken ? addToCart(feat.id) : addToLocalStorage(feat.id)}}
                           className={`${style.btn} ${style.btn_individual} ${isFeatureInCart(feat.id) ? style.btn_disabled : ""}`}
                           disabled={isFeatureInCart(feat.id)}
                         >

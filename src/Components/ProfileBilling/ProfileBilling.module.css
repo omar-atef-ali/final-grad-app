@@ -18,7 +18,7 @@
     --warning-yellow: #f0b100;
     --warning-yellow-bg: rgba(240, 177, 0, 0.25);
     --white: #ffffff;
-    
+
     /* Spacing */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
@@ -26,12 +26,12 @@
     --spacing-lg: 24px;
     --spacing-xl: 32px;
     --spacing-2xl: 48px;
-    
+
     /* Border Radius */
     --radius-sm: 8px;
     --radius-md: 10px;
     --radius-lg: 26px;
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -60,7 +60,7 @@ body {
     padding: var(--spacing-xl);
     text-align: center;
     margin-bottom:80px;
-     box-shadow: 0px 2px 5px rgba(34, 31, 31, 0.158);
+    box-shadow: 0px 2px 5px rgba(34, 31, 31, 0.158);
 }
 
 .no_Biling_title {
@@ -98,10 +98,10 @@ body {
     height:340px; */
 
     margin: 0 auto;
-    width: 100%; 
+    width: 100%;
     max-width: 532px;
     aspect-ratio: 532 / 340;
-    
+
 }
 .img_part{
     width: 100%;
@@ -119,7 +119,7 @@ body {
         padding-left: var(--spacing-md);
         padding-right: var(--spacing-md);
     }
-    
+
     .content_wrapper {
         grid-template-columns: 240px 1fr;
     }
@@ -129,23 +129,23 @@ body {
     .nav_links {
         display: none;
     }
-    
+
     .nav_divider {
         display: none;
     }
-    
+
     .content_wrapper {
         grid-template-columns: 1fr;
     }
-    
+
     .sidebar {
         order: 2;
     }
-    
+
     .main_section {
         order: 1;
     }
-    
+
     .pricing_cards {
         grid-template-columns: 1fr;
     }
@@ -155,57 +155,57 @@ body {
     .header_right {
         gap: var(--spacing-sm);
     }
-    
+
     .btn_demo {
         display: none;
     }
-    
+
     .icon_btn {
         width: 40px;
         height: 36px;
     }
-    
+
     .profile_avatar {
         width: 40px;
         height: 40px;
     }
-    
+
     .profile_header {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .profile_title {
         font-size: 20px;
     }
-    
+
     .Tabs {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
     }
-    
+
     .Tabs::-webkit-scrollbar {
         display: none;
     }
-    
+
     .Biling_content {
         padding: var(--spacing-md);
     }
-    
+
     .footer_top {
         grid-template-columns: 1fr;
     }
-    
+
     .footer_bottom {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .logo_text {
         font-size: 20px;
     }
-    
+
     .nav_link {
         font-size: 14px;
     }
@@ -217,28 +217,28 @@ body {
         margin-top: var(--spacing-md);
         margin-bottom: var(--spacing-md);
     }
-    
+
     .profile_header_left {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .no_Biling_card {
         padding: var(--spacing-lg);
     }
-    
+
     .no_Biling_title {
         font-size: 18px;
     }
-    
+
     .social_links {
         flex-wrap: wrap;
     }
-    
+
     .header_container {
         gap: var(--spacing-md);
     }
-    
+
     .header_left {
         gap: var(--spacing-md);
     }
@@ -249,12 +249,12 @@ body {
         width: 34%;
     }
     .Biling_content {
-    padding: 32px 0px;
-}
+        padding: 32px 0px;
+    }
 .profile_header_left {
-    display: flex;
-    flex-direction: row;
-}
+        display: flex;
+        flex-direction: row;
+    }
 
 }
 
@@ -278,6 +278,7 @@ a:focus-visible {
 
 /* Print Styles */
 @media print {
+
     .header,
     .footer,
     .back_btn,
@@ -286,5 +287,357 @@ a:focus-visible {
     .btn_choose,
     .btn_contact {
         display: none;
+    }
+}
+
+/* ///////////////////////////////////////////////////////// */
+
+.mainWrapper {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Tab Navigation */
+
+
+
+
+
+.tabActive {
+    background: linear-gradient(90deg, rgba(61, 27, 106, 0.83) 0%, rgba(78, 48, 116, 0.83) 50%, rgba(138, 69, 178, 0.83) 100%);
+    color: white !important;
+}
+
+/* Current Billing Card */
+.billingCard {
+    background: linear-gradient(167.031deg, rgba(61, 27, 106, 0.05) 0%, rgba(138, 69, 178, 0.05) 100%);
+    border: 1.6px solid rgba(138, 69, 178, 0.2);
+    border-radius: 14px;
+    padding: 0;
+}
+
+.cardHeaderBilling {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cardHeaderBilling span {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #0a0a0a;
+}
+
+.billingStats {
+    padding: 0 26px 26px 26px;
+}
+
+/* Stat Cards */
+.statCard {
+    background: white;
+    border: 0.8px solid rgba(138, 69, 178, 0.2);
+    border-radius: 10px;
+    padding: 16.8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.statLabel {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #717182;
+    margin: 0;
+}
+
+.statValue {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: #3d1b6a;
+    margin: 0;
+}
+
+.statDetail {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #717182;
+    margin: 0;
+}
+
+/* Payment Methods Card */
+.paymentMethodsCard {
+    background: white;
+    border: 0.8px solid rgba(0, 0, 0, 0.1);
+    border-radius: 14px;
+    padding: 0.8px;
+}
+
+.sectionHeader {
+    padding: 24px 24px 6px 24px;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #0a0a0a;
+}
+
+.sectionSubtitle {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #717182;
+    margin: 4px 0 0 0;
+}
+
+/* Payment Card Item */
+.paymentCardItem {
+    background: linear-gradient(90deg, rgba(61, 27, 106, 0.05) 0%, rgba(138, 69, 178, 0.05) 100%);
+    border: 1.6px solid #8a45b2;
+    border-radius: 10px;
+    padding: 17.6px;
+    margin: 24px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 91px;
+}
+
+.paymentIcon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(180deg, #3d1b6a 0%, #8a45b2 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.paymentDate {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #717182;
+}
+
+.removeButton {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #e7000b;
+    cursor: pointer;
+    padding: 6px 12px;
+}
+
+/* Transaction Card */
+.transactionCard {
+    background: white;
+    border: 0.8px solid rgba(0, 0, 0, 0.1);
+    border-radius: 14px;
+    padding: 0.8px;
+}
+
+.transactionList {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Transaction Item */
+.transactionItem {
+    border: 0.8px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 16.8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.transactionItem:last-child {
+    margin-bottom: 0;
+}
+
+.transactionIcon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, rgb(0, 201, 80) 0%, rgb(0, 153, 102) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.invoiceNumber {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #0a0a0a;
+    margin: 0;
+}
+
+.badgePaid {
+    background-color: #dcfce7;
+    border-radius: 8px;
+    padding: 2.8px 8.8px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #008236;
+    display: inline-block;
+}
+
+.invoiceDetails {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #717182;
+    margin: 0;
+}
+
+.invoiceAmount {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #0a0a0a;
+    margin: 0;
+}
+
+/* Transaction Footer */
+.transactionFooter {
+    padding: 16px 24px 24px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerText {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #717182;
+    margin: 0;
+}
+
+.viewAllButton {
+    background: white;
+    border: 1.6px solid #8a45b2;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #3d1b6a;
+    cursor: pointer;
+}
+
+/* Security Card */
+.securityCard {
+    background: linear-gradient(167.031deg, rgba(61, 27, 106, 0.05) 0%, rgba(138, 69, 178, 0.05) 100%);
+    border: 1.6px solid rgba(138, 69, 178, 0.2);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.securityIcon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.securityTitle {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #0a0a0a;
+    margin: 0 0 8px 0;
+}
+
+.securityDescription {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #717182;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .mainWrapper {
+        gap: 16px;
+    }
+
+
+
+    .billingStats {
+        padding: 0 16px 16px 16px;
+    }
+
+    .paymentCardItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .transactionItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .invoiceAmount {
+        align-self: flex-end;
+    }
+
+    .transactionFooter {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .viewAllButton {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .sectionHeader {
+        padding: 16px 16px 6px 16px;
+    }
+
+    .paymentCardItem {
+        margin: 16px 16px;
+    }
+
+    .transactionList {
+        padding: 0 16px;
+    }
+
+    .transactionFooter {
+        padding: 12px 16px 16px 16px;
+    }
+
+    .securityCard {
+        padding: 16px;
     }
 }

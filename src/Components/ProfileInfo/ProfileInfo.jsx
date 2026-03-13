@@ -139,6 +139,13 @@ export default function ProfileInfo() {
   };
 
 
+  const handleCancel = () => {
+    setIsDisabled(true);
+    setSave(false);
+    fetchProfile();
+  }
+
+
   /* ------------------------------- Notification Logic ------------------------------ */
   const [initialNotificationsInfo, setInitialNotificationsInfo] = useState({
     productsUpdatesNotification: false,
@@ -318,7 +325,8 @@ export default function ProfileInfo() {
     <div className={style.FormSection}>
       <div className={style.SectionHeader}>
         <h3 className={style.SectionTitle}>Personal Information</h3>
-        <button className={style.BtnGradient} onClick={handleEditToggle}>
+        <div className=' d-flex gap-2'>
+          <button className={style.BtnGradient} onClick={handleEditToggle}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <g id="mynaui:edit">
               <path
@@ -331,7 +339,25 @@ export default function ProfileInfo() {
           </svg>
           {save ? "Save" : "Edit Profile"}
         </button>
+        {save && <button className={style.BtnCancel} onClick={handleCancel}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <g id="mynaui:close">
+              <path
+                d="M4 4L12 12M12 4L4 12"
+                stroke="white"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+          </svg>
+          Cancel
+        </button>}
+        </div>
+        
+
+
       </div>
+
 
       <div className={style.FormGrid}>
         {/* <!-- First Name --> */}
@@ -633,74 +659,74 @@ export default function ProfileInfo() {
         </div>
       </div>
 
-      {/* <!-- Notifications Section --> */}
-      <div className={style.NotificationsSection}>
-        <h3
-          className={style.SectionTitle}
-          style={{ marginBottom: "16px" }}
-        >
-          Notification preferences
-        </h3>
 
-        <div className={style.ToggleRow}>
-          <div className={style.ToggleInfo}>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#0a0a0a"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-            <div className={style.ToggleText}>
-              <h4>Product Updates</h4>
-              <p>Stay informed about new features and improvements</p>
-            </div>
+    </div>
+    {/* <!-- Notifications Section --> */}
+    <div className={style.NotificationsSection}>
+      <h3
+        className={style.SectionTitle}
+        style={{ marginBottom: "16px" }}
+      >
+        Notification preferences
+      </h3>
+
+      <div className={style.ToggleRow}>
+        <div className={style.ToggleInfo}>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0a0a0a"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <div className={style.ToggleText}>
+            <h4>Product Updates</h4>
+            <p>Stay informed about new features and improvements</p>
           </div>
-          <label className={style.ToggleWrapper}>
-            <input type="checkbox" className={style.ToggleCheckbox} checked={productsNotification} onChange={handleProductNotificationChange} disabled={productsLoading} />
-            <span className={style.ToggleSlider}></span>
-          </label>
         </div>
+        <label className={style.ToggleWrapper}>
+          <input type="checkbox" className={style.ToggleCheckbox} checked={productsNotification} onChange={handleProductNotificationChange} disabled={productsLoading} />
+          <span className={style.ToggleSlider}></span>
+        </label>
+      </div>
 
-        <div className={style.ToggleRow}>
-          <div className={style.ToggleInfo}>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#0a0a0a"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-            <div className={style.ToggleText}>
-              <h4>Billing Notifications</h4>
-              <p>Receive billing and payment notifications</p>
-            </div>
+      <div className={style.ToggleRow}>
+        <div className={style.ToggleInfo}>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0a0a0a"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <div className={style.ToggleText}>
+            <h4>Billing Notifications</h4>
+            <p>Receive billing and payment notifications</p>
           </div>
-          <label className={style.ToggleWrapper}>
-            <input
-              type="checkbox"
-              className={style.ToggleCheckbox}
-              checked={billingNotification} onChange={handleBillingNotificationChange}
-              disabled={billingLoading}
-
-            />
-            <span className={style.ToggleSlider}></span>
-          </label>
         </div>
+        <label className={style.ToggleWrapper}>
+          <input
+            type="checkbox"
+            className={style.ToggleCheckbox}
+            checked={billingNotification} onChange={handleBillingNotificationChange}
+            disabled={billingLoading}
+
+          />
+          <span className={style.ToggleSlider}></span>
+        </label>
       </div>
     </div>
-
   </>
 }

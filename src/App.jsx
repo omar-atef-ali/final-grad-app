@@ -69,14 +69,14 @@ let routers = createBrowserRouter([
 
       {
         path: "profile",
-        element: <Protected><ProfileLayout /></Protected>,
+        element: <ProfileLayout />,
         children: [
-          { index: true, element: <Protected><ProfileInfo /></Protected> }, // /profile
-          { path: "info", element: <Protected> <ProfileInfo /> </Protected> }, // /profile/info
+          { index: true, element: <ProfileInfo /> }, // /profile
+          { path: "info", element: <ProfileInfo />  }, // /profile/info
           { path: "security", element: <Protected><ProfileSecurity /></Protected> }, // /profile/security
           { path: "subscription", element: <Protected> <ProfileSubscription /> </Protected> }, // /profile/subscription
-          { path: "billing", element: <Protected> <ProfileBilling /> </Protected> }, // /profile/billing
-          { path: "data-sources", element: <Protected> <ProfileDataSources /> </Protected> }, // /profile/data-sources
+          { path: "billing", element:  <ProfileBilling />  }, // /profile/billing
+          { path: "data-sources", element:  <ProfileDataSources />  }, // /profile/data-sources
         ],
       },
     ],
