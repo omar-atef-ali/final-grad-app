@@ -5,8 +5,8 @@ export default function Demo() {
         "Dashboard",
         "AI Recommendations",
         "AI Chatbot",
-        
-        
+
+
     ]
     const [activeTab, setActiveTab] = useState(0);
 
@@ -43,7 +43,24 @@ export default function Demo() {
 
 
                     <div className={`${style.dashboard_container}`}>
-                        <p className={`${style.dashboard_link}`}>Dashboard Link</p>
+                        {activeTab === 0 && (
+                            <iframe
+                                src="https://public.tableau.com/views/GradProject_4th_dash_new/Dashboard2?:embed=yes&:language=en-US&:showVizHome=no&:display_count=n&:toolbar=yes"
+                                width="100%"
+                                height="900px"
+                                style={{ border: "none" }}
+                                allowFullScreen
+                                title="Namaa Dashboard"
+                            />
+                        )}
+
+                        {activeTab === 1 && (
+                            <div>AI Recommendations content here</div>
+                        )}
+
+                        {activeTab === 2 && (
+                            <div>AI Chatbot content here</div>
+                        )}
                     </div>
                 </div>
 

@@ -125,13 +125,15 @@ body {
     font-weight: 500;
 }
 
-.dashboard_container {
+ .dashboard_container {
   width: 100%;
-  height: 720px;
+  padding: 10px;
+  min-height: 900px;
+  /* overflow: hidden; */
   background: white;
   border-radius: 14px;
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* اختياري */
 }
 
 /* ============================= */

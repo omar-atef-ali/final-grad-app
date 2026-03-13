@@ -118,31 +118,6 @@ export default function ProfileSecurity() {
     }
   }
 
-  // async function putTrustedDevice() {
-  //   try {
-  //     let response = await api.put(`/UserSessions/verify-trust`, {
-  //       UserId,
-  //       Code
-  //     }, {
-  //       headers: {
-  //         Authorization: `Bearer ${userToken}`,
-  //       }
-  //     })
-  //     await getUserSessions();
-  //     console.log(response)
-  //     toast.success(response.data.message)
-
-  //   }
-  //   catch (error) {
-  //     console.log(error)
-  //     toast.error(
-  //       error.response?.data?.errors?.[0] ||
-  //       error.response?.data?.message ||
-  //       "Something went wrong"
-  //     )
-  //   }
-  // }
-
   async function putTrustedDevice() {
   try {
     let response = await api.put(`/UserSessions/verify-trust?UserId=${UserId}&Code=${encodeURIComponent(Code)}`, {}, {
