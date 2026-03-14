@@ -56,8 +56,8 @@ export default function GoogleCallback() {
         const endpoint = from === "register" ? "/Auth/google/register" : "/Auth/google/login";
         const res = await api.post(endpoint, {
           code,
-          redirectUri: "http://localhost:5173/google/callback",
-          // redirectUri: `https://finalgradapp.netlify.app/google/callback`,
+          // redirectUri: "http://localhost:5173/google/callback",
+          redirectUri: `https://finalgradapp.netlify.app/google/callback`,
         } , {
           withCredentials: true,
         });
