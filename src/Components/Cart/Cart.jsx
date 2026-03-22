@@ -4,14 +4,15 @@ import { userContext } from '../../context/userContext';
 import api from '../../api';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { CartContext } from '../../context/CartContextProvider';
+import { CartContext } from '../../context/CartContext';
 
 
 export default function Cart() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
-  const { userToken } = useContext(userContext);  
-    const { getCart } = useContext(CartContext);
+  const { userToken } = useContext(userContext);
+  const { getCart } = useContext(CartContext);
   const [localSelections, setLocalSelections] = useState({});
   const [selectedTokenIds, setSelectedTokenIds] = useState({});
   const [promoCode, setPromoCode] = useState('');
@@ -77,16 +78,6 @@ export default function Cart() {
       };
     });
   }, [cartItems, localSelections, selectedTokenIds]);
-  // console.log(selectedServicesPayload);
-  // useEffect(() => {
-  //   setfinalcheckout({
-  //     "serviceItems": [
-  //       selectedServicesPayload
-  //     ],
-  //     "autoRenewal": false,
-  //   "paymentMethodId": 0
-  // }) 
-  // },[selectedServicesPayload])
 
 
   async function payment() {
@@ -94,6 +85,7 @@ export default function Cart() {
       const { data } = await api.post('/Orders/services',
         {
           serviceItems: selectedServicesPayload,
+          ...(promoCode ? { couponCode: promoCode } : {}),
           autoRenewal: false,
           paymentMethodId: 0
         },
@@ -136,6 +128,34 @@ export default function Cart() {
       );
     }
   }
+
+  function handleLogin() {
+    navigate('/login?redirect=/cart', { state: { from: `/cart` } })
+    toast.error(
+      "Please login to proceed to payment",
+      {
+        position: "top-center",
+        duration: 4000,
+        style: {
+          background:
+            "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          padding: "16px 20px",
+          color: "#ffffff",
+          fontSize: "0.95rem",
+          borderRadius: "5px",
+          width: "300px",
+          height: "100%",
+          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+        },
+        iconTheme: {
+          primary: "#FF4D4F",
+          secondary: "#ffffff",
+        },
+      },
+    );
+  }
+
   //////////////////////////
 
   const handleDurationChange = (cartItemId, duration) => {
@@ -181,18 +201,89 @@ export default function Cart() {
 
   async function getCartItems() {
     try {
-      const { data } = await api.get('Cart', {
-        headers: {
-          Authorization: `Bearer ${userToken}`
+      if (userToken) {
+        // Logged-in user: get cart from API
+        setLoading(true);
+        const { data } = await api.get('Cart', {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        });
+
+        try {
+          const savedSelections = JSON.parse(localStorage.getItem('cart_selections') || '{}');
+          let changed = false;
+
+          Object.keys(savedSelections).forEach(key => {
+            if (key.startsWith('local-')) {
+              const serviceId = key.replace('local-', '');
+              const serverItem = data.find(item => String(item.serviceId) === String(serviceId));
+              if (serverItem) {
+                // Duplicate selection to the real server item ID
+                savedSelections[serverItem.cartItemId] = savedSelections[key];
+                delete savedSelections[key]; // Clean up the old one
+                changed = true;
+              }
+            }
+          });
+
+          if (changed) {
+            localStorage.setItem('cart_selections', JSON.stringify(savedSelections));
+          }
+        } catch (e) {
+          console.error("Error migrating guest cart selections:", e);
         }
-      });
-      setCartItems(data);
-      // console.log("Cart Data:", data);
+
+        setCartItems(data);
+        setLoading(false);
+      } else {
+        // Guest user: get cart from localStorage and map to service cards
+        const saved = localStorage.getItem("local cart");
+        let localCartIds = [];
+        try {
+          localCartIds = saved ? JSON.parse(saved) : [];
+        } catch {
+          localCartIds = saved ? saved.split(',') : [];
+        }
+
+        if (localCartIds.length > 0) {
+          // Fetch all services to get their details
+          const { data: allServices } = await api.get(`/Services/guest-catalog`);
+          console.log(allServices);
+
+
+          // Map local IDs to cart item objects matching the API structure
+          const guestCartItems = localCartIds.map(id => {
+            const service = allServices.find(s => String(s.serviceId) === String(id));
+            if (!service) return null;
+
+            // Format to match API CartItem response
+            return {
+              cartItemId: `local-${id}`, // Fake cartItemId for guest
+              serviceId: service.id,
+              name: service.name,
+              subTitle: service.subTitle,
+              iconURL: service.iconURL,
+              price: service.price,
+              duration: service.durationInDays / 30, // Rough estimate, typically duration property comes from API
+              servicePrices: service.servicePrices || [],
+              tokenAmount: service.tokenAmount,
+              // Add any other necessary fields that might be used
+            };
+          }).filter(Boolean); // Remove nulls if a service ID wasn't found
+
+          setCartItems(guestCartItems);
+          setLoading(false)
+        } else {
+          setCartItems([]);
+          setLoading(false)
+        }
+      }
     } catch (error) {
       console.error("Error fetching cart items:", error);
       toast.error(
         error.response?.data?.errors[1] ||
-        "Something went wrong while deleting the cart item.",
+        "Something went wrong while fetching cart items.",
         {
           position: "top-center",
           duration: 4000,
@@ -216,17 +307,61 @@ export default function Cart() {
       );
     }
   }
-
+  useEffect(() => {
+    getCart();
+  }, []);
 
 
   useEffect(() => {
-    if (userToken) {
+    // Call it whether logged in or out, getCartItems handles the logic
+
+    const syncLocalCartToServer = async () => {
+      if (userToken) {
+        try {
+          const savedCart = localStorage.getItem("local cart");
+          let localCartIds = [];
+          try {
+            localCartIds = savedCart ? JSON.parse(savedCart) : [];
+          } catch {
+            localCartIds = savedCart ? savedCart.split(',') : [];
+          }
+
+          if (localCartIds.length > 0) {
+            let successCount = 0;
+            for (const id of localCartIds) {
+              try {
+                await api.post(`/Cart`, { serviceId: id }, {
+                  headers: { Authorization: `Bearer ${userToken}` }
+                });
+                successCount++;
+              } catch (e) {
+                console.error("Error adding guest item to cart (Cart.jsx):", e);
+              }
+            }
+
+            localStorage.removeItem("local cart");
+            getCart(); // Trigger context update
+          }
+        } catch (syncError) {
+          console.error("Error syncing local cart to server:", syncError);
+        }
+      }
+      // Get cart items regardless of sync status (fetches updated cart or local items)
       getCartItems();
-    }
+    };
 
+    syncLocalCartToServer();
+
+    // Add event listener for local storage changes (if modified from another tab or component)
+    const handleStorageChange = (e) => {
+      if (e.key === "local cart" && !userToken) {
+        getCartItems();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [userToken])
-
-
 
 
   // Calculate accurate totals based on current local selections or server defaults
@@ -276,23 +411,106 @@ export default function Cart() {
     }), { subtotal: 0, discount: 0, total: 0 });
   }, [itemTotals]);
 
-  async function applyPromoCode() {
-    console.log("okkkkk");
 
+
+  async function applyPromoCode() {
+    try {
+      const { data } = await api.get(`/Orders/discount-codes/validate?code=${promoCode}`)
+      setDiscountAmount(data.discountPercentage);
+
+
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Something went wrong while applying the promo code."
+        ,
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+
+    }
   }
 
 
+  function cancelPromoCode() {
+    setDiscountAmount(0);
+    setPromoCode('');
+  }
   ///////////////////////////////////////////////////////////////
   async function DeleteCartItem(cartItemId) {
     try {
-      await api.delete(`/Cart/${cartItemId}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`
+      if (userToken) {
+        // Logged-in user: delete from API
+        await api.delete(`/Cart/${cartItemId}`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        });
+        getCartItems();
+        getCart();
+        toast.success("Cart item deleted successfully.");
+      } else {
+        // Guest user: delete from localStorage
+        const saved = localStorage.getItem("local cart");
+        let localCartIds = [];
+        try {
+          localCartIds = saved ? JSON.parse(saved) : [];
+        } catch {
+          localCartIds = saved ? saved.split(',') : [];
         }
-      });
-      getCartItems();
-      getCart();
-      toast.success("Cart item deleted successfully.");
+
+        // Extract original service ID from the fake "local-{id}" cartItemId
+        const originalId = cartItemId.toString().replace('local-', '');
+
+        // Find the index of the first matching ID and remove it (to handle duplicates correctly if any)
+        const indexToRemove = localCartIds.findIndex(id => String(id) === String(originalId));
+        if (indexToRemove !== -1) {
+          localCartIds.splice(indexToRemove, 1);
+          localStorage.setItem("local cart", JSON.stringify(localCartIds));
+          getCartItems();
+          toast.success("Cart item removed successfully.");
+          getCart();
+        }
+      }
+
+      // Also clean up any selections saved for this cartItemId
+      const savedSelections = JSON.parse(localStorage.getItem('cart_selections') || '{}');
+      if (savedSelections[cartItemId]) {
+        delete savedSelections[cartItemId];
+        localStorage.setItem('cart_selections', JSON.stringify(savedSelections));
+
+        // Update local state to reflect deletion
+        setLocalSelections(prev => {
+          const next = { ...prev };
+          delete next[cartItemId];
+          return next;
+        });
+        setSelectedTokenIds(prev => {
+          const next = { ...prev };
+          delete next[cartItemId];
+          return next;
+        });
+      }
+
     } catch (error) {
       console.error("Error deleting cart item:", error);
       toast.error(
@@ -326,6 +544,11 @@ export default function Cart() {
 
   return (
     <>
+      {loading && (
+        <div className={style.loader_overlay}>
+          <div className={style.spinner}></div>
+        </div>
+      )}
       <main className={style['main-content']}>
 
         <div className={`${style['container-custom']} py-4`}>
@@ -389,7 +612,7 @@ export default function Cart() {
                             <div className="d-flex justify-content-between align-items-start">
                               <div className="d-flex gap-3 flex-grow-1">
                                 <div className={style['icon-box-gradient']}>
-                                  <img src={`https://deebai.runasp.net${item.iconURL}`} alt="" />
+                                  {/* <img src={`https://deebai.runasp.net${item.iconURL}`} alt="" /> */}
                                 </div>
                                 <div className="flex-grow-1">
                                   <h3 className={style['card-title-custom']}>{item.name}</h3>
@@ -579,16 +802,23 @@ export default function Cart() {
                           <span className={`fw-bold ${style['text-sm']}`}>EGP {(summary.subtotal || 0).toFixed(2)}</span>
                         </div>
                         {(summary.discount || 0) > 0 && (
-                          <div className="d-flex justify-content-between mb-4">
+                          <div className="d-flex justify-content-between mb-1">
                             <span className={`${style['text-green']} ${style['text-sm']}`}>Commitment savings</span>
                             <span className={`fw-bold ${style['text-green']} ${style['text-sm']}`}>-EGP {(summary.discount || 0).toFixed(2)}</span>
+                          </div>
+
+                        )}
+                        {discountAmount > 0 && (
+                          <div className="d-flex justify-content-between mb-4">
+                            <span className={`${style['text-green']} ${style['text-sm']}`}>Promo code discount ({discountAmount}%)</span>
+                            <span className={`fw-bold ${style['text-green']} ${style['text-sm']}`}>-EGP {((summary.total || 0) * (discountAmount / 100)).toFixed(2)}</span>
                           </div>
                         )}
                         <hr className={`${style.divider} my-4`} />
                         <div className="d-flex justify-content-between align-items-start mb-4">
                           <span className={`fw-bold text-dark ${style['text-sm']}`}>Total</span>
                           <div className="text-end">
-                            <div className={`${style['text-purple']} fs-4 fw-bold mb-0`}>EGP {(summary.total || 0).toFixed(2)}</div>
+                            <div className={`${style['text-purple']} fs-4 fw-bold mb-0`}>EGP {((summary.total || 0) - ((summary.total || 0) * (discountAmount / 100))).toFixed(2)}</div>
                             <div className="text-muted" style={{ fontSize: '12px' }}>Total for commitment period</div>
 
                           </div>
@@ -596,12 +826,12 @@ export default function Cart() {
                         <div className={`${style['promo-section']} `}>
                           <div className="d-flex gap-2">
                             <input value={promoCode} onChange={(e) => setPromoCode(e.target.value)} type="text" className={`${style['promo-input']} `} placeholder="Enter a promo code" />
-                            <button disabled={!promoCode.trim()} onClick={applyPromoCode} className={`${style['apply-button']} ${!promoCode.trim() ? style['apply-button-disabled'] : ''}  `}>Apply</button>
+                            <button disabled={!promoCode && !discountAmount} onClick={discountAmount > 0 ? cancelPromoCode : applyPromoCode} className={`${style['apply-button']} ${(!promoCode && !discountAmount) ? style['apply-button-disabled'] : ''}  `}>{discountAmount ? 'Cancel' : 'Apply'}</button>
                           </div>
                         </div>
                         <hr className={`${style.divider} my-4`} />
 
-                        <button onClick={payment} className={` ${style['btn-gradient']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
+                        <button onClick={() => { userToken ? payment() : handleLogin() }} className={` ${style['btn-gradient']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2`}>
                           Proceed to payment
                         </button>
                         <button onClick={() => navigate('/features')} className={` ${style['btn-outline-custom']} mb-2 d-flex justify-content-center align-items-center gap-2 p-2 rounded-2 text-dark border`}>Add more features</button>
@@ -610,8 +840,8 @@ export default function Cart() {
                         </div>
                       </div>
                     </div>
-                  
-                 
+
+
                   </div>
                 </div>
               </div>

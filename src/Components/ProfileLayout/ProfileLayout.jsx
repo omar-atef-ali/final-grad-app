@@ -5,7 +5,7 @@ import { userContext } from "../../context/userContext";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../../utils/imageUrl";
-import { CartContext } from "../../context/CartContextProvider";
+import { CartContext } from "../../context/CartContext";
 
 export default function ProfileLayout() {
 
@@ -16,7 +16,7 @@ export default function ProfileLayout() {
     return <Navigate to="/profile/info" replace />;
   }
 
-  
+
 
 
   ///////////////////////////user data////////////////////////////////////
@@ -139,7 +139,7 @@ export default function ProfileLayout() {
 
   /////////////////////////////////////////////////////////////
   const navigate = useNavigate();
-  const {setcartvalue} = useContext(CartContext);
+  const { setcartvalue } = useContext(CartContext);
   const handleLogout = async () => {
     try {
       const refreshToken = localStorage.getItem("refreshToken");
@@ -157,7 +157,7 @@ export default function ProfileLayout() {
       setUserToken(null);
       navigate("/");
       setcartvalue([]);
-
+      localStorage.removeItem("local cart");
       // toast.success("Successfully signed out");
       // console.log(res);
 

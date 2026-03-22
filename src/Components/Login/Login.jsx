@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import style from "./Login.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import api from "../../api";
@@ -12,6 +12,7 @@ import img from "../../assets/images/photo_2026-01-28_05-07-48.jpg";
 
 export default function Login() {
   let navigate = useNavigate();
+  let location = useLocation();
 
   let [loading, setLoading] = useState(false);
   let { setUserToken } = useContext(userContext);
@@ -23,13 +24,17 @@ export default function Login() {
   async function submit(values) {
     try {
       setLoading(true);
-      const { data } = await api.post("/Auth", values , {
+      const { data } = await api.post("/Auth", values, {
         withCredentials: true,
-      }
-      );
+      });
       localStorage.setItem("token", data.token);
       setUserToken(data.token);
-      navigate("/home");
+
+      const searchParams = new URLSearchParams(location.search);
+      const redirectParam = searchParams.get('redirect');
+      const redirectPath = redirectParam || location.state?.from || "/home";
+      navigate(redirectPath);
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -90,10 +95,14 @@ export default function Login() {
   const loginWithGoogle = () => {
     const clientId =
       "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
-    const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
-    // const redirectUri = `http://localhost:5173/google/callback`;
+    // const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    const redirectUri = `http://localhost:5173/google/callback`;
     const scope = "openid email profile";
     const responseType = "code";
+
+    const searchParams = new URLSearchParams(location.search);
+    const redirectParam = searchParams.get('redirect') || location.state?.from || '';
+    const stateValue = redirectParam ? `login:${redirectParam}` : 'login';
 
     const authUrl =
       "https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -101,7 +110,7 @@ export default function Login() {
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&response_type=${encodeURIComponent(responseType)}` +
       `&scope=${encodeURIComponent(scope)}` +
-      `&state=login`;
+      `&state=${encodeURIComponent(stateValue)}`;
 
     window.location.href = authUrl;
   };

@@ -20,7 +20,13 @@ export default function GoogleCallback() {
     const handleGoogleCallback = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
-      const from = urlParams.get("state");
+      const stateParam = urlParams.get("state") || "";
+      const isRegister = stateParam.startsWith("register");
+      const from = isRegister ? "register" : "login";
+
+      const splitState = stateParam.split(':');
+      const redirectPath = splitState.length > 1 ? splitState[1] : "/home";
+      
       const error = urlParams.get("error");
 
       if (error || !code) {
@@ -44,7 +50,7 @@ export default function GoogleCallback() {
         }
 
         isProcessed.current = true;
-        setTimeout(() => navigate(from === "register" ? "/register" : "/login"), 1000);
+        setTimeout(() => navigate(isRegister ? "/register" : "/login"), 1000);
         setLoading(false);
         return;
       }
@@ -53,12 +59,12 @@ export default function GoogleCallback() {
       // console.log("Processing code:", code);
 
       try {
-        const endpoint = from === "register" ? "/Auth/google/register" : "/Auth/google/login";
+        const endpoint = isRegister ? "/Auth/google/register" : "/Auth/google/login";
         const res = await api.post(endpoint, {
           code,
-          // redirectUri: "http://localhost:5173/google/callback",
-          redirectUri: `https://finalgradapp.netlify.app/google/callback`,
-        } , {
+          redirectUri: "http://localhost:5173/google/callback",
+          // redirectUri: `https://finalgradapp.netlify.app/google/callback`,
+        }, {
           withCredentials: true,
         });
 
@@ -66,10 +72,10 @@ export default function GoogleCallback() {
         if (responseData && responseData.token) {
           localStorage.setItem("token", responseData.token);
           setUserToken(responseData.token);
-          navigate("/home");
+          navigate(redirectPath);
         } else {
           // If the request succeeds but there's no token
-          if (from === "register") {
+          if (isRegister) {
             toast.success("Registration successful! Please login.");
             navigate("/login");
           } else {
@@ -100,7 +106,7 @@ export default function GoogleCallback() {
           },
           iconTheme: { primary: "#FF4D4F", secondary: "#ffffff" },
         });
-        setTimeout(() => navigate(from === "register" ? "/register" : "/login"), 1000);
+        setTimeout(() => navigate(isRegister ? "/register" : "/login"), 1000);
       } finally {
         setLoading(false);
       }

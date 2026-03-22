@@ -4,7 +4,7 @@ import { FaCheck } from "react-icons/fa";
 import toast from 'react-hot-toast';
 import api from "../../api";
 import { userContext } from '../../context/userContext';
-import { CartContext } from '../../context/CartContextProvider';
+import { CartContext } from '../../context/CartContext';
 
 
 const icons = {
@@ -168,19 +168,7 @@ export default function Pricing() {
     getServiceCards()
   }, [])
 
-  // async function addToCart(id) {
-  //   try {
-  //     let response = await api.post(`/Cart`, { serviceId: id }, {
-  //       headers: { Authorization: `Bearer ${userToken}` },
-  //     })
-  //     console.log(response)
-  //     toast.success("Added to cart");
-  //     getCart()
-  //   } catch (error) {
-  //     console.log(error)
-  //     toast.error(error.response?.data?.errors[1])
-  //   }
-  // }
+
   async function addToCart(id) {
     try {
       let response = await api.post(`/Cart`, {
@@ -359,8 +347,30 @@ export default function Pricing() {
 
 
   /////////////////////////////////////////////////////////////////
-  async function addToLocalStorage(id) {
 
+  const [localCart, setLocalCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem("local cart");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      // Fallback for old data format (comma-separated string)
+      const saved = localStorage.getItem("local cart");
+      return saved ? saved.split(',') : [];
+    }
+  });
+
+  async function addToLocalStorage(id) {
+    const updatedCart = [...localCart, id];
+    setLocalCart(updatedCart);
+    localStorage.setItem("local cart", JSON.stringify(updatedCart));
+    console.log(localStorage.getItem("local cart"));
+    toast.success("Added to cart successfully");
+    getCart()
+
+  }
+
+  const isFeatureInLocalCart = (id) => {
+    return localCart?.some(item => item === id)
   }
 
   return (
@@ -721,11 +731,11 @@ export default function Pricing() {
                         </ul>
 
                         <button
-                          onClick={() => {userToken ? addToCart(feat.id) : addToLocalStorage(feat.id)}}
-                          className={`${style.btn} ${style.btn_individual} ${isFeatureInCart(feat.id) ? style.btn_disabled : ""}`}
-                          disabled={isFeatureInCart(feat.id)}
+                          onClick={() => { userToken ? addToCart(feat.id) : addToLocalStorage(feat.id) }}
+                          className={`${style.btn} ${style.btn_individual} ${isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id) ? style.btn_disabled : ""}`}
+                          disabled={isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id)}
                         >
-                          {isFeatureInCart(feat.id)
+                          {isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id)
                             ? "Already Added"
                             : "Add To Estimate"}
                         </button>
