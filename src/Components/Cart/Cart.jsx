@@ -415,6 +415,32 @@ export default function Cart() {
 
   async function applyPromoCode() {
     try {
+      if(!userToken){
+        toast.error(
+          "Please login to apply a promo code.",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "100%",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+        return;
+      }
       const { data } = await api.get(`/Orders/discount-codes/validate?code=${promoCode}`)
       setDiscountAmount(data.discountPercentage);
 
