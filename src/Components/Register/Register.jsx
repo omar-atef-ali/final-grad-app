@@ -142,10 +142,14 @@ export default function Register() {
   const registerWithGoogle = () => {
     const clientId =
       "161944913172-r0bverum3lr3mp4pe3k77mqbq0ehgatg.apps.googleusercontent.com";
-    const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
-    // const redirectUri = `http://localhost:5173/google/callback`;
+    // const redirectUri = `https://finalgradapp.netlify.app/google/callback`;
+    const redirectUri = `http://localhost:5173/google/callback`;
     const scope = "openid email profile";
     const responseType = "code";
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectParam = searchParams.get('redirect') || '';
+    const stateValue = redirectParam ? `register:${redirectParam}` : 'register';
 
     const authUrl =
       "https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -153,8 +157,7 @@ export default function Register() {
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&response_type=${encodeURIComponent(responseType)}` +
       `&scope=${encodeURIComponent(scope)}` +
-      `&state=register`;
-    ;
+      `&state=${encodeURIComponent(stateValue)}`;
 
     window.location.href = authUrl;
   };

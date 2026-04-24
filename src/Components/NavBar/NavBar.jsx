@@ -3,7 +3,7 @@ import style from "./NavBar.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../../context/userContext";
 import { getImageUrl } from "../../utils/imageUrl";
-import { CartContext } from '../../context/CartContextProvider';
+import { CartContext } from '../../context/CartContext';
 import toast from "react-hot-toast";
 
 export default function NavBar() {
@@ -38,31 +38,7 @@ export default function NavBar() {
     }
   }, [userProfileImage]);
 
-  function noToken() {
-    toast.error(
-      "You need to be logged in to access this page",
-      {
-        position: "top-center",
-        duration: 4000,
-        style: {
-          background:
-            "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-          padding: "16px 20px",
-          color: "#ffffff",
-          fontSize: "0.95rem",
-          borderRadius: "5px",
-          width: "300px",
-          height: "60px",
-          boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
-        },
-        iconTheme: {
-          primary: "#FF4D4F",
-          secondary: "#ffffff",
-        },
-      },
-    );
-  }
+
 
 
 
@@ -107,7 +83,7 @@ export default function NavBar() {
 
 
               <div className={`${style.cart_parent}`}>
-                <button className={style.IconBtn} onClick={() => { if (userToken) { navigate("/cart") } else { noToken() } }}>
+                <button className={style.IconBtn} onClick={() => navigate("/cart")}>
                   <svg
                     width="20"
                     height="20"
