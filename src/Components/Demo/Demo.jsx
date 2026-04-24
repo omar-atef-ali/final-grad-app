@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import style from './Demo.module.css'
+import { useNavigate } from 'react-router-dom';
+
 export default function Demo() {
+    const navigate=useNavigate()
     const Features = [
         "Dashboard",
         "AI Recommendations",
@@ -59,7 +62,15 @@ export default function Demo() {
                         )}
 
                         {activeTab === 2 && (
-                            <div>AI Chatbot content here</div>
+                             <iframe
+                                src="https://raccaqpkb2.us-east-1.awsapprunner.com/"
+                                width="100%"
+                                height="900px"
+                                style={{ border: "none" }}
+                                allowFullScreen
+                                title="Namaa Dashboard"
+                            />
+                           
                         )}
                     </div>
                 </div>
@@ -70,8 +81,8 @@ export default function Demo() {
                         <h2 className={`${style.cta_title}`}>Ready to Use Your Own Data?</h2>
                         <p className={`${style.cta_description}`}>This demo shows what's possible with Namaa. Connect your actual business data to get personalized insights and recommendations.</p>
                         <div className={`${style.cta_buttons}`}>
-                            <button className={`${style.btn_primary}`}>
-                                View Pricing Plans
+                            <button onClick={()=>navigate("/pricing")}  className={`${style.btn_primary}`}>
+                               View Pricing Plans
                                 <i className={`fa-solid fa-arrow-right ${style.arrow_right}`}></i>
                             </button>
                             <button className={`${style.btn_secondary}`}>Explore Features</button>

@@ -35,6 +35,7 @@ import SucessfulPaymet from "./Components/SucessfulPaymet/SucessfulPaymet";
 import Setup from "./Components/Setup/Setup";
 import ProfileDataSources from "./Components/profileDataSources/profileDataSources";
 import Privacy from "./Components/Privacy/Privacy";
+import DashboardSub from "./Components/DashboardSub/DashboardSub";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -42,6 +43,7 @@ let routers = createBrowserRouter([
   { path: "/confirm-email", element: <ConfirmEmail /> },
   { path: "/reset-password", element: <ResetPassword /> },
   { path: "/change-password", element: <ChangePassword /> },
+  {path:"/dashboard-subscription",element:<DashboardSub/>},
 
   { path: "google/callback", element: <GoogleCallback /> },
 
