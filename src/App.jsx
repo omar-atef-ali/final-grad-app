@@ -44,6 +44,7 @@ let routers = createBrowserRouter([
   { path: "/change-password", element: <ChangePassword /> },
 
   { path: "google/callback", element: <GoogleCallback /> },
+  { path: "billing", element:  <ProfileBilling />  }, // /profile/billing
 
 
   { path: "login", element: <Login /> },
@@ -75,7 +76,6 @@ let routers = createBrowserRouter([
           { path: "info", element:<Protected> <ProfileInfo />  </Protected> }, // /profile/info
           { path: "security", element: <Protected><ProfileSecurity /></Protected> }, // /profile/security
           { path: "subscription", element: <Protected> <ProfileSubscription /> </Protected> }, // /profile/subscription
-          { path: "billing", element:  <Protected><ProfileBilling /></Protected>  }, // /profile/billing
           { path: "data-sources", element:  <Protected><ProfileDataSources /></Protected>  }, // /profile/data-sources
         ],
       },
