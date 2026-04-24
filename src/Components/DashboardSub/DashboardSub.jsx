@@ -10,7 +10,7 @@ export default function () {
 
     const navigate = useNavigate()
     const { userToken } = useContext(userContext)
-    // const [isAutoRenew, setIsAutoRenew] = useState(false);
+
     const [autoRenewMap, setAutoRenewMap] = useState({});
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isopen1, setisopen1] = useState(false)
@@ -19,8 +19,7 @@ export default function () {
     const [supscriptionPlans, setsupscriptionPlans] = useState(null)
 
     const [iscanceled, setiscanceled] = useState(false)
-     
-    
+
 
     const handleCancel = () => {
         Swal.fire({
@@ -75,56 +74,58 @@ export default function () {
             }
         })
     }
-    // const handleToggle = () => {
-    //     const newValue = !isAutoRenew
-    //     Swal.fire({
-    //         title: newValue ? "Enable Auto Renewal?" : "Disable Auto Renewal?",
-    //         icon: "info",
-    //         showCancelButton: true,
-    //         confirmButtonText: "Yes",
-    //         buttonsStyling: false,
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             setIsAutoRenew(newValue);
-
-    //             toast.success(
-    //                 newValue
-    //                     ? "Auto Renewal Enabled"
-    //                     : "Auto Renewal Disabled"
-    //             );
-    //         }
-
-    //     });
-    // };
-
-    // const handleToggle = (id) => {
+    // const handleToggle = async (id) => {
     //     const newValue = !autoRenewMap[id];
 
-    //     Swal.fire({
+    //     const result = await Swal.fire({
     //         title: newValue ? "Enable Auto Renewal?" : "Disable Auto Renewal?",
     //         icon: "info",
     //         showCancelButton: true,
     //         confirmButtonText: "Yes",
+    //         cancelButtonText: "No",
     //         buttonsStyling: false,
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             setAutoRenewMap((prev) => ({
-    //                 ...prev,
-    //                 [id]: newValue
-    //             }));
-
-
-
-    //             toast.success(
-    //                 newValue ? "Auto Renewal Enabled" : "Auto Renewal Disabled"
-    //             );
-    //         }
     //     });
+
+
+    //     if (!result.isConfirmed) return;
+
+    //     try {
+
+    //         setAutoRenewMap((prev) => ({
+    //             ...prev,
+    //             [id]: newValue
+    //         }));
+
+
+    //         await api.put(
+    //             `/ClientSubscriptions/toggle-auto-renewal`,
+    //             {
+    //                 id,
+    //                 autoRenewal: newValue
+    //             },
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${userToken}`,
+    //                 },
+    //             }
+    //         );
+
+    //         toast.success("Updated successfully");
+
+    //     } catch (error) {
+
+    //         setAutoRenewMap((prev) => ({
+    //             ...prev,
+    //             [id]: !newValue
+    //         }));
+
+    //         toast.error("Update failed");
+    //     }
     // };
 
-    // الجديده
-    const handleToggle = async (id) => {
-        const newValue = !autoRenewMap[id];
+    const handleToggle = async ({ subscriptionId, serviceId = null }) => {
+        const key = serviceId ? `${subscriptionId}-${serviceId}` : subscriptionId;
+        const newValue = !autoRenewMap[key];
 
         const result = await Swal.fire({
             title: newValue ? "Enable Auto Renewal?" : "Disable Auto Renewal?",
@@ -135,62 +136,43 @@ export default function () {
             buttonsStyling: false,
         });
 
-
         if (!result.isConfirmed) return;
 
         try {
-
-            setAutoRenewMap((prev) => ({
+           
+            setAutoRenewMap(prev => ({
                 ...prev,
-                [id]: newValue
+                [key]: newValue
             }));
 
+            let url = "";
 
-            await api.put(
-                `/ClientSubscriptions/toggle-auto-renewal`,
-                {
-                    id,
-                    autoRenewal: newValue
+            if (serviceId) {
+               
+                url = `/ClientSubscriptions/customized-plan-auto-renewal-toggle/${subscriptionId}/${serviceId}`;
+            } else {
+                
+                url = `/ClientSubscriptions/standard-package-auto-renewal-toggle/${subscriptionId}`;
+            }
+
+            await api.put(url, null, {
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
                 },
-                {
-                    headers: {
-                        Authorization: `Bearer ${userToken}`,
-                    },
-                }
-            );
+            });
 
             toast.success("Updated successfully");
 
         } catch (error) {
-
-            setAutoRenewMap((prev) => ({
+            
+            setAutoRenewMap(prev => ({
                 ...prev,
-                [id]: !newValue
+                [key]: !newValue
             }));
 
             toast.error("Update failed");
         }
     };
-
-
-    // async function getPlans() {
-    //     try {
-
-    //         let { data } = await api.get(`/ClientSubscriptions/my-plan`, {
-    //             headers: {
-    //                 Authorization: `Bearer ${userToken}`,
-    //             },
-    //         })
-    //         console.log(data)
-    //         setsupscriptionPlans(data)
-    //         setIsAutoRenew(data.autoRenewal)
-    //     }
-    //     catch (error) {
-    //         console.log(error)
-    //         toast.error(
-    //             error.response?.data?.errors[1])
-    //     }
-    // }
     async function getPlans() {
         try {
             let { data } = await api.get(`/ClientSubscriptions/my-plan`, {
@@ -204,14 +186,12 @@ export default function () {
 
             const initialAutoRenewMap = {};
 
-
             if (data.planType === 1) {
                 initialAutoRenewMap[data.subscriptionId] = data.autoRenewal;
-            }
-
-            else {
+            } else {
                 data.includedFeatures?.forEach((feature) => {
-                    initialAutoRenewMap[feature.serviceId] = feature.autoRenewal;
+                    const key = `${data.subscriptionId}-${feature.serviceId}`;
+                    initialAutoRenewMap[key] = feature.autoRenewal;
                 });
             }
 
@@ -387,28 +367,7 @@ export default function () {
                                             <div className={`${style.included_features}`}>
                                                 <h4>Included Features</h4>
                                                 <div className={`${style.features_grid}`}>
-                                                    {/* <div className={`${style.feature_item}`}>
-                                                        <i className={`fa-regular fa-circle-check ${style.i_check}`}></i>
-                                                        <span>AI Recommendations</span>
-                                                    </div>
-                                                    <div className={`${style.feature_item}`}>
-                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                            <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                        </svg>
-                                                        <span>Custom Dashboards</span>
-                                                    </div>
-                                                    <div className={`${style.feature_item}`}>
-                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                            <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                        </svg>
-                                                        <span>AI Chatbot</span>
-                                                    </div>
-                                                    <div className={`${style.feature_item}`}>
-                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                            <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                        </svg>
-                                                        <span>3 Data Sources</span>
-                                                    </div> */}
+
                                                     {supscriptionPlans.includedFeatures.map((feature) => (
                                                         <div className={style.feature_item} key={feature.serviceId}>
                                                             <i className={`fa-regular fa-circle-check ${style.i_check}`}></i>
@@ -427,11 +386,13 @@ export default function () {
                                                     </p>
                                                 </div>
                                                 <label className={`${style.toggle_switch}`}>
-                                                    {/* <input checked={isAutoRenew} onChange={handleToggle} className={`${style.checkbox}`} type="checkbox" /> */}
+
                                                     <input
                                                         type="checkbox"
-                                                        checked={autoRenewMap[supscriptionPlans.subscriptionId] || false}
-                                                        onChange={() => handleToggle(supscriptionPlans.subscriptionId)}
+                                                        checked={!!autoRenewMap[supscriptionPlans.subscriptionId]}
+                                                        onChange={() => handleToggle({
+                                                            subscriptionId: supscriptionPlans.subscriptionId
+                                                        })}
                                                     />
                                                     <span className={`${style.slider}`}></span>
                                                 </label>
@@ -441,11 +402,11 @@ export default function () {
                                                 iscanceled ? <>
                                                     <button className={`${style.terminate_btn}`} type='button'>terminate</button>
                                                     <button className={`${style.terminate_btn}`} type='button'>revoke</button>
-                                                </>: <button onClick={handleCancel} className={`${style.cancel_btn}`}>Cancel Subscription</button>
+                                                </> : <button onClick={handleCancel} className={`${style.cancel_btn}`}>Cancel Subscription</button>
 
                                             }
 
-                                            
+
                                         </div>
                                     )}
                                 </div>
@@ -475,11 +436,14 @@ export default function () {
                                                             </p>
                                                         </div>
                                                         <label className={`${style.toggle_switch}`}>
-                                                            {/* <input checked={isAutoRenew} onChange={handleToggle} className={`${style.checkbox}`} type="checkbox" /> */}
+
                                                             <input
                                                                 type="checkbox"
-                                                                checked={autoRenewMap[individualFeature.serviceId] || false}
-                                                                onChange={() => handleToggle(individualFeature.serviceId)}
+                                                                checked={!!autoRenewMap[`${supscriptionPlans.subscriptionId}-${individualFeature.serviceId}`]}
+                                                                onChange={() => handleToggle({
+                                                                    subscriptionId: supscriptionPlans.subscriptionId,
+                                                                    serviceId: individualFeature.serviceId
+                                                                })}
                                                             />
                                                             <span className={`${style.slider}`}></span>
                                                         </label>
@@ -490,31 +454,7 @@ export default function () {
                                             </div>
                                         ))}
 
-                                        {/* <div className={`${style.sub_parent}`}>
-                                            <div className={`${style.plan_header}`}>
-                                                <div>
-                                                    <h3>Pro</h3>
 
-                                                    <p className={`${style.price}`}>EGP 3,950</p>
-                                                </div>
-                                                <span className={`${style.status_badge}`}>Active</span>
-                                            </div>
-
-                                            <div className={`${style.subscription_card_info}`}>
-                                                <div className={`${style.auto_renewal2}`}>
-                                                    <div className={`${style.renewal_info}`}>
-                                                        <h4>Auto-renewal</h4>
-                                                        <p>Automatically renew subscription</p>
-                                                    </div>
-                                                    <label className={`${style.toggle_switch}`}>
-                                                        <input checked={isAutoRenew} onChange={handleToggle} className={`${style.checkbox}`} type="checkbox" />
-                                                        <span className={`${style.slider}`}></span>
-                                                    </label>
-                                                </div>
-
-                                                <button onClick={handleCancel} className={`${style.cancel_btn2}`}>Cancel Subscription</button>
-                                            </div>
-                                        </div> */}
                                     </div>
                                 </div>
 
@@ -524,117 +464,117 @@ export default function () {
 
 
 
-                            <div className={`${style.available_plans}`}>
-                                <h2>Available Plans</h2>
-                                <div className={`${style.plans_grid}`}>
+                            {
+                                supscriptionPlans?.planType === 1 ? <div className={`${style.available_plans}`}>
+                                    <h2>Available Plans</h2>
+                                    <div className={`${style.plans_grid}`}>
 
-                                    <div className={`${style.plan_card}`}>
-                                        <h3>Starter</h3>
-                                        <div className={`${style.plan_price}`}>EGP 1,450</div>
-                                        <ul className={`${style.plan_features}`}>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                        </ul>
-                                        <button onClick={handleDowngrade} className={`${style.plan_btn} ${style.primary}`} >Downgrade</button>
-                                    </div>
-
-
-                                    <div className={`${style.plan_card} ${style.current}`}>
-                                        <div className={`${style.popular_badge}`}>
-                                            {/* <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                <path d="M8 1.33333L10.06 5.50667L14.6667 6.18L11.3333 9.42667L12.12 14.0133L8 11.8467L3.88 14.0133L4.66667 9.42667L1.33333 6.18L5.94 5.50667L8 1.33333Z" fill="white" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg> */}
-                                            <i class="fa-solid fa-bolt"></i> Most Popular
+                                        <div className={`${style.plan_card}`}>
+                                            <h3>Starter</h3>
+                                            <div className={`${style.plan_price}`}>EGP 1,450</div>
+                                            <ul className={`${style.plan_features}`}>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                            </ul>
+                                            <button onClick={handleDowngrade} className={`${style.plan_btn} ${style.primary}`} >Downgrade</button>
                                         </div>
-                                        <h3>Pro</h3>
-                                        <div className={`${style.plan_price}`}>EGP 3,950</div>
-                                        <ul className={`${style.plan_features}`}>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                        </ul>
-                                        <button className={`${style.plan_btn} ${style.primary}`}>Current Plan</button>
+
+
+                                        <div className={`${style.plan_card} ${style.current}`}>
+                                            <div className={`${style.popular_badge}`}>
+
+                                                <i class="fa-solid fa-bolt"></i> Most Popular
+                                            </div>
+                                            <h3>Pro</h3>
+                                            <div className={`${style.plan_price}`}>EGP 3,950</div>
+                                            <ul className={`${style.plan_features}`}>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                            </ul>
+                                            <button className={`${style.plan_btn} ${style.primary}`}>Current Plan</button>
+                                        </div>
+
+
+                                        <div className={`${style.plan_card}`}>
+                                            <h3>Enterprise</h3>
+                                            <div className={`${style.plan_price}`}>EGP 9,950</div>
+                                            <ul className={`${style.plan_features}`}>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                                <li>
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                        <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <span className={`${style.plan_features_p}`}>2 Data Sources</span>
+                                                </li>
+                                            </ul>
+                                            <button onClick={handleUpgrade} className={`${style.plan_btn} ${style.primary}`}>Upgrade</button>
+                                        </div>
+
                                     </div>
+                                </div> : ""
 
-
-                                    <div className={`${style.plan_card}`}>
-                                        <h3>Enterprise</h3>
-                                        <div className={`${style.plan_price}`}>EGP 9,950</div>
-                                        <ul className={`${style.plan_features}`}>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                            <li>
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M13.3334 4L6.00002 11.3333L2.66669 8" stroke="#8A45B2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                                <span className={`${style.plan_features_p}`}>2 Data Sources</span>
-                                            </li>
-                                        </ul>
-                                        <button onClick={handleUpgrade} className={`${style.plan_btn} ${style.primary}`}>Upgrade</button>
-                                    </div>
-
-                                </div>
-                            </div>
-
+                            }
 
                             <div className={`${style.feature_upgrades}`}>
                                 <h2>Feature-Level Add-ons</h2>
@@ -663,35 +603,12 @@ export default function () {
                                     <div className={`${style.progress_bar}`}>
                                         <div className={`${style.progress_fill} ${style.chatbot_progress}`}></div>
                                     </div>
-                                    {/* {isopen1 ? <div className={`${style.upgrade_item}`}>
-                                        <div className={`${style.upgrade_info}`}>
-                                            <div className={`${style.upgrade_icon} ${style.token}`}>
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <h3>Token Allocation</h3>
-                                                <select className={`${style.token_select}`}>
-                                                    <option>100k tokens</option>
-                                                    <option>200k tokens</option>
-                                                    <option>500k tokens</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className={`${style.upgrade_price}`}>
-                                            <span>EGP 1,400</span>
-                                        </div>
-                                    </div> : ""} */}
+
 
                                     <div className={`${style.dropdown} ${isopen1 ? style.open : ""}`}>
                                         <div className={`${style.upgrade_item}`}>
                                             <div className={`${style.upgrade_info}`}>
-                                                {/* <div className={`${style.upgrade_icon} ${style.token}`}>
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                    </svg>
-                                                </div> */}
+
                                                 <div>
                                                     <h3><i class="fa-regular fa-clock"></i> Commitment Duration</h3>
                                                     <select className={`${style.token_select}`}>
@@ -744,35 +661,12 @@ export default function () {
                                         <div className={`${style.progress_fill} ${style.ai_progress}`}></div>
                                     </div>
 
-                                    {/* {isopen2 ? <div className={`${style.upgrade_item}`}>
-                                        <div className={`${style.upgrade_info}`}>
-                                            <div className={`${style.upgrade_icon} ${style.token}`}>
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <h3>Token Allocation</h3>
-                                                <select className={`${style.token_select}`}>
-                                                    <option>100k tokens</option>
-                                                    <option>200k tokens</option>
-                                                    <option>500k tokens</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className={`${style.upgrade_price}`}>
-                                            <span>EGP 1,400</span>
-                                        </div>
-                                    </div> : ""} */}
+
 
                                     <div className={`${style.dropdown} ${isopen2 ? style.open : ""}`}>
                                         <div className={`${style.upgrade_item}`}>
                                             <div className={`${style.upgrade_info}`}>
-                                                {/* <div className={`${style.upgrade_icon} ${style.token}`}>
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                    </svg>
-                                                </div> */}
+
                                                 <div>
                                                     <h3> <i class="fa-regular fa-clock"></i>Token Allocation</h3>
                                                     <select className={`${style.token_select}`}>
@@ -799,7 +693,7 @@ export default function () {
                                 </div>
                             </div>
 
-                            <div className={`${style.New_Features}`}>
+                            {supscriptionPlans?.planType === 2 ? <div className={`${style.New_Features}`}>
                                 <h2>Add New Features</h2>
 
                                 <div className={`${style.New_Features_parent}`}>
@@ -873,11 +767,7 @@ export default function () {
                                 </div>
 
 
-
-
-
-
-                            </div>
+                            </div> : ""}
                         </div>
                     </main>
                 </div>
