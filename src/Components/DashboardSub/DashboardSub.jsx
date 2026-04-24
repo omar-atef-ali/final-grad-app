@@ -17,7 +17,6 @@ export default function () {
     const [isopen2, setisopen2] = useState(false)
 
     const [supscriptionPlans, setsupscriptionPlans] = useState(null)
-
     const [iscanceled, setiscanceled] = useState(false)
 
 
