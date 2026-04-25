@@ -1,643 +1,940 @@
-/* Reset and Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    /* Colors */
-    --primary-purple: #6B3FA0;
-    --primary-purple-dark: #4e3074;
-    --primary-purple-darker: #3f1c6e;
-    --secondary-purple: #8a45b2;
-    --text-primary: #0a0a0a;
-    --text-secondary: #717182;
-    --text-muted: #86808e;
-    --border-color: rgba(0, 0, 0, 0.1);
-    --warning-yellow: #f0b100;
-    --warning-yellow-bg: rgba(240, 177, 0, 0.25);
-    --white: #ffffff;
-
-    /* Spacing */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-    --spacing-2xl: 48px;
-
-    /* Border Radius */
-    --radius-sm: 8px;
-    --radius-md: 10px;
-    --radius-lg: 26px;
-
-    /* Shadows */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 3px 3px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
-body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--text-primary);
-    background-color: var(--white);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* Biling Content */
-.Biling_content {
-    padding: 32px 0px;
-}
-
-.no_Biling_card {
-    background: var(--white);
-    border: 0.8px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--spacing-xl);
-    text-align: center;
-    margin-bottom:80px;
-    box-shadow: 0px 2px 5px rgba(34, 31, 31, 0.158);
-}
-
-.no_Biling_title {
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 16px;
-}
-
-.no_Biling_text {
-    font-size: 16px;
-    color: var(--text-secondary);
-    margin-bottom: 16px;
-}
-
-.btn_view_plans {
-    padding: 8px 34px;
-    background: linear-gradient(180deg, #6B3FA0 0%, #8a45b2 100%);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.btn_view_plans:hover {
-    transform: translateY(-2px);
-}
-
-
-.Biling_img_parent{
-    /* width: 532px;
-    height:340px; */
-
-    margin: 0 auto;
-    width: 100%;
-    max-width: 532px;
-    aspect-ratio: 532 / 340;
-
-}
-.img_part{
-    width: 100%;
-    height: 100%;
-    background-image: url("../../assets/images/piling.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .header_container,
-    .profile_page,
-    .footer_container {
-        padding-left: var(--spacing-md);
-        padding-right: var(--spacing-md);
-    }
-
-    .content_wrapper {
-        grid-template-columns: 240px 1fr;
-    }
-}
-
-@media (max-width: 968px) {
-    .nav_links {
-        display: none;
-    }
-
-    .nav_divider {
-        display: none;
-    }
-
-    .content_wrapper {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        order: 2;
-    }
-
-    .main_section {
-        order: 1;
-    }
-
-    .pricing_cards {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 640px) {
-    .header_right {
-        gap: var(--spacing-sm);
-    }
-
-    .btn_demo {
-        display: none;
-    }
-
-    .icon_btn {
-        width: 40px;
-        height: 36px;
-    }
-
-    .profile_avatar {
-        width: 40px;
-        height: 40px;
-    }
-
-    .profile_header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .profile_title {
-        font-size: 20px;
-    }
-
-    .Tabs {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-
-    .Tabs::-webkit-scrollbar {
-        display: none;
-    }
-
-    .Biling_content {
-        padding: var(--spacing-md);
-    }
-
-    .footer_top {
-        grid-template-columns: 1fr;
-    }
-
-    .footer_bottom {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .logo_text {
-        font-size: 20px;
-    }
-
-    .nav_link {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .profile_page {
-        padding: var(--spacing-md);
-        margin-top: var(--spacing-md);
-        margin-bottom: var(--spacing-md);
-    }
-
-    .profile_header_left {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .no_Biling_card {
-        padding: var(--spacing-lg);
-    }
-
-    .no_Biling_title {
-        font-size: 18px;
-    }
-
-    .social_links {
-        flex-wrap: wrap;
-    }
-
-    .header_container {
-        gap: var(--spacing-md);
-    }
-
-    .header_left {
-        gap: var(--spacing-md);
-    }
-    .Tab{
-        width: 21%;
-    }
-    .sub{
-        width: 34%;
-    }
-    .Biling_content {
-        padding: 32px 0px;
-    }
-.profile_header_left {
-        display: flex;
-        flex-direction: row;
-    }
-
-}
-
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Focus States */
-button:focus-visible,
-a:focus-visible {
-    outline: 2px solid var(--primary-purple);
-    outline-offset: 2px;
-}
-
-/* Print Styles */
-@media print {
-
-    .header,
-    .footer,
-    .back_btn,
-    .sign_out_btn,
-    .btn_view_plans,
-    .btn_choose,
-    .btn_contact {
-        display: none;
-    }
-}
-
-/* ///////////////////////////////////////////////////////// */
-
-.mainWrapper {
-    max-width: 100%;
-    margin: 0 auto;
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: #FFFFFF;
+    border-right: 0.8px solid #E5E7EB;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
-/* Tab Navigation */
-
-
-
-
-
-.tabActive {
-    background: linear-gradient(90deg, rgba(61, 27, 106, 0.83) 0%, rgba(78, 48, 116, 0.83) 50%, rgba(138, 69, 178, 0.83) 100%);
-    color: white !important;
+.sidebarHeader {
+    height: 64px;
+    padding: 20px 16px 20.8px;
+    border-bottom: 0.8px solid #F3F4F6;
 }
 
-/* Current Billing Card */
-.billingCard {
-    background: linear-gradient(167.031deg, rgba(61, 27, 106, 0.05) 0%, rgba(138, 69, 178, 0.05) 100%);
-    border: 1.6px solid rgba(138, 69, 178, 0.2);
-    border-radius: 14px;
-    padding: 0;
+.logoContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.cardHeaderBilling {
-    padding: 24px;
+.logoIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3D1B6A 0%, #8A45B2 100%);
+    flex-shrink: 0;
+}
+
+.logoText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.logoTitle {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 14px;
+    color: #1E2939;
+}
+
+.logoSubtitle {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 12px;
+    color: #99A1AF;
+}
+
+/* Navigation */
+.sidebarNav {
+    padding: 16px 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    color: #6A7282;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.navItem:hover {
+    background-color: #F9FAFB;
+}
+
+.navItem.active {
+    background: linear-gradient(168.906deg, #4E3074 0%, #8A45B2 100%);
+    color: #FFFFFF;
+}
+
+.navItem.active svg path {
+    stroke: #FFFFFF;
+}
+
+.navItem svg {
+    flex-shrink: 0;
+}
+
+/* Sidebar Footer */
+.sidebarFooter {
+    padding: 12.8px 12px;
+    border-top: 0.8px solid #F3F4F6;
+}
+
+.userProfile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.userAvatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3F1C6E 0%, #8A45B2 100%);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #FFFFFF;
+    flex-shrink: 0;
+}
+
+.userAvatar::before {
+    content: 'SH';
+}
+
+.userInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.userName {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #1E2939;
+}
+
+.userPosition {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #99A1AF;
+}
+
+/* Main Content */
+.mainContent {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    min-height: 100vh;
+    background-color: #f6f6f6;
+}
+
+/* Header */
+.mainHeader {
+    height: 64px;
+    background-color: #FFFFFF;
+    border-bottom: 0.8px solid #E5E7EB;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.breadcrumbSection {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.cardHeaderBilling span {
-    font-size: 16px;
+.breadcrumbItem {
+    font-family: 'Inter', sans-serif;
     font-weight: 400;
-    line-height: 16px;
-    color: #0a0a0a;
-}
-
-.billingStats {
-    padding: 0 26px 26px 26px;
-}
-
-/* Stat Cards */
-.statCard {
-    background: white;
-    border: 0.8px solid rgba(138, 69, 178, 0.2);
-    border-radius: 10px;
-    padding: 16.8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.statLabel {
     font-size: 14px;
-    font-weight: 400;
     line-height: 20px;
-    color: #717182;
-    margin: 0;
+    color: #6A7282;
 }
 
-.statValue {
-    font-size: 24px;
+.breadcrumbItem.active {
+    font-weight: 500;
+    color: #101828;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.iconBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cartBtn .badgeNumber {
+    position: absolute;
+    top: 6px;
+    left: 22px;
+    width: 14px;
+    height: 14px;
+    background-color: #3D1B6A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
     font-weight: 700;
-    line-height: 32px;
-    color: #3d1b6a;
-    margin: 0;
+    font-size: 10px;
+    color: #FFFFFF;
 }
 
-.statDetail {
-    font-size: 12px;
+.notificationBtn .badgeDot {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background-color: #FB2C36;
+    border-radius: 50%;
+}
+
+.userAvatarHeader {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3F1C6E 0%, #8A45B2 100%);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+.userAvatarHeader::before {
+    content: 'SH';
+}
+
+/* Page Content */
+.pageContent {
+    padding: 32px;
+}
+
+.pageTitleSection {
+    margin-bottom: 32px;
+}
+
+.pageTitle {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 36px;
+    color: #3F1C6E;
+    margin-bottom: 8px;
+}
+
+.pageSubtitle {
+    font-family: 'Roboto', sans-serif;
     font-weight: 400;
-    line-height: 16px;
-    color: #717182;
-    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    color: #4A5565;
 }
 
-/* Payment Methods Card */
-.paymentMethodsCard {
-    background: white;
-    border: 0.8px solid rgba(0, 0, 0, 0.1);
-    border-radius: 14px;
-    padding: 0.8px;
-}
-
+/* Section Header */
 .sectionHeader {
-    padding: 24px 24px 6px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
 }
 
 .sectionTitle {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 16px;
-    color: #0a0a0a;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 28px;
+    color: #3F1C6E;
+    margin-bottom: 2px;
 }
 
-.sectionSubtitle {
+.sectionDescription {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
     font-size: 14px;
-    font-weight: 400;
     line-height: 20px;
-    color: #717182;
-    margin: 4px 0 0 0;
+    color: #6A7282;
 }
 
-/* Payment Card Item */
-.paymentCardItem {
-    background: linear-gradient(90deg, rgba(61, 27, 106, 0.05) 0%, rgba(138, 69, 178, 0.05) 100%);
-    border: 1.6px solid #8a45b2;
-    border-radius: 10px;
-    padding: 17.6px;
-    margin: 24px 24px;
+.btnAddCard {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    min-height: 91px;
+    gap: 8px;
+    padding: 6px 16px;
+    border: 0.8px solid #E5E7EB;
+    border-radius: 10px;
+    background-color: transparent;
+    color: #4A5565;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.paymentIcon {
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(180deg, #3d1b6a 0%, #8a45b2 100%);
-    border-radius: 10px;
+.btnAddCard:hover {
+    background-color: #F9FAFB;
+}
+
+/* Credit Cards */
+.creditCard {
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: transparent;
+    box-shadow: 0px 4px 24px rgba(138, 69, 178, 0.13);
+}
+
+.primaryCard {
+    border: 1.6px solid #8A45B2;
+}
+
+.cardVisual {
+    height: 164px;
+    position: relative;
+    overflow: hidden;
+    padding: 20px 16px;
+}
+
+.purpleGradient {
+    background: linear-gradient(156.435deg, #3D1B6A 0%, #8A45B2 100%);
+}
+
+.darkGradient {
+    background: linear-gradient(156.435deg, #1A1A2E 0%, #16213E 55%, #0F3460 100%);
+}
+
+.cardBackgroundCircle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.cardBackgroundCircle.circle1 {
+    width: 144px;
+    height: 144px;
+    top: -32px;
+    right: 82px;
+}
+
+.cardBackgroundCircle.circle2 {
+    width: 176px;
+    height: 176px;
+    bottom: -32px;
+    left: -22px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.cardBadge {
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #FFFFFF;
+}
+
+.primaryBadge {
+    background-color: rgba(255, 255, 255, 0.18);
+    border: 0.8px solid rgba(255, 255, 255, 0.25);
+}
+
+.expiredBadge {
+    background-color: #82181A;
+    border: 0.8px solid rgba(255, 255, 255, 0.25);
+    right: 10px;
+}
+
+.cardContent {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cardHeaderRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cardChip {
+    width: 36px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(142.125deg, #FDE68A 0%, #F59E0B 100%);
+    padding: 5px 8px;
+}
+
+.chipGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    height: 100%;
+}
+
+.chipGrid span {
+    background-color: rgba(180, 120, 0, 0.25);
+    border: 0.8px solid rgba(180, 120, 0, 0.4);
+    border-radius: 6px;
+}
+
+.cardNumber {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #FFFFFF;
+    letter-spacing: 2.52px;
+}
+
+.cardDetailsRow {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.cardDetail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cardLabel {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.cardValue {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 20px;
+    color: #FFFFFF;
+}
+
+.mastercardLogo {
+    display: flex;
+    gap: 0;
+    align-items: center;
+}
+
+.mastercardLogo .circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.mastercardLogo .circle.red {
+    background-color: rgba(239, 68, 68, 0.88);
+}
+
+.mastercardLogo .circle.yellow {
+    background-color: rgba(251, 191, 36, 0.88);
+    margin-left: -12px;
+}
+
+.visaLogo {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 28px;
+    color: #FFFFFF;
+    letter-spacing: -0.45px;
+}
+
+.cardInfo {
+    background-color: #FFFFFF;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cardInfoHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 0.8px solid #F3F4F6;
+}
+
+.cardName {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: #364153;
+    margin-bottom: 2px;
+}
+
+.cardBank {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #99A1AF;
+}
+
+.badgePrimary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    background-color: #F0E8FA;
+    border: 0.8px solid #E1D0F5;
+    border-radius: 999px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #8A45B2;
+}
+
+.badgeDefault {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    background-color: #F3F4F6;
+    border: 0.8px solid #E5E7EB;
+    border-radius: 999px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6A7282;
+}
+
+.cardActions {
+    display: flex;
+    gap: 8px;
+}
+
+.btnCardAction {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-}
-
-.paymentDate {
-    font-size: 14px;
+    gap: 8px;
+    padding: 6px 16px;
+    border: 0.8px solid #E5E7EB;
+    border-radius: 10px;
+    background-color: #F9FAFB;
+    color: #4A5565;
+    font-family: 'Roboto', sans-serif;
     font-weight: 400;
-    line-height: 20px;
-    color: #717182;
-}
-
-.removeButton {
-    background: transparent;
-    border: none;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    color: #e7000b;
+    font-size: 12px;
     cursor: pointer;
-    padding: 6px 12px;
+    transition: all 0.2s ease;
 }
 
-/* Transaction Card */
-.transactionCard {
-    background: white;
-    border: 0.8px solid rgba(0, 0, 0, 0.1);
-    border-radius: 14px;
-    padding: 0.8px;
+.btnCardAction:hover {
+    background-color: #F3F4F6;
 }
 
-.transactionList {
-    padding: 0 24px;
+.btnCardAction.danger {
+    border-color: #FFC9C9;
+    background-color: #FFFFFF;
+    color: #FB2C36;
+}
+
+.btnCardAction.danger:hover {
+    background-color: #FFF5F5;
+}
+
+/* Alert Box */
+.alertBox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.errorAlert {
+    background-color: #FEF2F2;
+    border: 0.8px solid #FEE2E2;
+    color: #DC2626;
+}
+
+/* Payment Section */
+.paymentSection {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.emptyCardBox {
+    height: 100%;
+    min-height: 220px;
+    border: 1.5px dashed #D1D5DB;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #F9FAFB;
 }
 
-/* Transaction Item */
-.transactionItem {
-    border: 0.8px solid rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 16.8px;
+.emptyCardBox:hover {
+    border-color: #8A45B2;
+    background-color: #F3F0F9;
+}
+
+.emptyCardIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
+    color: #6A7282;
+}
+
+
+.quickLinksContainer{
+    background-color: #F3E8FF !important;
+}
+
+
+.emptyCardText {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #6A7282;
+}
+
+/* Invoice Section */
+.invoiceSection {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.invoiceHeader {
+    margin-bottom: 24px;
+}
+
+.invoiceTableWrapper {
+    overflow-x: auto;
+}
+
+.invoiceTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invoiceTable thead th {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6A7282;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 0.8px solid #F3F4F6;
+}
+
+.invoiceTable tbody td {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    padding: 16px;
+    border-bottom: 0.8px solid #F3F4F6;
+}
+
+.invoiceTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.invoiceId {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    color: #364153;
+}
+
+.amount {
+    font-weight: 600;
+    color: #1E2939;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.statusBadge.paid {
+    background-color: #DCFCE7;
+    color: #16A34A;
+}
+
+.btnIconAction {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btnIconAction:hover {
+    background-color: #F9FAFB;
+}
+
+.tableFooter {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 0.8px solid #F3F4F6;
+    margin-top: 16px;
+}
+
+.btnDownloadAll {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 0.8px solid #8A45B2;
+    border-radius: 10px;
+    background-color: transparent;
+    color: #8A45B2;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btnDownloadAll:hover {
+    background-color: #F0E8FA;
+}
+
+/* Side Panels */
+.sidePanel {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.panelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 16px;
 }
 
-.transactionItem:last-child {
-    margin-bottom: 0;
+.panelTitle {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #3F1C6E;
 }
 
-.transactionIcon {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, rgb(0, 201, 80) 0%, rgb(0, 153, 102) 100%);
-    border-radius: 10px;
-    display: flex;
+.panelBadge {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-}
-
-.invoiceNumber {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    color: #0a0a0a;
-    margin: 0;
-}
-
-.badgePaid {
-    background-color: #dcfce7;
-    border-radius: 8px;
-    padding: 2.8px 8.8px;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 16px;
-    color: #008236;
-    display: inline-block;
-}
-
-.invoiceDetails {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-    color: #717182;
-    margin: 0;
-}
-
-.invoiceAmount {
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 28px;
-    color: #0a0a0a;
-    margin: 0;
-}
-
-/* Transaction Footer */
-.transactionFooter {
-    padding: 16px 24px 24px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footerText {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-    color: #717182;
-    margin: 0;
-}
-
-.viewAllButton {
-    background: white;
-    border: 1.6px solid #8a45b2;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    color: #3d1b6a;
-    cursor: pointer;
-}
-
-/* Security Card */
-.securityCard {
-    background: linear-gradient(167.031deg, rgba(61, 27, 106, 0.05) 0%, rgba(138, 69, 178, 0.05) 100%);
-    border: 1.6px solid rgba(138, 69, 178, 0.2);
-    border-radius: 14px;
-    padding: 24px;
-}
-
-.securityIcon {
     width: 24px;
     height: 24px;
-    flex-shrink: 0;
+    border-radius: 50%;
 }
 
-.securityTitle {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    color: #0a0a0a;
-    margin: 0 0 8px 0;
+.panelBadge.error {
+    background-color: #FB2C36;
 }
 
-.securityDescription {
+.errorPanel {
+    background-color: #FEF2F2;
+    border: 1px solid #FEE2E2;
+}
+
+.panelButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.panelBtn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
     font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-    color: #717182;
-    margin: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
+.panelBtn.primary {
+    background-color: #FB2C36;
+    color: #FFFFFF;
+}
 
-    .mainWrapper {
-        gap: 16px;
-    }
+.panelBtn.primary:hover {
+    background-color: #DC2626;
+}
 
+.panelBtn.outline {
+    background-color: transparent;
+    border: 0.8px solid #E5E7EB;
+    color: #4A5565;
+}
 
+.panelBtn.outline:hover {
+    background-color: #F9FAFB;
+}
 
-    .billingStats {
-        padding: 0 16px 16px 16px;
-    }
+.chargeItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+}
 
-    .paymentCardItem {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 16px;
-    }
+.chargeLabel {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+}
 
-    .transactionItem {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
+.chargeAmount {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: #3F1C6E;
+}
 
-    .invoiceAmount {
-        align-self: flex-end;
-    }
+.quickLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 10px;
+    text-decoration: none;
+    color: #4A5565;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    border-bottom: 0.8px solid #F3F4F6;
+    transition: all 0.2s ease;
+    background-color: white;
+    margin-top: 9px;
+    border-radius: 14px;
+    
+}
 
-    .transactionFooter {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
+.quickLink:last-child {
+    border-bottom: none;
+}
 
-    .viewAllButton {
+.quickLink:hover {
+    color: #8A45B2;
+}
+
+.quickLink:hover svg path {
+    stroke: #8A45B2;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .mainContent {
+        margin-left: 0;
         width: 100%;
     }
-}
 
-@media (max-width: 576px) {
-
-    .sectionHeader {
-        padding: 16px 16px 6px 16px;
-    }
-
-    .paymentCardItem {
-        margin: 16px 16px;
-    }
-
-    .transactionList {
-        padding: 0 16px;
-    }
-
-    .transactionFooter {
-        padding: 12px 16px 16px 16px;
-    }
-
-    .securityCard {
-        padding: 16px;
+    .sidebar {
+        transform: translateX(-100%);
     }
 }

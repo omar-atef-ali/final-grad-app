@@ -83,20 +83,9 @@ export default function NavBar() {
 
 
               <div className={`${style.cart_parent}`}>
-                <button className={style.IconBtn} onClick={() => navigate("/cart")}>
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                <button className={style.IconBtn}  onClick={() => navigate("/cart")}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M4.06109 3.93865H19.3665L17.4246 12.0934C17.2783 12.7072 16.9693 13.2472 16.5445 13.6316C16.1197 14.016 15.6021 14.2239 15.07 14.2239H6.86627C6.26319 14.2243 5.68119 13.9577 5.2318 13.4751C4.7824 12.9924 4.49721 12.3278 4.43087 11.6085L3.44887 1H1" stroke="#6A7282" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </button>
                 {cartvalue.length > 0 && (

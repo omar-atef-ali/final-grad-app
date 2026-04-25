@@ -93,7 +93,6 @@ body {
     border: 1px solid var(--border-color);
     background-color: rgba(243, 243, 245, 0.5);
     /* Matching ProfilePage2 bg */
-    margin-top: 25px;
 }
 
 .SectionHeader {

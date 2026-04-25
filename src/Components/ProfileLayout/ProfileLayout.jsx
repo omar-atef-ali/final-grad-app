@@ -266,6 +266,7 @@ export default function ProfileLayout() {
                   </div>
                 </div>
 
+                <button onClick={() =>  navigate('/dashboard/subscription')} className={`${style.btn_choose_plan} mb-1`}>dashboard</button>
                 <button onClick={() => navigate('/pricing')} className={`${style.btn_choose_plan}`}>Choose a Plan</button>
               </div>
 
@@ -310,7 +311,7 @@ export default function ProfileLayout() {
 
             <div className={`${style.main_section}`}>
 
-              <div className={`${style.TabsContainer}`}>
+              {/* <div className={`${style.TabsContainer}`}>
                 <div className={`${style.Tabs}`}>
                   <NavLink
                     to="/profile/info"
@@ -356,7 +357,7 @@ export default function ProfileLayout() {
                   </NavLink>
 
                 </div>
-              </div>
+              </div> */}
 
               <Outlet context={{ userData, setUserData, fetchProfile }} />
 
