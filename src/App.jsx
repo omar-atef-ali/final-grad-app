@@ -35,6 +35,8 @@ import SucessfulPaymet from "./Components/SucessfulPaymet/SucessfulPaymet";
 import Setup from "./Components/Setup/Setup";
 import ProfileDataSources from "./Components/profileDataSources/profileDataSources";
 import Privacy from "./Components/Privacy/Privacy";
+import DashboardSub from "./Components/DashboardSub/DashboardSub";
+import DashboardLayout from "./Components/DashboardLayout/DashboardLayout";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -44,7 +46,6 @@ let routers = createBrowserRouter([
   { path: "/change-password", element: <ChangePassword /> },
 
   { path: "google/callback", element: <GoogleCallback /> },
-  { path: "billing", element:  <ProfileBilling />  }, // /profile/billing
 
 
   { path: "login", element: <Login /> },
@@ -70,17 +71,26 @@ let routers = createBrowserRouter([
 
       {
         path: "profile",
-        element: <Protected><ProfileLayout /></Protected> ,
+        element: <Protected><ProfileLayout /></Protected>,
         children: [
-          { index: true, element:<Protected><ProfileInfo /></Protected>  }, // /profile
-          { path: "info", element:<Protected> <ProfileInfo />  </Protected> }, // /profile/info
-          { path: "security", element: <Protected><ProfileSecurity /></Protected> }, // /profile/security
-          { path: "subscription", element: <Protected> <ProfileSubscription /> </Protected> }, // /profile/subscription
-          { path: "data-sources", element:  <Protected><ProfileDataSources /></Protected>  }, // /profile/data-sources
+          { index: true, element: <Protected><ProfileInfo /></Protected> }, // /profile
+          { path: "info", element: <Protected> <ProfileInfo />  </Protected> }, // /profile/info
         ],
       },
+
     ],
   },
+  {
+    path: "dashboard",
+    element: <Protected><DashboardLayout /></Protected>,
+    children: [
+      { index: true, element: <Protected><DashboardSub /></Protected> },
+      { path: "subscription", element: <Protected><DashboardSub /></Protected> },
+      { path: "billing", element: <Protected><ProfileBilling /></Protected> }, // /profile/billing
+
+
+    ],
+  }
 ]);
 
 function App() {

@@ -1,0 +1,31 @@
+.swal2-confirm {
+  background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  transition: 0.2s ease-in-out;
+  
+}
+.swal2-confirm:hover{
+  transform: translatey(-2px) !important;
+  
+}
+
+.swal2-cancel {
+  background: rgba(255, 255, 255, 0.899) !important;
+  border: 1px solid red !important;
+  color: rgb(255, 0, 0) !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  margin-left: 4px !important;
+  transition: 0.2s ease-in-out;
+}
+
+.swal2-cancel:hover {
+  transform: translatey(-2px) !important;
+ 
+}
+
+
+
+

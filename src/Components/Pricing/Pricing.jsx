@@ -732,12 +732,14 @@ export default function Pricing() {
 
                         <button
                           onClick={() => { userToken ? addToCart(feat.id) : addToLocalStorage(feat.id) }}
-                          className={`${style.btn} ${style.btn_individual} ${isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id) ? style.btn_disabled : ""}`}
-                          disabled={isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id)}
+                          className={`${style.btn} ${style.btn_individual} ${feat.isBought || isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id) ? style.btn_disabled : ""}`}
+                          disabled={feat.isBought || isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id)}
                         >
-                          {isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id)
-                            ? "Already Added"
-                            : "Add To Estimate"}
+                          {feat.isBought 
+                            ? "You have this plan" 
+                            : (isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id))
+                              ? "Already Added"
+                              : "Add To Estimate"}
                         </button>
                       </div>
                     </div>
