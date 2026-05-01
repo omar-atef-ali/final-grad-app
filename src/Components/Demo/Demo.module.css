@@ -214,7 +214,54 @@ body {
     font-size: 15px;
 }
 
+/* analytic agent */
 
+.demo_card {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 40px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.demo_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(63, 28, 110, 0.15);
+}
+
+.demo_title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #3F1C6E;
+    margin-bottom: 16px;
+}
+
+.demo_text {
+    font-size: 16px;
+    color: #4A5565;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.demo_btn {
+    background: linear-gradient(135deg, #3F1C6E, #6B46C1);
+    color: #fff;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.demo_btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(63, 28, 110, 0.3);
+}
 
 
 

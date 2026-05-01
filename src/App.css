@@ -11,6 +11,27 @@
   
 }
 
+.swal2-deny {
+  background: hsl(0, 0%, 100%) !important;
+  color: #8A45B2 !important;
+  border: 1px solid #8A45B2;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  transition: 0.2s ease-in-out;
+  margin-left: 4px;
+}
+
+.swal2-deny:hover {
+  transform: translateY(-2px) !important;
+}
+
+.swal_cancel {
+    background: #ef4444;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+}
 .swal2-cancel {
   background: rgba(255, 255, 255, 0.899) !important;
   border: 1px solid red !important;

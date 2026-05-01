@@ -527,21 +527,11 @@ export default function Pricing() {
                       ))}
                     </div>
 
-                    {/* <button onClick={()=>PackagePayment(bundle.id)} className={`${style.btn} ${style.btn_individual}`}>
 
-                      {Isloading ? (
-                      <span
-                        className="spinner-border spinner-border-sm text-light"
-                        role="status"
-                      />
-                    ) : (
-                      "Proceed to Checkout"
-                    )}
-                      
-                    </button> */}
                     <button
                       onClick={() => PackagePayment(bundle.id)}
                       className={`${style.btn} ${style.btn_individual}`}
+                      disabled={bundle.isBought}
                     >
                       {loadingPackageId === bundle.id ? (
                         <span
@@ -551,9 +541,11 @@ export default function Pricing() {
                             WebkitFilter: "brightness(0)"
                           }}
                         />
+                      ) : bundle.isBought ? (
+                      "Already Purchased"
                       ) : (
-                        "Proceed to Checkout"
-                      )}
+                      "Proceed to Checkout"
+  )}
                     </button>
                   </div>
                 )
@@ -735,8 +727,8 @@ export default function Pricing() {
                           className={`${style.btn} ${style.btn_individual} ${feat.isBought || isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id) ? style.btn_disabled : ""}`}
                           disabled={feat.isBought || isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id)}
                         >
-                          {feat.isBought 
-                            ? "You have this plan" 
+                          {feat.isBought
+                            ? "You have this plan"
                             : (isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id))
                               ? "Already Added"
                               : "Add To Estimate"}

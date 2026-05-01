@@ -145,6 +145,15 @@ body {
     color: black;
     transform: translateY(-2px);
 }
+.btn_individual:disabled {
+  background: #cfcfcf;
+  color: #7a7a7a;
+  cursor: not-allowed;
+  border: 1px solid #ddd;
+  opacity: 0.8;
+  transform: none;
+  box-shadow: none;
+}
 
 .btn_disabled {
     opacity: 0.5;
