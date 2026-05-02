@@ -3,11 +3,12 @@ import style from './Demo.module.css'
 import { useNavigate } from 'react-router-dom';
 
 export default function Demo() {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const Features = [
         "Dashboard",
         "AI Recommendations",
         "AI Chatbot",
+        "Analytics agent"
 
 
     ]
@@ -62,7 +63,7 @@ export default function Demo() {
                         )}
 
                         {activeTab === 2 && (
-                             <iframe
+                            <iframe
                                 src="https://raccaqpkb2.us-east-1.awsapprunner.com/"
                                 width="100%"
                                 height="900px"
@@ -70,7 +71,37 @@ export default function Demo() {
                                 allowFullScreen
                                 title="Namaa Dashboard"
                             />
+
+                        )}
+
+                        {/* {activeTab === 3 && (
                            
+                            
+                            window.open("https://smart-analytic-production.up.railway.app/", "_blank")
+                           
+                        )} */}
+                        {activeTab === 3 && (
+                            <div className={style.demo_card}>
+
+                                <h2 className={style.demo_title}>
+                                    Discover Our Smart Analytics Agent
+                                </h2>
+
+                                <p className={style.demo_text}>
+                                    Experience how our system transforms raw data into actionable insights
+                                    through powerful analytics and intuitive visualizations.
+                                </p>
+
+                                <button
+                                    onClick={() =>
+                                        window.open("https://smart-analytic-production.up.railway.app/", "_blank")
+                                    }
+                                    className={style.demo_btn}
+                                >
+                                    View Live Demo
+                                </button>
+
+                            </div>
                         )}
                     </div>
                 </div>
@@ -81,8 +112,8 @@ export default function Demo() {
                         <h2 className={`${style.cta_title}`}>Ready to Use Your Own Data?</h2>
                         <p className={`${style.cta_description}`}>This demo shows what's possible with Namaa. Connect your actual business data to get personalized insights and recommendations.</p>
                         <div className={`${style.cta_buttons}`}>
-                            <button onClick={()=>navigate("/pricing")}  className={`${style.btn_primary}`}>
-                               View Pricing Plans
+                            <button onClick={() => navigate("/pricing")} className={`${style.btn_primary}`}>
+                                View Pricing Plans
                                 <i className={`fa-solid fa-arrow-right ${style.arrow_right}`}></i>
                             </button>
                             <button className={`${style.btn_secondary}`}>Explore Features</button>

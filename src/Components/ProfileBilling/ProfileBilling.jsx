@@ -182,7 +182,7 @@ export default function ProfileBilling() {
           "Authorization": `Bearer ${userToken}`
         }
       });
-      console.log(data);
+      // console.log(data);
       setUpcomingCharges(data);
     } catch (error) {
       toast.error(
@@ -219,7 +219,7 @@ export default function ProfileBilling() {
           "Authorization": `Bearer ${userToken}`
         }
       });
-      console.log(data);
+      // console.log(data);
       setInvoiceHistory(data);
     } catch (error) {
       toast.error(
