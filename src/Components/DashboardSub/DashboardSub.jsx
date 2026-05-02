@@ -32,41 +32,7 @@ export default function DashboardSubscription() {
     }
 
 
-    // const availablePlan = [
-    //     {
-    //         name: "Starter",
-    //         price: "EGP 1,450",
-    //         type: "downgrade",
-    //         features: ["2 Data Sources", "Basic Analytics", "Email Support"]
-    //     },
-    //     {
-    //         name: "Pro",
-    //         price: "EGP 3,950",
-    //         type: "current",
-    //         popular: true,
-    //         features: ["5 Data Sources", "AI Recommendations", "Custom Dashboards", "Priority Support"]
-    //     },
-    //     {
-    //         name: "Enterprise",
-    //         price: "EGP 9,950",
-    //         type: "upgrade",
-    //         features: ["Unlimited Sources", "Full AI Suite", "Custom Dashboards", "Dedicated Support", "API Access"]
-    //     },
-    //     {
-    //         name: "Starter",
-    //         price: "EGP 1,450",
-    //         type: "downgrade",
-    //         features: ["2 Data Sources", "Basic Analytics", "Email Support"]
-    //     },
-    //     {
-    //         name: "Pro",
-    //         price: "EGP 3,950",
-    //         type: "current",
-    //         popular: true,
-    //         features: ["5 Data Sources", "AI Recommendations", "Custom Dashboards", "Priority Support"]
-    //     },
-    // ]
-
+   
     const visiblePlanIndices = availablePlan?.length ? [
         (activePlanIndex - 1 + availablePlan?.length) % availablePlan?.length,
         activePlanIndex,
@@ -101,6 +67,7 @@ export default function DashboardSubscription() {
             });
             console.log(response)
             getPlans()
+            setavailablePlans(null);
             toast.success("Subscription cancelled successfully");
 
         } catch (error) {
@@ -160,6 +127,7 @@ export default function DashboardSubscription() {
             })
             console.log(response)
             getPlans()
+            setavailablePlans(null);
             toast.success("Subscription Revoke successfully");
         }
         catch (error) {
@@ -306,6 +274,7 @@ export default function DashboardSubscription() {
             })
             console.log(response)
             getPlans()
+            setavailablePlans(null);
             toast.success("Subscription terminated successfully");
         }
         catch (error) {
