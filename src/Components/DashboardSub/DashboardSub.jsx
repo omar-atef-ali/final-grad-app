@@ -250,7 +250,7 @@ export default function DashboardSubscription() {
                 const payUrl = response?.data?.paymentCheckoutUrl;
 
                 if (payUrl) {
-                    window.open(payUrl, "_blank"); // 👈 مهم جدًا
+                    window.location.href = payUrl;
                 }
 
             } else {
@@ -338,8 +338,8 @@ export default function DashboardSubscription() {
 
 
 
-    const handleToggle = async ({ subscriptionId, serviceId = null }) => {
-        const key = serviceId ? `${subscriptionId}-${serviceId}` : subscriptionId;
+    const handleToggle = async ({ subscriptionId, subscriptionItemId = null }) => {
+        const key = subscriptionItemId || subscriptionId;
         const newValue = !autoRenewMap[key];
 
         const result = await Swal.fire({
@@ -362,9 +362,9 @@ export default function DashboardSubscription() {
 
             let url = "";
 
-            if (serviceId) {
+            if (subscriptionItemId) {
 
-                url = `/ClientSubscriptions/customized-plan-auto-renewal-toggle/${subscriptionId}/${serviceId}`;
+                url = `/ClientSubscriptions/customized-plan-auto-renewal-toggle/${subscriptionId}/${subscriptionItemId}`;
             } else {
 
                 url = `/ClientSubscriptions/standard-package-auto-renewal-toggle/${subscriptionId}`;
@@ -406,7 +406,7 @@ export default function DashboardSubscription() {
                 initialAutoRenewMap[data.subscriptionId] = data.autoRenewal;
             } else {
                 data.includedFeatures?.forEach((feature) => {
-                    const key = `${data.subscriptionId}-${feature.serviceId}`;
+                    const key = feature.subscriptionItemId;
                     initialAutoRenewMap[key] = feature.autoRenewal;
                 });
             }
@@ -581,12 +581,24 @@ export default function DashboardSubscription() {
     useEffect(() => {
         getPlans()
     }, [])
+    // useEffect(() => {
+    //     if (supscriptionPlans && supscriptionPlans.planType !== "StandardPackage") {
+    //         // getAvailablePlans();
+    //     }
+    //     else {
+    //         getPackagePlans()
+    //     }
+    // }, [supscriptionPlans]);
+
     useEffect(() => {
-        if (supscriptionPlans && supscriptionPlans.planType !== "StandardPackage") {
+        if (!supscriptionPlans) return;
+
+        setavailablePlan(null);
+
+        if (supscriptionPlans.planType !== "StandardPackage") {
             getAvailablePlans();
-        }
-        else {
-            getPackagePlans()
+        } else {
+            getPackagePlans();
         }
     }, [supscriptionPlans]);
     useEffect(() => {
@@ -643,47 +655,48 @@ export default function DashboardSubscription() {
                                             </div>
                                         </div>
 
-                                        {supscriptionPlans.packageStatus === "Canceled" ?
-                                            <div className={`${style.cancel_parent}`}>
-                                                <i class="fa-solid fa-triangle-exclamation"></i>
-                                                <div className={`${style.cancel_info}`}>
-                                                    <h3>Subscription Cancelled</h3>
-                                                    <p>Your plan will remain active until May 20, 2026. After that, all services will be paused.</p>
+                                        {supscriptionPlans.packageStatus === "Canceled" ? (
+                                            <div className={`${style.canceled_row}`}>
+                                                <div className={`${style.cancel_parent}`}>
+                                                    <i className="fa-solid fa-triangle-exclamation"></i>
+                                                    <div className={`${style.cancel_info}`}>
+                                                        <h3>Subscription Cancelled</h3>
+                                                        <p>Your plan will remain active until May 20, 2026. After that, all services will be paused.</p>
+                                                    </div>
                                                 </div>
-                                            </div> :
-                                            <div className={`${style.auto_renewal}`}>
-                                                <div className={`${style.renewal_info}`}>
-                                                    <h4>Auto-renewal</h4>
-                                                    <p>
-                                                        Automatically renew subscription at{" "}
-                                                        {new Date(supscriptionPlans.nextRenewalDate).toLocaleDateString("en-GB")}
-                                                    </p>
-                                                </div>
-                                                <label className={`${style.toggle_switch}`}>
-
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={!!autoRenewMap[supscriptionPlans.subscriptionId]}
-                                                        onChange={() => handleToggle({
-                                                            subscriptionId: supscriptionPlans.subscriptionId
-                                                        })}
-                                                    />
-                                                    <span className={`${style.slider}`}></span>
-                                                </label>
-                                            </div>
-
-                                        }
-
-                                        {
-                                            supscriptionPlans.packageStatus === "Canceled" ? <>
                                                 <div className={`${style.btn_parent}`}>
-                                                    <button onClick={() => handleRovke({ subscriptionId: supscriptionPlans.subscriptionId })} className={`${style.revoke_btn}`} type='button'><i class="fa-solid fa-arrows-rotate"></i> Resume Subscription</button>
-                                                    <button onClick={() => handleTerminate({ subscriptionId: supscriptionPlans.subscriptionId })} className={`${style.terminate_btn}`} type='button'><i class="fa-solid fa-ban"></i>End Now</button>
-
+                                                    <button onClick={() => handleRovke({ subscriptionId: supscriptionPlans.subscriptionId })} className={`${style.revoke_btn}`} type='button'>
+                                                        <i className="fa-solid fa-arrows-rotate"></i> Resume Subscription
+                                                    </button>
+                                                    <button onClick={() => handleTerminate({ subscriptionId: supscriptionPlans.subscriptionId })} className={`${style.terminate_btn}`} type='button'>
+                                                        <i className="fa-solid fa-ban"></i> End Now
+                                                    </button>
                                                 </div>
-                                            </> : <button onClick={() => handleCancel({ subscriptionId: supscriptionPlans.subscriptionId })} className={`${style.cancel_btn}`}>Cancel Subscription</button>
-
-                                        }
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className={`${style.auto_renewal}`}>
+                                                    <div className={`${style.renewal_info}`}>
+                                                        <h4>Auto-renewal</h4>
+                                                        <p>
+                                                            Automatically renew subscription at{" "}
+                                                            {new Date(supscriptionPlans.nextRenewalDate).toLocaleDateString("en-GB")}
+                                                        </p>
+                                                    </div>
+                                                    <label className={`${style.toggle_switch}`}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={!!autoRenewMap[supscriptionPlans.subscriptionId]}
+                                                            onChange={() => handleToggle({ subscriptionId: supscriptionPlans.subscriptionId })}
+                                                        />
+                                                        <span className={`${style.slider}`}></span>
+                                                    </label>
+                                                </div>
+                                                <button onClick={() => handleCancel({ subscriptionId: supscriptionPlans.subscriptionId })} className={`${style.cancel_btn}`}>
+                                                    Cancel Subscription
+                                                </button>
+                                            </>
+                                        )}
 
 
                                     </div>
@@ -726,10 +739,10 @@ export default function DashboardSubscription() {
 
                                                             <input
                                                                 type="checkbox"
-                                                                checked={!!autoRenewMap[`${supscriptionPlans.subscriptionId}-${individualFeature.serviceId}`]}
+                                                                checked={!!autoRenewMap[individualFeature.subscriptionItemId]}
                                                                 onChange={() => handleToggle({
                                                                     subscriptionId: supscriptionPlans.subscriptionId,
-                                                                    serviceId: individualFeature.serviceId
+                                                                    subscriptionItemId: individualFeature.subscriptionItemId
                                                                 })}
                                                             />
                                                             <span className={`${style.slider}`}></span>
@@ -839,7 +852,7 @@ export default function DashboardSubscription() {
 
                                             <h3>{plan.name}</h3>
 
-                                           
+
 
                                             {plan?.saleAmount && plan?.price && (
                                                 <span className={style.discount_badge}>

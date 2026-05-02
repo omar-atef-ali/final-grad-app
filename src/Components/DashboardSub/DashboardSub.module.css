@@ -733,6 +733,7 @@ input:checked+.slider:before {
     display: flex;
     justify-content: flex-end;
     width: 100%;
+   
 }
 
 .revoke_btn,
@@ -746,6 +747,7 @@ input:checked+.slider:before {
     font-weight: 500;
     cursor: pointer;
     margin-left: 4px;
+    margin-bottom: 5px;
 
     display: flex;
     justify-content: center;
@@ -1019,6 +1021,7 @@ input:checked+.slider:before {
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
     white-space: nowrap;
 }
+
 
 
 
