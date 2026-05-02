@@ -3,6 +3,7 @@ import style from './ProfileBilling.module.css'
 import api from '../../api';
 import { userContext } from '../../context/userContext';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 export default function ProfileBilling() {
 
@@ -96,42 +97,54 @@ export default function ProfileBilling() {
   }
 
   async function deleteSavedCard(cardId) {
-    try {
-      let { data } = await api.delete(`/SavedCards/${cardId}`, {
-        headers: {
-          "Authorization": `Bearer ${userToken}`
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to remove this card?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FB2C36",
+      cancelButtonColor: "#6A7282",
+      confirmButtonText: "Yes, remove it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          let { data } = await api.delete(`/SavedCards/${cardId}`, {
+            headers: {
+              "Authorization": `Bearer ${userToken}`
+            }
+          });
+          // console.log(data);
+          toast.success("Card deleted successfully!");
+          getPaymentCards();
+        } catch (error) {
+          console.log(error);
+          toast.error(
+            error.response?.data?.errors[1] ||
+            "Something went wrong, can't delete this card",
+            {
+              position: "top-center",
+              duration: 4000,
+              style: {
+                background:
+                  "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                padding: "16px 20px",
+                color: "#ffffff",
+                fontSize: "0.95rem",
+                borderRadius: "5px",
+                width: "300px",
+                height: "60px",
+                boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+              },
+              iconTheme: {
+                primary: "#FF4D4F",
+                secondary: "#ffffff",
+              },
+            },
+          );
         }
-      });
-      // console.log(data);
-      toast.success("Card deleted successfully!");
-      getPaymentCards();
-    } catch (error) {
-      console.log(error);
-      toast.error(
-        error.response?.data?.errors[1] ||
-        "Something went wrong, can't delete this card",
-        {
-          position: "top-center",
-          duration: 4000,
-          style: {
-            background:
-              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            padding: "16px 20px",
-            color: "#ffffff",
-            fontSize: "0.95rem",
-            borderRadius: "5px",
-            width: "300px",
-            height: "60px",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
-          },
-          iconTheme: {
-            primary: "#FF4D4F",
-            secondary: "#ffffff",
-          },
-        },
-      );
-    }
+      }
+    });
   }
 
   async function setDefaultCard(cardId) {
@@ -479,7 +492,7 @@ export default function ProfileBilling() {
           </div>
           <div className="col-lg-4">
             {/* <!-- Payment Failed Panel --> */}
-            <div className={`${style.sidePanel} ${style.errorPanel}`}>
+            {/* <div className={`${style.sidePanel} ${style.errorPanel}`}>
               <div className={`${style.panelHeader}`}>
                 <h3 className={`${style.panelTitle}`}>Payment Failed</h3>
                 <span className={`${style.panelBadge} ${style.error}`}>
@@ -494,7 +507,7 @@ export default function ProfileBilling() {
                 <button className={`${style.panelBtn} ${style.primary}`}>Retry Payment</button>
                 <button className={`${style.panelBtn} ${style.outline}`}>Update Method</button>
               </div>
-            </div>
+            </div> */}
 
             {/* <!-- Next Upcoming Charges --> */}
             <div className={`${style.sidePanel} mt-3`} style={{ position: 'relative' }}>
