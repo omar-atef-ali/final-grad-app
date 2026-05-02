@@ -415,7 +415,7 @@ export default function Cart() {
 
   async function applyPromoCode() {
     try {
-      if(!userToken){
+      if (!userToken) {
         toast.error(
           "Please login to apply a promo code.",
           {

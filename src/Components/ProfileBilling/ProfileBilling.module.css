@@ -750,6 +750,14 @@
     background-color: #DCFCE7;
     color: #16A34A;
 }
+.statusBadge.failed {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+.statusBadge.pending {
+  color: #F59E0B;
+  background-color: #FEF3C7;
+}
 
 .btnIconAction {
     width: 32px;
