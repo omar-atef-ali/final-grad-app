@@ -198,30 +198,7 @@ export default function ProfileBilling() {
       // console.log(data);
       setUpcomingCharges(data);
     } catch (error) {
-      toast.error(
-        error.response?.data?.errors[1] ||
-        "Something went wrong, can't get upcoming charges",
-        {
-          position: "top-center",
-          duration: 4000,
-          style: {
-            background:
-              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            padding: "16px 20px",
-            color: "#ffffff",
-            fontSize: "0.95rem",
-            borderRadius: "5px",
-            width: "300px",
-            height: "60px",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
-          },
-          iconTheme: {
-            primary: "#FF4D4F",
-            secondary: "#ffffff",
-          },
-        },
-      );
+
     }
   }
 
@@ -382,80 +359,6 @@ export default function ProfileBilling() {
                   </div>
                 ))}
 
-
-                {/* <!-- Card 2 - Expired (Visa) --> */}
-                {/* <div className="col-md-6">
-                  <div className={`${style.creditCard}`}>
-                    <div className={`${style.cardVisual} ${style.darkGradient}`}>
-                      <div className={`${style.cardBackgroundCircle} ${style.circle1}`}></div>
-                      <div className={`${style.cardBackgroundCircle} ${style.circle2}`}></div>
-                      <span className={`${style.cardBadge} ${style.expiredBadge}`}>Expired</span>
-
-                      <div className={`${style.cardContent}`}>
-                        <div className={`${style.cardHeaderRow}`}>
-                          <div className={`${style.cardChip}`}>
-                            <div className={`${style.chipGrid}`}>
-                              <span></span><span></span>
-                              <span></span><span></span>
-                            </div>
-                          </div>
-                          <svg className={`${style.cardIcon}`} width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="4" fill="white" opacity="0.65" />
-                          </svg>
-                        </div>
-
-                        <div className={`${style.cardNumber}`}>**** **** **** 7890</div>
-
-                        <div className={`${style.cardDetailsRow}`}>
-                          <div className={`${style.cardDetail}`}>
-                            <div className={`${style.cardLabel}`}>CARD HOLDER</div>
-                            <div className={`${style.cardValue}`}>SARA HESHAM</div>
-                          </div>
-                          <div className={`${style.cardDetail}`}>
-                            <div className={`${style.cardLabel}`}>EXPIRES</div>
-                            <div className={`${style.cardValue}`}>1/26</div>
-                          </div>
-                          <div className={`${style.visaLogo}`}>VISA</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className={`${style.cardInfo}`}>
-                      <div className={`${style.cardInfoHeader}`}>
-                        <div>
-                          <div className={`${style.cardName}`}>Visa ••7890</div>
-                          <div className={`${style.cardBank}`}>NBE Bank</div>
-                        </div>
-                        <span className={`${style.badgeDefault}`}>
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <path d="M5.7634 1.14745C5.78531 1.10318 5.81916 1.06591 5.86113 1.03986C5.90309 1.01381 5.9515 1 6.0009 1C6.0503 1 6.09871 1.01381 6.14067 1.03986C6.18264 1.06591 6.21649 1.10318 6.2384 1.14745L7.3934 3.48695C7.46949 3.64093 7.58181 3.77415 7.72071 3.87517C7.85962 3.9762 8.02096 4.042 8.1909 4.06695L10.7739 4.44495C10.8228 4.45204 10.8688 4.47268 10.9066 4.50455C10.9445 4.53641 10.9726 4.57822 10.9879 4.62525C11.0032 4.67228 11.005 4.72265 10.9932 4.77066C10.9814 4.81868 10.9563 4.86242 10.9209 4.89695L9.0529 6.71595C8.92971 6.836 8.83754 6.98419 8.78432 7.14776C8.7311 7.31133 8.71843 7.48539 8.7474 7.65495L9.1884 10.2249C9.19704 10.2739 9.19176 10.3242 9.17315 10.3703C9.15454 10.4163 9.12336 10.4563 9.08317 10.4854C9.04298 10.5146 8.99539 10.5319 8.94583 10.5354C8.89628 10.5388 8.84675 10.5283 8.8029 10.5049L6.4939 9.29095C6.34176 9.21106 6.17249 9.16932 6.00065 9.16932C5.82881 9.16932 5.65954 9.21106 5.5074 9.29095L3.1989 10.5049C3.15507 10.5282 3.1056 10.5386 3.05613 10.5351C3.00665 10.5316 2.95916 10.5142 2.91905 10.4851C2.87894 10.4559 2.84782 10.416 2.82923 10.3701C2.81064 10.3241 2.80533 10.2738 2.8139 10.2249L3.2544 7.65545C3.2835 7.48581 3.27089 7.31165 3.21767 7.14797C3.16445 6.98429 3.0722 6.83602 2.9489 6.71595L1.0809 4.89745C1.0452 4.86296 1.0199 4.81914 1.00788 4.77098C0.995866 4.72282 0.997618 4.67226 1.01294 4.62504C1.02826 4.57783 1.05653 4.53587 1.09454 4.50394C1.13254 4.47201 1.17875 4.4514 1.2279 4.44445L3.8104 4.06695C3.98053 4.0422 4.14209 3.97648 4.28119 3.87544C4.42029 3.77441 4.53275 3.64108 4.6089 3.48695L5.7634 1.14745Z" stroke="#6A7282" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                          Default
-                        </span>
-                      </div>
-                      <div className={`${style.cardActions}`}>
-                        <button className={`${style.btnCardAction}`}>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                            <path d="M7 1.75H2.91667C2.60725 1.75 2.3105 1.87292 2.09171 2.09171C1.87292 2.3105 1.75 2.60725 1.75 2.91667V11.0833C1.75 11.3928 1.87292 11.6895 2.09171 11.9083C2.3105 12.1271 2.60725 12.25 2.91667 12.25H11.0833C11.3928 12.25 11.6895 12.1271 11.9083 11.9083C12.1271 11.6895 12.25 11.3928 12.25 11.0833V7" stroke="#4A5565" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M10.7185 1.53138C10.9505 1.29932 11.2653 1.16895 11.5935 1.16895C11.9217 1.16895 12.2364 1.29932 12.4685 1.53138C12.7005 1.76345 12.8309 2.07819 12.8309 2.40638C12.8309 2.73457 12.7005 3.04932 12.4685 3.28138L7.2109 8.53955C7.07238 8.67794 6.90127 8.77925 6.71331 8.83413L5.0374 9.32413C4.9872 9.33877 4.93399 9.33965 4.88334 9.32667C4.83269 9.3137 4.78646 9.28734 4.74949 9.25037C4.71252 9.2134 4.68616 9.16717 4.67319 9.11652C4.66021 9.06587 4.66109 9.01266 4.67573 8.96247L5.16573 7.28655C5.22087 7.09874 5.32237 6.92783 5.4609 6.78955L10.7185 1.53138Z" stroke="#4A5565" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                          Update
-                        </button>
-                        <button className={`${style.btnCardAction} ${style.danger}`}>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                            <path d="M1.75 3.5H12.25" stroke="#FB2C36" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M11.0827 3.5V11.6667C11.0827 12.25 10.4993 12.8333 9.91602 12.8333H4.08268C3.49935 12.8333 2.91602 12.25 2.91602 11.6667V3.5" stroke="#FB2C36" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M4.66602 3.49935V2.33268C4.66602 1.74935 5.24935 1.16602 5.83268 1.16602H8.16602C8.74935 1.16602 9.33268 1.74935 9.33268 2.33268V3.49935" stroke="#FB2C36" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M5.83398 6.41602V9.91602" stroke="#FB2C36" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M8.16602 6.41602V9.91602" stroke="#FB2C36" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-
                 {/* <!-- Card 3 - Add New Card --> */}
                 <div className="col-md-6">
                   <div onClick={addNewCard} className={`${style.emptyCardBox}`}>
@@ -510,7 +413,8 @@ export default function ProfileBilling() {
             </div> */}
 
             {/* <!-- Next Upcoming Charges --> */}
-            <div className={`${style.sidePanel} mt-3`} style={{ position: 'relative' }}>
+            {upcomingCharges?.length > 0 ? (
+            <div className={`${style.sidePanel} `} style={{ position: 'relative' }}>
               {/* Calendar Icon - top right */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 className={`${style.panelTitle}`}>Next Upcoming Charges</h3>
@@ -545,7 +449,12 @@ export default function ProfileBilling() {
               ))}
 
             </div>
-
+            ) : (
+              <div className={`${style.sidePanel} `} style={{ position: 'relative' }}>
+                <h3 className={`${style.panelTitle}`}>Next Upcoming Charges</h3>
+                <p>No upcoming charges</p>
+              </div>
+            )}
             {/* <!-- Quick Links --> */}
 
             <div className={`${style.sidePanel} ${style.quickLinksContainer} mt-3`}>

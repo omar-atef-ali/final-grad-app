@@ -19,7 +19,7 @@ export default function SucessfulPaymet() {
           "Authorization": `Bearer ${userToken}`
         }
       })
-      console.log(data)
+      // console.log(data)
       setSubscriptionDetails(data)
     }
     catch (error) {

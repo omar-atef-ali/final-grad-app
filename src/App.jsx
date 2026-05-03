@@ -87,6 +87,7 @@ let routers = createBrowserRouter([
       { index: true, element: <Protected><DashboardSub /></Protected> },
       { path: "subscription", element: <Protected><DashboardSub /></Protected> },
       { path: "billing", element: <Protected><ProfileBilling /></Protected> }, // /profile/billing
+      { path: "data-sources", element: <Protected><ProfileDataSources /></Protected> }, // /profile/data-sources
 
 
     ],
