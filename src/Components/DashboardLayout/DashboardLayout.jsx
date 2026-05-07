@@ -491,7 +491,7 @@ export default function DashboardLayout() {
 
           {/* <!-- Navigation --> */}
           <nav className={`${style.sidebarNav}`}>
-            <NavLink to="/profile" className={({ isActive }) =>
+            <NavLink to="/dashboard/home" className={({ isActive }) =>
               `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
             }>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

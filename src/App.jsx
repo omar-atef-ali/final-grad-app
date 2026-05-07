@@ -37,6 +37,7 @@ import ProfileDataSources from "./Components/profileDataSources/profileDataSourc
 import Privacy from "./Components/Privacy/Privacy";
 import DashboardSub from "./Components/DashboardSub/DashboardSub";
 import DashboardLayout from "./Components/DashboardLayout/DashboardLayout";
+import DashboardHome from "./Components/DashboardHome/DashboardHome";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -88,6 +89,7 @@ let routers = createBrowserRouter([
       { path: "subscription", element: <Protected><DashboardSub /></Protected> },
       { path: "billing", element: <Protected><ProfileBilling /></Protected> }, // /profile/billing
       { path: "data-sources", element: <Protected><ProfileDataSources /></Protected> }, // /profile/data-sources
+      { path: "home", element: <Protected><DashboardHome /></Protected> },
 
 
     ],
