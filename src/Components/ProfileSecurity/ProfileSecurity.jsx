@@ -280,6 +280,8 @@ export default function ProfileSecurity() {
 
 
     <main className={`${style.content_area}`}>
+      <h3 className={`${style.main_title}`}>Settings</h3>
+      <p className={`${style.main_p}`}>Manage your account settings and preferences</p>
 
       <section className={`${style.security_section}`}>
         <h2 className={`${style.section_title}`}>Change Password</h2>

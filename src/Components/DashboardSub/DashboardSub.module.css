@@ -228,6 +228,7 @@ input:checked+.slider:before {
     padding: 15px 18px 12px 18px;
     border-radius: 10px;
     margin-bottom: 16px;
+    /* width: 60%; */
 }
 .cancel_parent i{
     font-size: 17px;
@@ -768,6 +769,42 @@ input:checked+.slider:before {
 }
 
 .terminate_btn:hover {
+    transform: translateY(-2px);
+}
+
+
+.canceled_btns{
+    display: flex;
+    gap: 10px;
+}
+
+
+.revoke2_btn,
+.terminate2_btn {
+    padding: 11px 20px;
+    background: linear-gradient(to right, #3D1B6A, #4E3074, #8A45B2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    gap: 8px;
+    transition: 0.2s ease-in-out;
+
+}
+
+.terminate2_btn {
+    background: #ffffff;
+    border: 1px solid #f30c0c;
+    color: #ff0000;
+}
+
+.revoke2_btn:hover {
+    transform: translateY(-2px);
+}
+
+.terminate2_btn:hover {
     transform: translateY(-2px);
 }
 
