@@ -1,0 +1,530 @@
+.dashboardContainer {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+
+/* Main Content */
+.mainContent {
+
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top Header */
+.topHeader {
+    background: white;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+
+/* Content Wrapper */
+.contentWrapper {
+    padding: 32px;
+    flex: 1;
+}
+
+/* Welcome Section */
+.welcomeSection {
+    margin-bottom: 24px;
+}
+
+.welcomeTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3F1C6E;
+    margin-bottom: 4px;
+}
+
+.welcomeSubtitle {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Custom Alert */
+.customAlert {
+    background: #FFFBF0;
+    border: 1px solid #FDE68A;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.alertIcon {
+    width: 32px;
+    height: 32px;
+    background: #FEF3C7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #F59E0B;
+}
+
+.alertContent {
+    flex: 1;
+}
+
+.alertTitle {
+    font-weight: 700;
+    color: #B45309;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.alertText {
+    font-size: 13px;
+    color: #D97706;
+}
+
+.btnClose {
+    opacity: 0.5;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #B45309;
+    cursor: pointer;
+}
+
+/* Chart Card */
+.chartCard {
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+.chartHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.chartTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3F1C6E;
+    margin: 0;
+}
+
+.chartLegend {
+    display: flex;
+    gap: 20px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #6B7280;
+}
+
+.legendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.chartContainer {
+    display: flex;
+    gap: 16px;
+    height: 200px;
+}
+
+.chartYAxis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #9CA3AF;
+    padding-top: 8px;
+    padding-bottom: 24px;
+}
+
+.chartBars {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    border-left: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
+    padding-left: 16px;
+    padding-bottom: 8px;
+    background-image: linear-gradient(to right, rgba(229, 231, 235, 0.5) 1px, transparent 1px), linear-gradient(to top, rgba(229, 231, 235, 0.5) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+.chartBarWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.chartBar {
+    width: 100%;
+    max-width: 48px;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s;
+}
+
+.chartBar:hover {
+    opacity: 0.85;
+}
+
+.barLabel {
+    font-size: 11px;
+    color: #6B7280;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* Workspace Health */
+.workspaceHealth {
+    margin-bottom: 32px;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3F1C6E;
+}
+
+.healthItems {
+    display: flex;
+    flex-direction: column;
+}
+
+.healthItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 16px;
+}
+
+.healthItem:last-child {
+    margin-bottom: 0;
+}
+
+.healthIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.healthIconSuccess {
+    color: #10B981;
+}
+
+.healthIconWarning {
+    color: #F59E0B;
+}
+
+.statusOk {
+    color: #10B981;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.statusWarning {
+    color: #F59E0B;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* Active Features */
+.activeFeatures {
+    margin-bottom: 32px;
+}
+
+.activeFeaturesHeader {
+    margin-bottom: 16px;
+}
+
+.sectionSubtitle {
+    font-size: 13px;
+    color: #9CA3AF;
+    margin: 0;
+}
+
+.workspaceHealthCard {
+    border: none;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    margin-bottom: 24px;
+    min-height: 280px;
+}
+
+.featureCard {
+    border: none;
+    border-radius: 16px;
+    transition: all 0.2s;
+    height: 100%;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.featureHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.featureIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.chatbotIcon,
+.recommendationsIcon,
+.analyticsIcon {
+    background: #F3E8FF;
+    color: #8A45B2;
+}
+
+.badgeActive {
+    background-color: #ECFDF5;
+    color: #10B981;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badgeActive i {
+    font-size: 8px;
+}
+
+.featureTitle {
+    font-size: 15px;
+    font-weight: 600;
+    color: #3F1C6E;
+    margin-bottom: 8px;
+}
+
+.featureDescription {
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.5;
+}
+
+.featureActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.btnAction {
+    flex: 1;
+    background: white;
+    border: 1px solid #E5E7EB;
+    color: #374151;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 500;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btnAction:hover {
+    background: #F9FAFB;
+    color: #111827;
+}
+
+/* Add Feature Card */
+.addFeatureCard {
+    height: 90%;
+    min-height: 220px;
+    border: 1.5px dashed #D1D5DB;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #F9FAFB;
+}
+
+.addFeatureCard:hover {
+    background: #F3F4F6;
+    border-color: #9CA3AF;
+}
+
+.addFeatureCard .cardBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+}
+
+.addIcon {
+    width: 40px;
+    height: 40px;
+    background: #F3E8FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #8B5CF6;
+    margin-bottom: 16px;
+}
+
+.featureUnavailable {
+    font-size: 12px;
+    color: #6B7280;
+    margin: 0
+}
+
+/* Quick Actions */
+.quickActions {
+    background: white;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    position: sticky;
+    top: 20px;
+}
+
+.quickActionsTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3F1C6E;
+}
+
+.btnUpgrade {
+    background: #50248a;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-weight: 500;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btnUpgrade:hover {
+    background: #4C1D95;
+    color: white;
+}
+
+.ActionOutline {
+    background: white;
+    border: 1px solid #E5E7EB;
+    /* color: #5B21B6; */
+    padding: 12px;
+    font-weight: 500;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ActionOutline:hover {
+    background: #F3E8FF;
+    border-color: #E5E7EB;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .sidebar {
+        width: 80px;
+    }
+
+    .mainContent {
+        margin-left: 80px;
+    }
+
+    .logoText,
+    .sidebarNav .navLink span,
+    .userInfo {
+        display: none;
+    }
+
+    .sidebarNav .navLink {
+        justify-content: center;
+    }
+
+    .userProfile {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0;
+        overflow: hidden;
+    }
+
+    .mainContent {
+        margin-left: 0;
+    }
+
+    .contentWrapper {
+        padding: 20px 16px;
+    }
+
+    .topHeader {
+        padding: 12px 16px;
+    }
+
+    .welcomeTitle {
+        font-size: 24px;
+    }
+
+    .chartContainer {
+        height: 180px;
+    }
+
+    .healthItems {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

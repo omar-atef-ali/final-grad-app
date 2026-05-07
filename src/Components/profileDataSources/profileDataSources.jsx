@@ -64,6 +64,10 @@ export default function ProfileDataSources() {
     <div className={`container-fluid p-0 ${style.mainContainer}`}>
       {dataSource.length > 0 ?
         <div className={style.tabPanel}>
+          <div className={`${style.pageTitleSection}`}>
+            <h1 className={`${style.pageTitle}`}>Billing</h1>
+            <p className={`${style.pageSubtitle}`}>Manage your payment methods and invoices</p>
+          </div>
           {/* <!-- Main Card Frame --> */}
           <div className={style.mainFrame}>
             {/* <!-- Header Section --> */}
@@ -259,7 +263,7 @@ export default function ProfileDataSources() {
           </div>
         </div>
 
-        : <div className="container-fluid d-flex justify-content-center align-items-center">
+        : <div className="container-fluid d-flex justify-content-center align-items-center mt-4">
           <div className={style['empty-state-card']}>
             {/* <!-- Icon Container --> */}
             <div className="d-flex justify-content-center mb-4">

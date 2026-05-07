@@ -119,25 +119,25 @@ export default function ProfileSecurity() {
   }
 
   async function putTrustedDevice() {
-  try {
-    let response = await api.put(`/UserSessions/verify-trust?UserId=${UserId}&Code=${encodeURIComponent(Code)}`, {}, {
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      }
-    })
-    await getUserSessions();
-    console.log(response)
-    toast.success(response.data.message)
+    try {
+      let response = await api.put(`/UserSessions/verify-trust?UserId=${UserId}&Code=${encodeURIComponent(Code)}`, {}, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        }
+      })
+      await getUserSessions();
+      console.log(response)
+      toast.success(response.data.message)
+    }
+    catch (error) {
+      console.log(error)
+      toast.error(
+        error.response?.data?.errors?.[0] ||
+        error.response?.data?.message ||
+        "Something went wrong"
+      )
+    }
   }
-  catch (error) {
-    console.log(error)
-    toast.error(
-      error.response?.data?.errors?.[0] ||
-      error.response?.data?.message ||
-      "Something went wrong"
-    )
-  }
-}
 
 
 
@@ -363,17 +363,19 @@ export default function ProfileSecurity() {
               )}
             </div>
           </div>
-          <button
-            type="submit"
-            className={`${style.update_password_btn}`}
-            disabled={!(formik.isValid && formik.dirty) || isLoading}
-          >
-            {isLoading ? (
-              <span className="spinner-border spinner-border-sm text-light" role="status" />
-            ) : (
-              "Update Password"
-            )}
-          </button>
+          <div className={style.parent_update_btn}>
+            <button
+              type="submit"
+              className={`${style.update_password_btn}`}
+              disabled={!(formik.isValid && formik.dirty) || isLoading}
+            >
+              {isLoading ? (
+                <span className="spinner-border spinner-border-sm text-light" role="status" />
+              ) : (
+                "Update Password"
+              )}
+            </button>
+          </div>
 
 
         </form>

@@ -6,6 +6,8 @@ import { userContext } from '../../context/userContext';
 import api from '../../api';
 import toast from 'react-hot-toast';
 import { CartContext } from '../../context/CartContext';
+import { getImageUrl } from "../../utils/imageUrl";
+
 
 export default function DashboardLayout() {
 
@@ -20,12 +22,16 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
-  const { userToken } = useContext(userContext);
+  const { userToken, setUserProfileImage, userProfileImage } = useContext(userContext);
   const { getCart, cartvalue } = useContext(CartContext);
   const [localSelections, setLocalSelections] = useState({});
   const [selectedTokenIds, setSelectedTokenIds] = useState({});
   const [promoCode, setPromoCode] = useState('');
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [userData, setUserData] = useState(null)
+  const [displayedImage, setDisplayedImage] = useState(userProfileImage);
+
+
 
   useEffect(() => {
     if (cartItems.length > 0) {
@@ -377,7 +383,80 @@ export default function DashboardLayout() {
     }
   }
 
-  
+
+  const fetchProfile = async () => {
+    if (!userToken) return;
+    try {
+      const { data } = await api.get("/Users/profile", {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      setUserData(data);
+      // Update global context state for NavBar
+      if (data.profileImage) {
+        // Append timestamp to force cache refresh
+        setUserProfileImage(`${data.profileImage}?t=${new Date().getTime()}`);
+      }
+      // console.log(data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      toast.error(
+        error.response?.data?.errors[1] ||
+        "Error fetching profile",
+        {
+          position: "top-center",
+          duration: 4000,
+          style: {
+            background:
+              "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            padding: "16px 20px",
+            color: "#ffffff",
+            fontSize: "0.95rem",
+            borderRadius: "5px",
+            width: "300px",
+            height: "100%",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+          },
+          iconTheme: {
+            primary: "#FF4D4F",
+            secondary: "#ffffff",
+          },
+        },
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, [userToken]);
+
+  useEffect(() => {
+    if (!userProfileImage) {
+      setDisplayedImage(null);
+      return;
+    }
+
+    // If it's a data URI (preview), update immediately
+    if (userProfileImage.startsWith("data:")) {
+      setDisplayedImage(userProfileImage);
+      return;
+    }
+
+    // Otherwise (server URL), preload to prevent white flash
+    const img = new Image();
+    const src = getImageUrl(userProfileImage);
+
+    if (src) {
+      img.src = src;
+      img.onload = () => setDisplayedImage(userProfileImage);
+      img.onerror = () => setDisplayedImage(userProfileImage); // Fallback: update even if preload fails
+    } else {
+      setDisplayedImage(userProfileImage);
+    }
+  }, [userProfileImage]);
+
 
   return <>
 
@@ -414,7 +493,7 @@ export default function DashboardLayout() {
 
           {/* <!-- Navigation --> */}
           <nav className={`${style.sidebarNav}`}>
-            <NavLink to="/profile" className={({ isActive }) =>
+            <NavLink to="/dashboard/home" className={({ isActive }) =>
               `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
             }>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -494,16 +573,37 @@ export default function DashboardLayout() {
           </nav>
 
           {/* <!-- User Profile --> */}
-          <div className={`${style.sidebarFooter}`}>
+          <div onClick={() => navigate("/profile/info")} className={`${style.sidebarFooter}`}>
             <div className={`${style.userProfile}`}>
-              <div className={`${style.userAvatar}`}></div>
+              <button className={style.UserAvatarSmall} style={{ overflow: "hidden", padding: 0 }}>
+                {displayedImage ? (
+                  <img
+                    src={getImageUrl(displayedImage) || getImageUrl(userProfileImage)}
+                    alt="User"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=User"; }}
+                  />
+                ) : (
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                )}
+              </button>
               <div className={`${style.userInfo}`}>
-                <div className={`${style.userName}`}>########</div>
-                <div className={`${style.userPosition}`}>Position</div>
+                <div className={`${style.userName}`}>{userData?.firstName} {userData?.lastName}</div>
+                <div className={`${style.userPosition}`}>{userData?.position}</div>
               </div>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#99A1AF" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+
             </div>
           </div>
         </aside>
@@ -532,7 +632,30 @@ export default function DashboardLayout() {
                 </svg>
                 <span className={`${style.badge}`}>2</span>
               </div> */}
-              <div className={`${style.user_avatar_header}`}>SH</div>
+              <button onClick={() => navigate("/profile/info")} className={style.UserAvatarSmall} style={{ overflow: "hidden", padding: 0 }}>
+                {displayedImage ? (
+                  <img
+                    src={getImageUrl(displayedImage) || getImageUrl(userProfileImage)}
+                    alt="User"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/150?text=User"; }}
+                  />
+                ) : (
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
 

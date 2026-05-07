@@ -56,7 +56,7 @@ export default function Setup() {
     async function getDatabaseTypes() {
         try {
             let { data } = await api.get(`/UserDatabaseCredentials/database-types`);
-            console.log(data);
+            // console.log(data);
             const typesArray = Object.values(data);
             setdatabaseTypes(typesArray)
 
@@ -159,10 +159,10 @@ export default function Setup() {
 
                     <section className={style.hero}>
                         <div className={style.hero_icon}>
-                            <svg viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="3.33">
-                                <path d="M20 13.333C28.2843 13.333 35 11.0944 35 8.33301C35 5.57158 28.2843 3.33301 20 3.33301C11.7157 3.33301 5 5.57158 5 8.33301C5 11.0944 11.7157 13.333 20 13.333Z" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M5 8.33301V31.6663C5 32.9924 6.58035 34.2642 9.3934 35.2019C12.2064 36.1396 16.0218 36.6663 20 36.6663C23.9782 36.6663 27.7936 36.1396 30.6066 35.2019C33.4196 34.2642 35 32.9924 35 31.6663V8.33301" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M5 20C5 21.3261 6.58035 22.5979 9.3934 23.5355C12.2064 24.4732 16.0218 25 20 25C23.9782 25 27.7936 24.4732 30.6066 23.5355C33.4196 22.5979 35 21.3261 35 20" stroke-linecap="round" stroke-linejoin="round" />
+                            <svg viewBox="0 0 40 40" fill="none" stroke="white" strokeWidth="3.33">
+                                <path d="M20 13.333C28.2843 13.333 35 11.0944 35 8.33301C35 5.57158 28.2843 3.33301 20 3.33301C11.7157 3.33301 5 5.57158 5 8.33301C5 11.0944 11.7157 13.333 20 13.333Z" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M5 8.33301V31.6663C5 32.9924 6.58035 34.2642 9.3934 35.2019C12.2064 36.1396 16.0218 36.6663 20 36.6663C23.9782 36.6663 27.7936 36.1396 30.6066 35.2019C33.4196 34.2642 35 32.9924 35 31.6663V8.33301" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M5 20C5 21.3261 6.58035 22.5979 9.3934 23.5355C12.2064 24.4732 16.0218 25 20 25C23.9782 25 27.7936 24.4732 30.6066 23.5355C33.4196 22.5979 35 21.3261 35 20" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </div>
                         <h1 className={style.hero_title}>Connect Your Data</h1>
@@ -176,9 +176,9 @@ export default function Setup() {
                             <div className={style.form_header}>
                                 <div className={style.header_content}>
                                     <div className={style.header_title}>
-                                        <svg className={style.title_icon} viewBox="0 0 20 20" fill="none" stroke="#3D1B6A" stroke-width="1.66667">
-                                            <path d="M15.8333 9.16699H4.16667C3.24619 9.16699 2.5 9.91318 2.5 10.8337V16.667C2.5 17.5875 3.24619 18.3337 4.16667 18.3337H15.8333C16.7538 18.3337 17.5 17.5875 17.5 16.667V10.8337C17.5 9.91318 16.7538 9.16699 15.8333 9.16699Z" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M5.83301 9.16602V5.83268C5.83301 4.72761 6.27199 3.66781 7.0534 2.8864C7.8348 2.105 8.89461 1.66602 9.99967 1.66602C11.1047 1.66602 12.1646 2.105 12.946 2.8864C13.7274 3.66781 14.1663 4.72761 14.1663 5.83268V9.16602" stroke-linecap="round" stroke-linejoin="round" />
+                                        <svg className={style.title_icon} viewBox="0 0 20 20" fill="none" stroke="#3D1B6A" strokeWidth="1.66667">
+                                            <path d="M15.8333 9.16699H4.16667C3.24619 9.16699 2.5 9.91318 2.5 10.8337V16.667C2.5 17.5875 3.24619 18.3337 4.16667 18.3337H15.8333C16.7538 18.3337 17.5 17.5875 17.5 16.667V10.8337C17.5 9.91318 16.7538 9.16699 15.8333 9.16699Z" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M5.83301 9.16602V5.83268C5.83301 4.72761 6.27199 3.66781 7.0534 2.8864C7.8348 2.105 8.89461 1.66602 9.99967 1.66602C11.1047 1.66602 12.1646 2.105 12.946 2.8864C13.7274 3.66781 14.1663 4.72761 14.1663 5.83268V9.16602" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                         <div>
                                             <h2>Database Connection</h2>
@@ -186,7 +186,7 @@ export default function Setup() {
                                         </div>
                                     </div>
                                     <div className={style.badge_secure}>
-                                        <svg viewBox="0 0 12 12" fill="none" stroke="#008236" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg viewBox="0 0 12 12" fill="none" stroke="#008236" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M10 6.5C10 9 8.25 10.25 6.17 10.975C6.06108 11.0119 5.94277 11.0101 5.835 10.97C3.75 10.25 2 9 2 6.5V3C2 2.86739 2.05268 2.74021 2.14645 2.64645C2.24021 2.55268 2.36739 2.5 2.5 2.5C3.5 2.5 4.75 1.9 5.62 1.14C5.72593 1.0495 5.86068 0.999775 6 0.999775C6.13932 0.999775 6.27407 1.0495 6.38 1.14C7.255 1.905 8.5 2.5 9.5 2.5C9.63261 2.5 9.75979 2.55268 9.85355 2.64645C9.94732 2.74021 10 2.86739 10 3V6.5Z" />
                                         </svg>
                                         <span>Secure</span>
@@ -200,10 +200,10 @@ export default function Setup() {
                                 <form onSubmit={formik.handleSubmit}>
                                     <div className={style.form_group}>
                                         <label htmlFor="databaseType">
-                                            <svg className={style.input_icon} viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.33333">
-                                                <path d="M8 5.33301C11.3137 5.33301 14 4.43758 14 3.33301C14 2.22844 11.3137 1.33301 8 1.33301C4.68629 1.33301 2 2.22844 2 3.33301C2 4.43758 4.68629 5.33301 8 5.33301Z" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M2 3.33301V12.6663C2 13.1968 2.63214 13.7055 3.75736 14.0806C4.88258 14.4556 6.4087 14.6663 8 14.6663C9.5913 14.6663 11.1174 14.4556 12.2426 14.0806C13.3679 13.7055 14 13.1968 14 12.6663V3.33301" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M2 8C2 8.53043 2.63214 9.03914 3.75736 9.41421C4.88258 9.78929 6.4087 10 8 10C9.5913 10 11.1174 9.78929 12.2426 9.41421C13.3679 9.03914 14 8.53043 14 8" stroke-linecap="round" stroke-linejoin="round" />
+                                            <svg className={style.input_icon} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.33333">
+                                                <path d="M8 5.33301C11.3137 5.33301 14 4.43758 14 3.33301C14 2.22844 11.3137 1.33301 8 1.33301C4.68629 1.33301 2 2.22844 2 3.33301C2 4.43758 4.68629 5.33301 8 5.33301Z" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M2 3.33301V12.6663C2 13.1968 2.63214 13.7055 3.75736 14.0806C4.88258 14.4556 6.4087 14.6663 8 14.6663C9.5913 14.6663 11.1174 14.4556 12.2426 14.0806C13.3679 13.7055 14 13.1968 14 12.6663V3.33301" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M2 8C2 8.53043 2.63214 9.03914 3.75736 9.41421C4.88258 9.78929 6.4087 10 8 10C9.5913 10 11.1174 9.78929 12.2426 9.41421C13.3679 9.03914 14 8.53043 14 8" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
                                             Database Type
                                         </label>
@@ -340,7 +340,7 @@ export default function Setup() {
 
 
                                     <div className={style.security_notice}>
-                                        <svg className={style.notice_icon} viewBox="0 0 12 12" fill="none" stroke="#008236" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg className={style.notice_icon} viewBox="0 0 12 12" fill="none" stroke="#008236" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M10 6.5C10 9 8.25 10.25 6.17 10.975C6.06108 11.0119 5.94277 11.0101 5.835 10.97C3.75 10.25 2 9 2 6.5V3C2 2.86739 2.05268 2.74021 2.14645 2.64645C2.24021 2.55268 2.36739 2.5 2.5 2.5C3.5 2.5 4.75 1.9 5.62 1.14C5.72593 1.0495 5.86068 0.999775 6 0.999775C6.13932 0.999775 6.27407 1.0495 6.38 1.14C7.255 1.905 8.5 2.5 9.5 2.5C9.63261 2.5 9.75979 2.55268 9.85355 2.64645C9.94732 2.74021 10 2.86739 10 3V6.5Z" />
                                         </svg>
                                         <p><strong>Secure Connection</strong>
@@ -360,13 +360,13 @@ export default function Setup() {
                                             />
                                         ) : (
                                             <> */}
-                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="8" cy="8" r="7" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M6 8.00033L7.33333 9.33366L10 6.66699" stroke-linecap="round" stroke-linejoin="round" />
+                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <circle cx="8" cy="8" r="7" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M6 8.00033L7.33333 9.33366L10 6.66699" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                         <span>Connect & Continue</span>
-                                        <svg className={style.arrow_icon} viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M8 3.33301L12.6667 7.99967L8 12.6663" stroke-linecap="round" stroke-linejoin="round" />
+                                        <svg className={style.arrow_icon} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M8 3.33301L12.6667 7.99967L8 12.6663" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
 
                                         {/* </>
@@ -383,9 +383,9 @@ export default function Setup() {
 
                     <section className={style.help_section}>
                         <svg className={style.help_icon} viewBox="0 0 20 20" fill="none">
-                            <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5" />
-                            <path d="M10 14v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                            <path d="M10 7h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" />
+                            <path d="M10 14v-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            <path d="M10 7h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                         </svg>
                         <span>Need help?</span>
                         <a href="#supdatabasePort">Contact Support</a>
