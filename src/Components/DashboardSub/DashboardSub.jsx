@@ -32,7 +32,7 @@ export default function DashboardSubscription() {
     }
 
 
-   
+
     const visiblePlanIndices = availablePlan?.length ? [
         (activePlanIndex - 1 + availablePlan?.length) % availablePlan?.length,
         activePlanIndex,
@@ -722,14 +722,16 @@ export default function DashboardSubscription() {
                                                 <div>
                                                     {
                                                         individualFeature.subscriptionStatus === "Canceled" ? <>
-                                                            <button onClick={() => handleRovke({
-                                                                subscriptionId: supscriptionPlans.subscriptionId,
-                                                                subscriptionItemId: individualFeature.subscriptionItemId
-                                                            })} className={`${style.revoke_btn}`} type='button'><i class="fa-solid fa-arrows-rotate"></i> Resume Subscription</button>
-                                                            <button onClick={() => handleTerminate({
-                                                                subscriptionId: supscriptionPlans.subscriptionId,
-                                                                subscriptionItemId: individualFeature.subscriptionItemId
-                                                            })} className={`${style.terminate_btn}`} type='button'><i class="fa-solid fa-ban"></i>End Now</button>
+                                                            <div className={`${style.canceled_btns}`}>
+                                                                <button onClick={() => handleRovke({
+                                                                    subscriptionId: supscriptionPlans.subscriptionId,
+                                                                    subscriptionItemId: individualFeature.subscriptionItemId
+                                                                })} className={`${style.revoke2_btn}`} type='button'><i class="fa-solid fa-arrows-rotate"></i> Resume Subscription</button>
+                                                                <button onClick={() => handleTerminate({
+                                                                    subscriptionId: supscriptionPlans.subscriptionId,
+                                                                    subscriptionItemId: individualFeature.subscriptionItemId
+                                                                })} className={`${style.terminate2_btn}`} type='button'><i class="fa-solid fa-ban"></i>End Now</button>
+                                                            </div>
 
                                                         </> : <button onClick={() => handleCancel({
                                                             subscriptionId: supscriptionPlans.subscriptionId,

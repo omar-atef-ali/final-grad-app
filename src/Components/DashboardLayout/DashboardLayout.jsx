@@ -383,6 +383,7 @@ export default function DashboardLayout() {
     }
   }
 
+
   const fetchProfile = async () => {
     if (!userToken) return;
     try {
@@ -455,6 +456,7 @@ export default function DashboardLayout() {
       setDisplayedImage(userProfileImage);
     }
   }, [userProfileImage]);
+
 
   return <>
 
@@ -559,7 +561,7 @@ export default function DashboardLayout() {
               <span>Billing</span>
             </NavLink>
 
-            <NavLink to="/dashboard/settings" className={({ isActive }) =>
+            <NavLink to="/dashboard/security" className={({ isActive }) =>
               `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
             }>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

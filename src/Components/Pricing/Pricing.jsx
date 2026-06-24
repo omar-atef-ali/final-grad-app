@@ -56,11 +56,15 @@ export default function Pricing() {
 
   const [individualFeatures, setindividualFeatures] = useState([])
   const [bundles, setbundles] = useState([])
+
+  const hasPackage=bundles?.some(b=>b.isBought);
+
+
   const [review, setReview] = useState([])
   const [loadingPackageId, setLoadingPackageId] = useState(null)
 
 
-  // direction state — drives which animation class gets applied
+  
   const [bundleDir, setBundleDir] = useState('next')
   const [indivDir, setIndivDir] = useState('next')
 
@@ -531,7 +535,7 @@ export default function Pricing() {
                     <button
                       onClick={() => PackagePayment(bundle.id)}
                       className={`${style.btn} ${style.btn_individual}`}
-                      disabled={bundle.isBought}
+                      disabled={hasPackage || bundle.isBought}
                     >
                       {loadingPackageId === bundle.id ? (
                         <span
@@ -543,7 +547,9 @@ export default function Pricing() {
                         />
                       ) : bundle.isBought ? (
                       "Already Purchased"
-                      ) : (
+                      ) :hasPackage?(
+                        "You already have a package"
+                      ) :(
                       "Proceed to Checkout"
   )}
                     </button>
@@ -728,7 +734,7 @@ export default function Pricing() {
                           disabled={feat.isBought || isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id)}
                         >
                           {feat.isBought
-                            ? "You have this plan"
+                            ? "Included in your current plan"
                             : (isFeatureInCart(feat.id) || isFeatureInLocalCart(feat.id))
                               ? "Already Added"
                               : "Add To Estimate"}

@@ -87,9 +87,12 @@ let routers = createBrowserRouter([
     children: [
       { index: true, element: <Protected><DashboardSub /></Protected> },
       { path: "subscription", element: <Protected><DashboardSub /></Protected> },
-      { path: "billing", element: <Protected><ProfileBilling /></Protected> }, // /profile/billing
-      { path: "data-sources", element: <Protected><ProfileDataSources /></Protected> }, // /profile/data-sources
+      { path: "billing", element: <Protected><ProfileBilling /></Protected> }, 
+
+      { path: "security", element: <Protected><ProfileSecurity /></Protected> },
+      { path: "data-sources", element: <Protected><ProfileDataSources /></Protected> }, 
       { path: "home", element: <Protected><DashboardHome /></Protected> },
+
 
 
     ],
