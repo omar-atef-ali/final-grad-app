@@ -294,7 +294,9 @@ p {
 }
 
 .Tabs {
-    display: inline-flex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 4px;
     background: white;
     border: 1px solid #72777d;
@@ -304,7 +306,6 @@ p {
     width: 75%;
     margin-bottom: 30px;
     /* Mobile full width */
-
 }
 
 .tabsContainer {
@@ -315,7 +316,7 @@ p {
 
 .Tab {
     flex: 1;
-    padding: 6px 40px;
+    padding: 6px 24px;
     border: none;
     background: transparent;
     border-radius: 20px;
