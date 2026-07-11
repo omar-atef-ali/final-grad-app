@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import style from "./NavBar.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../../context/userContext";
@@ -12,6 +12,22 @@ export default function NavBar() {
   const { userProfileImage, userToken } = useContext(userContext);
   const [displayedImage, setDisplayedImage] = useState(userProfileImage);
   const navigate = useNavigate();
+  const navRef = useRef(null);
+
+  // Close navbar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && navRef.current && !navRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isOpen]);
+
   // Sync displayedImage with userProfileImage, but only after loading the new image
   useEffect(() => {
     if (!userProfileImage) {
@@ -44,7 +60,7 @@ export default function NavBar() {
 
   return (
     <>
-      <div className={`${style.NavBar}`}>
+      <div ref={navRef} className={`${style.NavBar}`}>
         <div className=" flex-md-row justify-content-between align-items-center">
           <div
             className=" w-100 d-flex align-items-center gap-0 gap-md-5"
