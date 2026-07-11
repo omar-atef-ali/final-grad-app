@@ -38,6 +38,13 @@ import Privacy from "./Components/Privacy/Privacy";
 import DashboardSub from "./Components/DashboardSub/DashboardSub";
 import DashboardLayout from "./Components/DashboardLayout/DashboardLayout";
 import DashboardHome from "./Components/DashboardHome/DashboardHome";
+import Documentation from "./Components/Documentation/Documentation";
+import Overview from "./Components/DocumentationOverview/OverView";
+import DocPlaceholder from "./Components/Documentation/DocPlaceholder";
+import DatabaseOverView from "./Components/DatabaseConnection/DatabaseOverView";
+import SupportedDatabases from "./Components/DatabaseConnection/SupportedDatabases";
+import ConnectionStatus from "./Components/DatabaseConnection/ConnectionStatus";
+import RecommendationOverview from "./Components/RecommendationEngine/Overview";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -69,6 +76,19 @@ let routers = createBrowserRouter([
       { path: "Setup-page", element: <Setup /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
       { path: "/cart", element: <Cart /> },
+      {
+        path: 'documentation',
+        element: <Documentation />,
+        children: [
+          { index: true, element: <Navigate to="overview" replace /> },
+          { path: "overview", element: <Overview /> },
+          { path: "database-connection/overview", element: <DatabaseOverView /> },
+          { path: "database-connection/supported-databases", element: <SupportedDatabases /> },
+          { path: "database-connection/status", element: <ConnectionStatus /> },
+          { path: "recommendation-engine/overview", element: <RecommendationOverview /> },
+          { path: "*", element: <DocPlaceholder /> }
+        ]
+      },
 
       {
         path: "profile",

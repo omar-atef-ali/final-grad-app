@@ -216,7 +216,7 @@ export default function FeatureDetails() {
         </section>
 
 
-        <div className="container mt-4">
+        {/* <div className="container mt-4">
           <section className={`${style.use_cases_section}`}>
             <div className="container-fluid">
               <div className={`${style.section_header}`}>
@@ -263,7 +263,7 @@ export default function FeatureDetails() {
               </div>
             </div>
           </section>
-        </div>
+        </div> */}
         {/* reviews section */}
         {review.length > 0 &&
           <section className={style.testimonials}>

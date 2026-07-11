@@ -16,7 +16,6 @@ export default function Features() {
                 const { data } = await api.get("Services")
                 // console.log(data);
                 setFeature(data)
-
             } catch (error) {
                 console.log(error);
                 toast.error(

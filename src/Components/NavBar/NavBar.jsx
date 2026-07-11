@@ -74,7 +74,7 @@ export default function NavBar() {
             <nav className={`${style.NavLinks} ${isOpen ? style.Show : ""}`}>
               <a href="/features">Features</a>
               <a href="/pricing">Pricing</a>
-              <a href="#">Documentation</a>
+              <a href="/documentation">Documentation</a>
             </nav>
 
             {/* <!-- Mobile Header Actions --> */}
