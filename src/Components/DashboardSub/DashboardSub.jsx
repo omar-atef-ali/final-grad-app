@@ -3,6 +3,7 @@ import style from './DashboardSub.module.css'
 import Swal from 'sweetalert2'
 import toast from 'react-hot-toast'
 import api from "../../api";
+import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { userContext } from '../../context/userContext'
 import { CartContext } from '../../context/CartContext'
@@ -10,6 +11,7 @@ import { CartContext } from '../../context/CartContext'
 export default function DashboardSubscription() {
 
     const navigate = useNavigate()
+    const [tokens, settokens] = useState({})
     const { userToken } = useContext(userContext)
     const { cartvalue, getCart } = useContext(CartContext)
 
@@ -243,7 +245,32 @@ export default function DashboardSubscription() {
             getPlans();
 
         } catch (error) {
-            toast.error(error.response?.data?.message || "Something went wrong");
+            console.log(error)
+            toast.error(
+                error.response?.data?.errors[1] ||
+                "Something went wrong while registration.",
+                {
+                    position: "top-center",
+                    duration: 4000,
+                    style: {
+                        background:
+                            "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        padding: "16px 20px",
+                        color: "#ffffff",
+                        fontSize: "0.95rem",
+                        borderRadius: "5px",
+                        width: "300px",
+                        height: "100%",
+                        boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+                    },
+                    iconTheme: {
+                        primary: "#FF4D4F",
+                        secondary: "#ffffff",
+                    },
+                },
+            );
+
         }
     };
     const handleTerminate = async ({ subscriptionId, subscriptionItemId = null }) => {
@@ -393,7 +420,11 @@ export default function DashboardSubscription() {
             console.log(error);
 
             toast.error(
-                error.response?.data?.errors?.[0] || "Something went wrong",
+                error.response?.data?.message ||
+                error.response?.data?.title ||
+                error.response?.data?.errors?.[0] ||
+                "Something went wrong",
+
                 {
                     position: "top-center",
                     duration: 4000,
@@ -406,7 +437,7 @@ export default function DashboardSubscription() {
                         fontSize: "0.95rem",
                         borderRadius: "5px",
                         width: "300px",
-                        height: "100%",
+                        height: "60px",
                         boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
                     },
                     iconTheme: {
@@ -509,8 +540,11 @@ export default function DashboardSubscription() {
         catch (error) {
             console.log(error)
             toast.error(
-                error.response?.data?.errors[1] ||
+                error.response?.data?.message ||
+                error.response?.data?.title ||
+                error.response?.data?.errors?.[0] ||
                 "Something went wrong",
+
                 {
                     position: "top-center",
                     duration: 4000,
@@ -523,7 +557,7 @@ export default function DashboardSubscription() {
                         fontSize: "0.95rem",
                         borderRadius: "5px",
                         width: "300px",
-                        height: "100%",
+                        height: "60px",
                         boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
                     },
                     iconTheme: {
@@ -547,17 +581,28 @@ export default function DashboardSubscription() {
         return `${days} days`;
     };
 
+    async function getTokenBalances() {
+        try {
+            const response = await axios.get(
+                "https://raccaqpkb2.us-east-1.awsapprunner.com/usage/user_001"
+            );
+
+            console.log(response.data);
+
+            settokens(response.data);
+        } catch (error) {
+            console.log(error);
+
+            toast.error(
+                error.response?.data?.message || "Something went wrong"
+            );
+        }
+    }
+
     useEffect(() => {
         getPlans()
     }, [])
-    // useEffect(() => {
-    //     if (supscriptionPlans && supscriptionPlans.planType !== "StandardPackage") {
-    //         // getAvailablePlans();
-    //     }
-    //     else {
-    //         getPackagePlans()
-    //     }
-    // }, [supscriptionPlans]);
+
 
     useEffect(() => {
         if (!supscriptionPlans) return;
@@ -566,6 +611,7 @@ export default function DashboardSubscription() {
 
         if (supscriptionPlans.planType !== "StandardPackage") {
             getAvailablePlans();
+            getTokenBalances()
         } else {
             getPackagePlans();
         }
@@ -581,6 +627,18 @@ export default function DashboardSubscription() {
             }
         }
     }, [availablePlan]);
+
+    const hasChatbot = supscriptionPlans?.includedFeatures?.some(
+        feature => feature.name === "Custom Chatbot"
+    );
+
+    const hasAIRecommendation = supscriptionPlans?.includedFeatures?.some(
+        feature => feature.name === "AI Recommendation System"
+    );
+    const hasDashboard = supscriptionPlans?.includedFeatures?.some(
+        feature => feature.name === "Business Dashboard"
+    );
+
     return (
 
 
@@ -919,122 +977,187 @@ export default function DashboardSubscription() {
                     </div>
                 ) : null}
 
-                <div className={`${style.feature_upgrades}`}>
-                    <h2>Feature-Level Add-ons</h2>
+                {(hasChatbot || hasAIRecommendation || hasDashboard) && (
+                    <div className={`${style.feature_upgrades}`}>
+                        <h2>Feature-Level Add-ons</h2>
 
-                    <div className={`${style.feature_upgrades_parent}`}>
-                        <div className={`${style.upgrade_item}`}>
-                            <div className={`${style.upgrade_info}`}>
-                                <div className={`${style.upgrade_icon}`}>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3>Chatbot</h3>
-                                    <p>2,100 / 5,000 tokens</p>
-                                </div>
-                            </div>
-                            <div className={`${style.upgrade_action}`}>
-
-                                {
-                                    isopen1 ? <button onClick={() => setisopen1(false)} className={`${style.cancel_upgrade_btn}`}>- Cancel</button> : <button onClick={() => setisopen1(prev => !prev)} className={`${style.cancel_upgrade_btn}`}>+ Add on</button>
-                                }
-                            </div>
-                        </div>
-
-                        <div className={`${style.progress_bar}`}>
-                            <div className={`${style.progress_fill} ${style.chatbot_progress}`}></div>
-                        </div>
-
-
-                        <div className={`${style.dropdown} ${isopen1 ? style.open : ""}`}>
-                            <div className={`${style.upgrade_item}`}>
-                                <div className={`${style.upgrade_info}`}>
-
-                                    <div>
-                                        <h3><i className="fa-regular fa-clock"></i> Commitment Duration</h3>
-                                        <select className={`${style.token_select}`}>
-                                            <option>3 months</option>
-                                            <option>2 months</option>
-                                            <option>1 month</option>
-                                        </select>
+                        {hasChatbot && (
+                            <div className={`${style.feature_upgrades_parent}`}>
+                                <div className={`${style.upgrade_item}`}>
+                                    <div className={`${style.upgrade_info}`}>
+                                        <div className={`${style.upgrade_icon}`}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3>Custom Chatbot</h3>
+                                            <p>
+                                                {tokens?.limits?.[0]?.used_tokens.toLocaleString()} /{" "}
+                                                {tokens?.limits?.[0]?.limit_tokens.toLocaleString()} tokens
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3> <i className="fa-solid fa-bolt"></i>Token Allocation</h3>
-                                        <select className={`${style.token_select}`}>
-                                            <option>100k tokens</option>
-                                            <option>200k tokens</option>
-                                            <option>500k tokens</option>
-                                        </select>
+                                    {/* <div className={`${style.upgrade_action}`}>
+
+                                        {
+                                            isopen1 ? <button onClick={() => setisopen1(false)} className={`${style.cancel_upgrade_btn}`}>- Cancel</button> : <button onClick={() => setisopen1(prev => !prev)} className={`${style.cancel_upgrade_btn}`}>+ Add on</button>
+                                        }
+                                    </div> */}
+                                </div>
+
+                                <div className={style.progress_bar}>
+                                    <div
+                                        className={`${style.progress_fill} ${style.chatbot_progress}`}
+                                        style={{
+                                            width: `${tokens?.limits?.[0]?.percent_used ?? 0}%`
+                                        }}
+                                    />
+                                </div>
+
+
+                                {/* <div className={`${style.dropdown} ${isopen1 ? style.open : ""}`}>
+                                    <div className={`${style.upgrade_item}`}>
+                                        <div className={`${style.upgrade_info}`}>
+
+                                            <div>
+                                                <h3><i className="fa-regular fa-clock"></i> Commitment Duration</h3>
+                                                <select className={`${style.token_select}`}>
+                                                    <option>3 months</option>
+                                                    <option>2 months</option>
+                                                    <option>1 month</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <h3> <i className="fa-solid fa-bolt"></i>Token Allocation</h3>
+                                                <select className={`${style.token_select}`}>
+                                                    <option>100k tokens</option>
+                                                    <option>200k tokens</option>
+                                                    <option>500k tokens</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className={`${style.upgrade_price}`}>
+                                            <span>EGP 1,400</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={`${style.upgrade_price}`}>
-                                    <span>EGP 1,400</span>
-                                </div>
+                                </div> */}
                             </div>
-                        </div>
-                    </div>
+                        )}
 
-                    <div className={`${style.feature_upgrades_parent}`}>
-                        <div className={`${style.upgrade_item}`}>
-                            <div className={`${style.upgrade_info}`}>
-                                <div className={`${style.upgrade_icon} ${style.ai}`}>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M20 7V11" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M22 9H18" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M4 17V19" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M5 18H3" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3>AI Recommendations</h3>
-                                    <p>3,200 / 10,000 tokens</p>
-                                </div>
-                            </div>
-                            <div className={`${style.upgrade_action}`}>
-                                {
-                                    isopen2 ? <button onClick={() => setisopen2(false)} className={`${style.cancel_upgrade_btn}`}>- Cancel</button> : <button onClick={() => setisopen2(prev => !prev)} className={`${style.cancel_upgrade_btn}`}>+ Add on</button>
-                                }
-                            </div>
-                        </div>
-
-                        <div className={`${style.progress_bar}`} >
-                            <div className={`${style.progress_fill} ${style.ai_progress}`}></div>
-                        </div>
-
-
-
-                        <div className={`${style.dropdown} ${isopen2 ? style.open : ""}`}>
-                            <div className={`${style.upgrade_item}`}>
-                                <div className={`${style.upgrade_info}`}>
-
-                                    <div>
-                                        <h3> <i className="fa-regular fa-clock"></i>Token Allocation</h3>
-                                        <select className={`${style.token_select}`}>
-                                            <option>100k tokens</option>
-                                            <option>200k tokens</option>
-                                            <option>500k tokens</option>
-                                        </select>
+                        {hasAIRecommendation && (
+                            <div className={`${style.feature_upgrades_parent}`}>
+                                <div className={`${style.upgrade_item}`}>
+                                    <div className={`${style.upgrade_info}`}>
+                                        <div className={`${style.upgrade_icon} ${style.ai}`}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M20 7V11" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M22 9H18" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M4 17V19" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M5 18H3" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3>AI Recommendation System</h3>
+                                            <p>Unlimited tokens</p>
+                                        </div>
                                     </div>
+                                    {/* <div className={`${style.upgrade_action}`}>
+                                        {
+                                            isopen2 ? <button onClick={() => setisopen2(false)} className={`${style.cancel_upgrade_btn}`}>- Cancel</button> : <button onClick={() => setisopen2(prev => !prev)} className={`${style.cancel_upgrade_btn}`}>+ Add on</button>
+                                        }
+                                    </div> */}
                                 </div>
-                                <div className={`${style.upgrade_price}`}>
-                                    <span>EGP 1,400</span>
-                                </div>
+
+                                {/* <div className={`${style.progress_bar}`} >
+                                    <div className={`${style.progress_fill} ${style.ai_progress}`}></div>
+                                </div> */}
+
+
+
+                                {/* <div className={`${style.dropdown} ${isopen2 ? style.open : ""}`}>
+                                    <div className={`${style.upgrade_item}`}>
+                                        <div className={`${style.upgrade_info}`}>
+
+                                            <div>
+                                                <h3> <i className="fa-regular fa-clock"></i>Token Allocation</h3>
+                                                <select className={`${style.token_select}`}>
+                                                    <option>100k tokens</option>
+                                                    <option>200k tokens</option>
+                                                    <option>500k tokens</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className={`${style.upgrade_price}`}>
+                                            <span>EGP 1,400</span>
+                                        </div>
+                                    </div>
+                                </div> */}
                             </div>
-                        </div>
-                    </div>
+                        )}
+
+                        {hasDashboard && (
+                            <div className={`${style.feature_upgrades_parent}`}>
+                                <div className={`${style.upgrade_item}`}>
+                                    <div className={`${style.upgrade_info}`}>
+                                        <div className={`${style.upgrade_icon} ${style.ai}`}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <path d="M4 20H20" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" />
+                                                <path d="M7 20V12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" />
+                                                <path d="M12 20V8" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" />
+                                                <path d="M17 20V4" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3>Business Dashboard</h3>
+                                            <p>Unlimited tokens</p>
+                                        </div>
+                                    </div>
+                                    {/* <div className={`${style.upgrade_action}`}>
+                                        {
+                                            isopen2 ? <button onClick={() => setisopen2(false)} className={`${style.cancel_upgrade_btn}`}>- Cancel</button> : <button onClick={() => setisopen2(prev => !prev)} className={`${style.cancel_upgrade_btn}`}>+ Add on</button>
+                                        }
+                                    </div> */}
+                                </div>
+
+                                {/* <div className={`${style.progress_bar}`} >
+                                    <div className={`${style.progress_fill} ${style.ai_progress}`}></div>
+                                </div> */}
 
 
-                    <div className={`${style.upgrade_total}`}>
-                        <div className={`${style.total_info}`}>
-                            <p>Total for token upgrades</p>
-                            <h3>EGP 1,400</h3>
-                        </div>
-                        <button className={`${style.upgrade_submit_btn}`}>Add on</button>
+
+                                {/* <div className={`${style.dropdown} ${isopen2 ? style.open : ""}`}>
+                                    <div className={`${style.upgrade_item}`}>
+                                        <div className={`${style.upgrade_info}`}>
+
+                                            <div>
+                                                <h3> <i className="fa-regular fa-clock"></i>Token Allocation</h3>
+                                                <select className={`${style.token_select}`}>
+                                                    <option>100k tokens</option>
+                                                    <option>200k tokens</option>
+                                                    <option>500k tokens</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className={`${style.upgrade_price}`}>
+                                            <span>EGP 1,400</span>
+                                        </div>
+                                    </div>
+                                </div> */}
+                            </div>
+                        )}
+
+
+                        {/* <div className={`${style.upgrade_total}`}>
+                            <div className={`${style.total_info}`}>
+                                <p>Total for token upgrades</p>
+                                <h3>EGP 1,400</h3>
+                            </div>
+                            <button className={`${style.upgrade_submit_btn}`}>Add on</button>
+                        </div> */}
                     </div>
-                </div>
+                )}
 
                 {availablePlans?.length > 0 ?
                     <div className={`${style.New_Features}`}>

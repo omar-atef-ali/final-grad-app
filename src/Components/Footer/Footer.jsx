@@ -1,6 +1,7 @@
 import React from 'react'
 import style from "./Footer.module.css"
 export default function Footer() {
+    
   return (
    <>
 
@@ -25,8 +26,8 @@ export default function Footer() {
                         <h3 className={`${style.footer_heading }`} >Product</h3>
                         <ul className={`${style.footer_links}`} >
                             <li><a href="/features">Features</a></li>
-                            <li><a href="#">Pricing</a></li>
-                            <li><a href="#">Free Demo</a></li>
+                            <li><a href="/pricing">Pricing</a></li>
+                            <li><a href="/demo">Free Demo</a></li>
                         </ul>
                     </div>
 
@@ -34,7 +35,7 @@ export default function Footer() {
                     <div className={`${style.footer_column}`}>
                         <h3 className={`${style.footer_heading }`} >Resources</h3>
                         <ul className={`${style.footer_links}`} >
-                            <li><a href="#">Documentation</a></li>
+                            <li><a href="/documentation">Documentation</a></li>
                             <li><a href="#">Support</a></li>
                         </ul>
                     </div>
@@ -63,8 +64,8 @@ export default function Footer() {
                 <div className={`${style.footer_bottom}`} >
                     <p className={`${style.copyright}`} >© 2026 Namaa. All rights reserved.</p>
                     <div className={`${style.footer_legal}`} >
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
+                        <a href="/privacy">Privacy Policy</a>
+                        {/* <a href="#">Terms of Service</a> */}
                     </div>
                 </div>
             </div>

@@ -67,9 +67,9 @@ export default function Home() {
         );
       }
     };
-    
-      fetchReviews();
-  
+
+    fetchReviews();
+
   }, []);
 
   ///////////////////////////////////////////////////////////////
@@ -113,9 +113,9 @@ export default function Home() {
 
       }
     }
-     // تأكد إن التوكن موجود قبل الطلب لو ضروري
-      fetchFeatures()
-  
+    // تأكد إن التوكن موجود قبل الطلب لو ضروري
+    fetchFeatures()
+
 
   }, [])
 
@@ -265,8 +265,8 @@ export default function Home() {
             ) : null;
           })() : (
             ""
-          )}      
-            </div>
+          )}
+        </div>
       </section>
 
 

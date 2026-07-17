@@ -200,13 +200,13 @@ export default function FeatureDetails() {
                       </div> */}
                     </div>
                     <div className={`${style.action_buttons}`}>
-                      <button className={`${style.btn_try_feature}`}>
+                      <button onClick={() => navigate("/demo")} className={`${style.btn_try_feature}`}>
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M3.33333 3.33335C3.33326 3.09874 3.3951 2.86827 3.51259 2.66521C3.63008 2.46214 3.79907 2.29368 4.0025 2.17681C4.20593 2.05995 4.43659 1.99883 4.67119 1.99963C4.9058 2.00042 5.13604 2.06311 5.33867 2.18135L13.3367 6.84668C13.5385 6.9638 13.7061 7.13185 13.8226 7.33402C13.9392 7.53619 14.0006 7.76541 14.0008 7.99877C14.001 8.23213 13.94 8.46146 13.8238 8.66384C13.7076 8.86621 13.5403 9.03455 13.3387 9.15202L5.33867 13.8187C5.13604 13.9369 4.9058 13.9996 4.67119 14.0004C4.43659 14.0012 4.20593 13.9401 4.0025 13.8232C3.79907 13.7064 3.63008 13.5379 3.51259 13.3348C3.3951 13.1318 3.33326 12.9013 3.33333 12.6667V3.33335Z" stroke="white" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                         Try This Feature
                       </button>
-                      <button className={`${style.btn_see_pricing}`}>See Pricing</button>
+                      <button onClick={() => navigate("/pricing")} className={`${style.btn_see_pricing}`}>See Pricing</button>
                     </div>
                   </div>
                 </div>

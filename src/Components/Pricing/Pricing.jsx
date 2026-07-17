@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import api from "../../api";
 import { userContext } from '../../context/userContext';
 import { CartContext } from '../../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 
 const icons = {
@@ -49,6 +50,8 @@ const TokenIcon = () => (
 export default function Pricing() {
   const { userToken } = useContext(userContext)
 
+  const navigate = useNavigate()
+
   const { getCart, cartvalue } = useContext(CartContext)
 
   const [activeIndex, setActiveIndex] = useState(0)
@@ -57,17 +60,23 @@ export default function Pricing() {
   const [individualFeatures, setindividualFeatures] = useState([])
   const [bundles, setbundles] = useState([])
 
-  const hasPackage=bundles?.some(b=>b.isBought);
+  const hasPackage = bundles?.some(b => b.isBought);
 
+  // added for package
+  const [subscription, setSubscription] = useState(null);
+
+  const hasActiveSubscription =
+    subscription?.planType === "CustomizedPlan";
+    // ///////////////////
 
   const [review, setReview] = useState([])
   const [loadingPackageId, setLoadingPackageId] = useState(null)
 
 
-  
+
   const [bundleDir, setBundleDir] = useState('next')
   const [indivDir, setIndivDir] = useState('next')
-
+  
   const isFeatureInCart = (id) => {
     return cartvalue?.some(item => item.serviceId === id)
   }
@@ -120,6 +129,20 @@ export default function Pricing() {
   }
   const visibleIndividualIndices = individualFeatures.length ? getVisibleIndividualIndices() : []
 
+  async function getSubscription() {
+  try {
+    const { data } = await api.get("/ClientSubscriptions/my-plan", {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    setSubscription(data);
+    // أو data.data لو الـ API راجعة بهذا الشكل
+  } catch (error) {
+    console.log(error);
+  }
+}
   // ─── Data fetching ────────────────────────────────────────────
   async function getPackages() {
     try {
@@ -170,6 +193,7 @@ export default function Pricing() {
   useEffect(() => {
     getPackages()
     getServiceCards()
+    getSubscription()
   }, [])
 
 
@@ -535,7 +559,7 @@ export default function Pricing() {
                     <button
                       onClick={() => PackagePayment(bundle.id)}
                       className={`${style.btn} ${style.btn_individual}`}
-                      disabled={hasPackage || bundle.isBought}
+                      disabled={hasPackage || bundle.isBought || hasActiveSubscription}
                     >
                       {loadingPackageId === bundle.id ? (
                         <span
@@ -546,12 +570,14 @@ export default function Pricing() {
                           }}
                         />
                       ) : bundle.isBought ? (
-                      "Already Purchased"
-                      ) :hasPackage?(
+                        "Already Purchased"
+                      ) : hasPackage ? (
                         "You already have a package"
-                      ) :(
-                      "Proceed to Checkout"
-  )}
+                      ) : hasActiveSubscription ? (
+                        "You already have active supscription"
+                      ) : (
+                        "Proceed to Checkout"
+                      )}
                     </button>
                   </div>
                 )
