@@ -94,46 +94,46 @@ export default function Setup() {
 
     let validationSetup = yup.object({
         databaseType: yup
-            .number()
-            .required("Please select a database type"),
+            .number(),
+            // .required("Please select a database type"),
 
         databaseHost: yup
-            .string()
-            .required("host required")
+            .string(),
+            // .required("host required")
             // .min(3, "Host must be at least 3 characters")
             // .max(100, "Host must be at most 100 characters")
-            .matches(/^[A-Za-z][A-Za-z0-9]*$/, "Host must start with a letter and contain only letters and numbers"),
+            // .matches(/^[A-Za-z][A-Za-z0-9]*$/, "Host must start with a letter and contain only letters and numbers"),
 
         databasePort: yup
-            .string()
-            .required("Port required")
-            .matches(/^[0-9]+$/, "Port must contain numbers only"),
+            .string(),
+            // .required("Port required")
+            // .matches(/^[0-9]+$/, "Port must contain numbers only"),
 
         databaseName: yup
-            .string()
-            .required("database name required")
+            .string(),
+            // .required("database name required")
             // .min(3, "Host must be at least 3 characters")
             // .max(100, "Host must be at most 100 characters")
-            .matches(/^[A-Za-z][A-Za-z0-9]*$/, "Host must start with a letter and contain only letters and numbers"),
+            // .matches(/^[A-Za-z][A-Za-z0-9]*$/, "Host must start with a letter and contain only letters and numbers"),
 
         databaseUsername: yup
-            .string()
-            .required("database username required")
+            .string(),
+            // .required("database username required")
             // .min(3, "Host must be at least 3 characters")
             // .max(100, "Host must be at most 100 characters")
-            .matches(/^[A-Za-z][A-Za-z0-9]*$/, "Host must start with a letter and contain only letters and numbers"),
+            // .matches(/^[A-Za-z][A-Za-z0-9]*$/, "Host must start with a letter and contain only letters and numbers"),
 
         databasePassword: yup
             .string()
-            .required("database password required")
-            .min(8, "Password must be at least 8 characters long")
-            .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-            .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-            .matches(/[0-9]/, "Password must contain at least one number")
-            .matches(
-                /[!@#$%^&*(),.?":{}|<>]/,
-                "Password must contain at least one special character",
-            )
+            // .required("database password required")
+            // .min(8, "Password must be at least 8 characters long")
+            // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+            // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+            // .matches(/[0-9]/, "Password must contain at least one number")
+            // .matches(
+            //     /[!@#$%^&*(),.?":{}|<>]/,
+            //     "Password must contain at least one special character",
+            // )
     })
     let formik = useFormik({
         initialValues: {

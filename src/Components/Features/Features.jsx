@@ -70,7 +70,7 @@ export default function Features() {
                             </svg>
                             Try Interactive Demo
                         </button>
-                        <button onClick={() => navigate("/pricing")}  style={{ fontSize: "14px" }} className={`${style.btnWhite}`}>View Pricing</button>
+                        <button onClick={() => navigate("/pricing")} style={{ fontSize: "14px" }} className={`${style.btnWhite}`}>View Pricing</button>
                     </div>
                 </div>
             </header>

@@ -13,6 +13,11 @@ export default function Demo() {
 
     ]
     const [activeTab, setActiveTab] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const handleTabChange = (index) => {
+        setLoading(true);
+        setActiveTab(index);
+    };
 
     return (
 
@@ -35,7 +40,8 @@ export default function Demo() {
                             {Features.map((item, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => setActiveTab(index)}
+                                    // onClick={() => setActiveTab(index)}
+                                    onClick={() => handleTabChange(index)}
                                     className={`${style.Tab} ${activeTab === index ? style.Active : ""}`}
                                     style={{ border: "none" }}
                                 >
@@ -47,19 +53,52 @@ export default function Demo() {
 
 
                     <div className={`${style.dashboard_container}`}>
+                        {loading && (
+                            <div
+                                className="d-flex justify-content-center align-items-center"
+                                style={{ height: "900px" }}
+                            >
+                                <div
+                                    className="spinner-border text-primary"
+                                    style={{ width: "3rem", height: "3rem" }}
+                                    role="status"
+                                >
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        )}
                         {activeTab === 0 && (
                             <iframe
-                                src="https://public.tableau.com/views/GradProject_4th_dash_new/Dashboard2?:embed=yes&:language=en-US&:showVizHome=no&:display_count=n&:toolbar=yes"
+
+                                src="https://public.tableau.com/views/GradProject_4th_dash_new_final_2/Dashboard14?:showVizHome=no&:embed=true&:toolbar=yes"
                                 width="100%"
                                 height="900px"
-                                style={{ border: "none" }}
+                                style={{
+                                    border: "none",
+                                    display: loading ? "none" : "block",
+                                }}
+                                onLoad={() => setLoading(false)}
                                 allowFullScreen
                                 title="Namaa Dashboard"
                             />
                         )}
 
                         {activeTab === 1 && (
-                            <div>AI Recommendations content here</div>
+                            // <div>AI Recommendations content here</div>
+
+
+                            <iframe
+                                src="https://recommendation-production-d93d.up.railway.app/"
+                                width="100%"
+                                height="900px"
+                                style={{
+                                    border: "none",
+                                    display: loading ? "none" : "block",
+                                }}
+                                onLoad={() => setLoading(false)}
+                                allowFullScreen
+                                title="Namaa Recommendations"
+                            />
                         )}
 
                         {activeTab === 2 && (
@@ -67,9 +106,13 @@ export default function Demo() {
                                 src="https://raccaqpkb2.us-east-1.awsapprunner.com/"
                                 width="100%"
                                 height="900px"
-                                style={{ border: "none" }}
+                                style={{
+                                    border: "none",
+                                    display: loading ? "none" : "block",
+                                }}
+                                onLoad={() => setLoading(false)}
                                 allowFullScreen
-                                title="Namaa Dashboard"
+                                title="Namaa Chatbot"
                             />
 
                         )}
@@ -81,27 +124,39 @@ export default function Demo() {
                            
                         )} */}
                         {activeTab === 3 && (
-                            <div className={style.demo_card}>
+                            // <div className={style.demo_card}>
 
-                                <h2 className={style.demo_title}>
-                                    Discover Our Smart Analytics Agent
-                                </h2>
+                            //     <h2 className={style.demo_title}>
+                            //         Discover Our Smart Analytics Agent
+                            //     </h2>
 
-                                <p className={style.demo_text}>
-                                    Experience how our system transforms raw data into actionable insights
-                                    through powerful analytics and intuitive visualizations.
-                                </p>
+                            //     <p className={style.demo_text}>
+                            //         Experience how our system transforms raw data into actionable insights
+                            //         through powerful analytics and intuitive visualizations.
+                            //     </p>
 
-                                <button
-                                    onClick={() =>
-                                        window.open("https://smart-analytic-production.up.railway.app/", "_blank")
-                                    }
-                                    className={style.demo_btn}
-                                >
-                                    View Live Demo
-                                </button>
+                            //     <button
+                            //         onClick={() =>
+                            //             window.open("https://smart-analytic-production.up.railway.app/", "_blank")
+                            //         }
+                            //         className={style.demo_btn}
+                            //     >
+                            //         View Live Demo
+                            //     </button>
 
-                            </div>
+                            // </div>
+                            <iframe
+                                src="https://amrv1-production.up.railway.app/"
+                                width="100%"
+                                height="900px"
+                                style={{
+                                    border: "none",
+                                    display: loading ? "none" : "block",
+                                }}
+                                onLoad={() => setLoading(false)}
+                                allowFullScreen
+                                title="Namaa Analytic Agent"
+                            />
                         )}
                     </div>
                 </div>
@@ -116,7 +171,7 @@ export default function Demo() {
                                 View Pricing Plans
                                 <i className={`fa-solid fa-arrow-right ${style.arrow_right}`}></i>
                             </button>
-                            <button className={`${style.btn_secondary}`}>Explore Features</button>
+                            <button onClick={() => navigate(`/features`)} className={`${style.btn_secondary}`}>Explore Features</button>
                         </div>
                     </div>
                 </div>

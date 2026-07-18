@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api", // relative path → Netlify proxy هيوجهه للسيرفر
+  baseURL: "/api", 
   withCredentials: true,
 });
 

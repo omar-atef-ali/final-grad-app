@@ -1,30 +1,45 @@
 .dashboardContainer {
-    display: flex;
     min-height: 100vh;
+    background-color: #f9fafb;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    color: #4b5563;
+}
 
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3F1C6E;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
 
-/* Main Content */
+.loadingText {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Main Content area styling */
 .mainContent {
-
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-/* Top Header */
-.topHeader {
-    background: white;
-    padding: 16px 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #E5E7EB;
-}
-
-
-/* Content Wrapper */
 .contentWrapper {
     padding: 32px;
     flex: 1;
@@ -39,7 +54,7 @@
     font-size: 28px;
     font-weight: 700;
     color: #3F1C6E;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .welcomeSubtitle {
@@ -48,483 +63,589 @@
     margin: 0;
 }
 
-/* Custom Alert */
-.customAlert {
-    background: #FFFBF0;
-    border: 1px solid #FDE68A;
+/* Warning Banner styling */
+.paymentFailedAlert {
+    background-color: #FEF2F2;
+    border: 1px solid #FCA5A5;
     border-radius: 12px;
-    padding: 16px 20px;
+    padding: 16px 24px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
     margin-bottom: 32px;
+    gap: 16px;
+    transition: all 0.3s ease;
 }
 
-.alertIcon {
-    width: 32px;
-    height: 32px;
-    background: #FEF3C7;
-    border-radius: 50%;
+.alertLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alertWarningIcon {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    color: #F59E0B;
-}
-
-.alertContent {
-    flex: 1;
-}
-
-.alertTitle {
-    font-weight: 700;
-    color: #B45309;
-    font-size: 14px;
-    margin-bottom: 2px;
+    color: #EF4444;
+    flex-shrink: 0;
 }
 
 .alertText {
-    font-size: 13px;
-    color: #D97706;
-}
-
-.btnClose {
-    opacity: 0.5;
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: #B45309;
-    cursor: pointer;
-}
-
-/* Chart Card */
-.chartCard {
-    border: 1px solid #E5E7EB;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-}
-
-.chartHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    flex-direction: column;
-    margin-bottom: 24px;
-}
-
-.chartTitle {
-    font-size: 16px;
-    font-weight: 600;
-    color: #3F1C6E;
-    margin: 0;
-}
-
-.chartLegend {
-    display: flex;
-    gap: 20px;
-}
-
-.legendItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: #6B7280;
-}
-
-.legendDot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
-.chartContainer {
-    display: flex;
-    gap: 16px;
-    height: 200px;
-}
-
-.chartYAxis {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #9CA3AF;
-    padding-top: 8px;
-    padding-bottom: 24px;
-}
-
-.chartBars {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    border-left: 1px solid #E5E7EB;
-    border-bottom: 1px solid #E5E7EB;
-    padding-left: 16px;
-    padding-bottom: 8px;
-    background-image: linear-gradient(to right, rgba(229, 231, 235, 0.5) 1px, transparent 1px), linear-gradient(to top, rgba(229, 231, 235, 0.5) 1px, transparent 1px);
-    background-size: 50px 50px;
-}
-
-.chartBarWrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    height: 100%;
-    justify-content: flex-end;
-}
-
-.chartBar {
-    width: 100%;
-    max-width: 48px;
-    border-radius: 8px 8px 0 0;
-    transition: all 0.3s;
-}
-
-.chartBar:hover {
-    opacity: 0.85;
-}
-
-.barLabel {
-    font-size: 11px;
-    color: #6B7280;
-    margin-top: 4px;
-    font-weight: 500;
-}
-
-/* Workspace Health */
-.workspaceHealth {
-    margin-bottom: 32px;
-}
-
-.sectionTitle {
-    font-size: 16px;
-    font-weight: 600;
-    color: #3F1C6E;
-}
-
-.healthItems {
-    display: flex;
-    flex-direction: column;
-}
-
-.healthItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     font-size: 14px;
-    color: #374151;
-    margin-bottom: 16px;
+    color: #7F1D1D;
+    line-height: 1.5;
 }
 
-.healthItem:last-child {
-    margin-bottom: 0;
+.alertText strong {
+    font-weight: 700;
 }
 
-.healthIcon {
+.alertActions {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 18px;
+    gap: 16px;
+    flex-shrink: 0;
 }
 
-.healthIconSuccess {
-    color: #10B981;
-}
-
-.healthIconWarning {
-    color: #F59E0B;
-}
-
-.statusOk {
-    color: #10B981;
+.linkViewInvoice {
+    font-size: 14px;
+    color: #EF4444;
+    text-decoration: underline;
     font-weight: 600;
-    font-size: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
 }
 
-.statusWarning {
-    color: #F59E0B;
+.linkViewInvoice:hover {
+    color: #B91C1C;
+}
+
+.btnRetryPayment {
+    background-color: #3F1C6E;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
     font-weight: 600;
-    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Active Features */
-.activeFeatures {
-    margin-bottom: 32px;
+.btnRetryPayment:hover:not(:disabled) {
+    background-color: #2D144F;
 }
 
-.activeFeaturesHeader {
-    margin-bottom: 16px;
+.btnRetryPayment:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
-.sectionSubtitle {
-    font-size: 13px;
-    color: #9CA3AF;
-    margin: 0;
+.retryIcon {
+    flex-shrink: 0;
 }
 
-.workspaceHealthCard {
-    border: none;
-    border-radius: 16px;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    margin-bottom: 24px;
-    min-height: 280px;
+.rotate {
+    animation: rotate 1s linear infinite;
 }
 
-.featureCard {
-    border: none;
-    border-radius: 16px;
-    transition: all 0.2s;
-    height: 100%;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Grid Card layout styles */
+.cardRow {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.cardRowEqual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.dashboardCard {
     background-color: #FFFFFF;
     border-radius: 16px;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-
-
-.featureHeader {
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 280px;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
 }
 
-.featureIcon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.cardHeaderSmall {
+    border-bottom: 1px solid #F3F4F6;
+    padding: 12px 24px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #9CA3AF;
+    background-color: #FAFAFA;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.cardTitleBold {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.addOnsCardHeader, .invoicesCardHeader {
+    padding: 24px 24px 16px 24px;
+}
+
+/* Customized Plan Card body styles */
+.planCardBody {
+    padding: 24px 24px 12px 24px;
+    flex: 1;
+}
+
+.planTitle {
     font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px 0;
 }
 
-.chatbotIcon,
-.recommendationsIcon,
-.analyticsIcon {
-    background: #F3E8FF;
-    color: #8A45B2;
+.planServicesCount {
+    font-size: 13px;
+    color: #6B7280;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.tableResponsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.servicesTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.servicesTable th {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9CA3AF;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5E7EB;
+    letter-spacing: 0.05em;
+}
+
+.servicesTable td {
+    padding: 14px 0;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.servicesTable tr:last-child td {
+    border-bottom: none;
+}
+
+.serviceName {
+    font-weight: 700;
+    color: #111827;
+}
+
+.servicePrice, .serviceRenewal {
+    font-size: 14px;
+    color: #4B5563;
+}
+
+/* Status Badges */
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
 }
 
 .badgeActive {
     background-color: #ECFDF5;
-    color: #10B981;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    color: #059669;
 }
 
-.badgeActive i {
-    font-size: 8px;
-}
-
-.featureTitle {
-    font-size: 15px;
-    font-weight: 600;
-    color: #3F1C6E;
-    margin-bottom: 8px;
-}
-
-.featureDescription {
-    font-size: 13px;
+.badgeCanceled {
+    background-color: #F3F4F6;
     color: #6B7280;
-    line-height: 1.5;
 }
 
-.featureActions {
-    display: flex;
-    gap: 8px;
-    margin-top: 24px;
+.badgeFailed {
+    background-color: #FEF2F2;
+    color: #DC2626;
 }
 
-.btnAction {
-    flex: 1;
-    background: white;
-    border: 1px solid #E5E7EB;
-    color: #374151;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-weight: 500;
-    font-size: 13px;
+/* Card footers */
+.planCardFooter {
+    border-top: 1px solid #F3F4F6;
+    padding: 16px 24px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
+    font-size: 14px;
+    color: #4B5563;
+    background-color: #FAFAFA;
 }
 
-.btnAction:hover {
-    background: #F9FAFB;
+.planCardFooter strong {
+    font-weight: 700;
     color: #111827;
 }
 
-/* Add Feature Card */
-.addFeatureCard {
-    height: 90%;
-    min-height: 220px;
-    border: 1.5px dashed #D1D5DB;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background-color: #F9FAFB;
-}
-
-.addFeatureCard:hover {
-    background: #F3F4F6;
-    border-color: #9CA3AF;
-}
-
-.addFeatureCard .cardBody {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 20px;
-}
-
-.addIcon {
-    width: 40px;
-    height: 40px;
-    background: #F3E8FF;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: #8B5CF6;
-    margin-bottom: 16px;
-}
-
-.featureUnavailable {
-    font-size: 12px;
-    color: #6B7280;
-    margin: 0
-}
-
-/* Quick Actions */
-.quickActions {
-    background: white;
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    position: sticky;
-    top: 20px;
-}
-
-.quickActionsTitle {
+.cardFooterLink {
+    color: #3F1C6E;
+    font-weight: 700;
     font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.cardFooterLink:hover {
+    color: #2D144F;
+    text-decoration: underline;
+}
+
+.cardFooterLinkWrapper {
+    border-top: 1px solid #F3F4F6;
+    padding: 16px 24px;
+    background-color: #FAFAFA;
+    text-align: left;
+}
+
+/* Billing Overview body styles */
+.billingOverviewBody {
+    padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+}
+
+.nextChargeLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: #9CA3AF;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.nextChargeValue {
+    font-size: 32px;
+    font-weight: 800;
+    color: #3F1C6E;
+    margin: 0 0 6px 0;
+}
+
+.nextChargeDue {
+    font-size: 13px;
+    color: #4B5563;
     font-weight: 600;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.nextChargeServices {
+    font-size: 13px;
+    color: #9CA3AF;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Add-ons Body Styles */
+.addOnsBody {
+    padding: 0 24px 24px 24px;
+    flex: 1;
+}
+
+.addOnsStats {
+    display: flex;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #F3F4F6;
+    margin-bottom: 20px;
+}
+
+.statBox {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.statLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: #9CA3AF;
+    letter-spacing: 0.05em;
+}
+
+.statValue {
+    font-size: 22px;
+    font-weight: 800;
     color: #3F1C6E;
 }
 
-.btnUpgrade {
-    background: #50248a;
-    color: white;
+.statDivider {
+    width: 1px;
+    height: 36px;
+    background-color: #E5E7EB;
+    margin: 0 24px;
+}
+
+.addOnsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.addOnItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addOnLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.addOnIconWrapper {
+    width: 36px;
+    height: 36px;
+    background-color: #F3E8FF;
+    color: #8B5CF6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.addOnDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.addOnName {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 2px 0;
+}
+
+.addOnSub {
+    font-size: 12px;
+    color: #9CA3AF;
+    margin: 0;
+}
+
+.addOnPrice {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Invoices Card Body Styles */
+.invoicesBody {
+    padding: 0 24px 24px 24px;
+    flex: 1;
+}
+
+.invoicesList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.invoiceItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #F9FAFB;
+    padding-bottom: 14px;
+}
+
+.invoiceItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.invoiceLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-width: 65%;
+}
+
+.invoiceName {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.invoiceSub {
+    font-size: 12px;
+    color: #9CA3AF;
+    margin: 0;
+}
+
+.invoiceRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.invoiceAmount {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.invoiceStatusRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.invoiceStatusBadge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    text-transform: capitalize;
+}
+
+.invoicePaid {
+    background-color: #ECFDF5;
+    color: #059669;
+}
+
+.invoiceFailed {
+    background-color: #FEF2F2;
+    color: #DC2626;
+}
+
+.btnDownloadInvoice {
+    background: transparent;
     border: none;
-    padding: 12px;
-    font-weight: 500;
-    border-radius: 15px;
+    color: #9CA3AF;
+    cursor: pointer;
+    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    border-radius: 4px;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.btnUpgrade:hover {
-    background: #4C1D95;
-    color: white;
+.btnDownloadInvoice:hover {
+    color: #111827;
+    background-color: #F3F4F6;
 }
 
-.ActionOutline {
-    background: white;
+.emptySectionText {
+    font-size: 14px;
+    color: #9CA3AF;
+    margin: 16px 0;
+}
+
+/* General Empty/Fallback state styling */
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFFFFF;
+    border-radius: 16px;
     border: 1px solid #E5E7EB;
-    /* color: #5B21B6; */
-    padding: 12px;
-    font-weight: 500;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    padding: 64px 24px;
+    text-align: center;
+    color: #6B7280;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.ActionOutline:hover {
-    background: #F3E8FF;
-    border-color: #E5E7EB;
+.emptyState svg {
+    color: #D1D5DB;
+    margin-bottom: 16px;
 }
 
-
-
-/* Responsive Design */
-@media (max-width: 991px) {
-    .sidebar {
-        width: 80px;
-    }
-
-    .mainContent {
-        margin-left: 80px;
-    }
-
-    .logoText,
-    .sidebarNav .navLink span,
-    .userInfo {
-        display: none;
-    }
-
-    .sidebarNav .navLink {
-        justify-content: center;
-    }
-
-    .userProfile {
-        justify-content: center;
-    }
+.emptyState h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 8px 0;
 }
 
+.emptyState p {
+    font-size: 14px;
+    margin: 0 0 24px 0;
+    max-width: 320px;
+    line-height: 1.5;
+}
+
+.btnGetStarted {
+    background-color: #3F1C6E;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.btnGetStarted:hover {
+    background-color: #2D144F;
+}
+
+/* Responsiveness adjustments for smaller devices */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 0;
-        overflow: hidden;
-    }
-
-    .mainContent {
-        margin-left: 0;
-    }
-
     .contentWrapper {
         padding: 20px 16px;
     }
-
-    .topHeader {
-        padding: 12px 16px;
-    }
-
+    
     .welcomeTitle {
         font-size: 24px;
     }
-
-    .chartContainer {
-        height: 180px;
-    }
-
-    .healthItems {
+    
+    .paymentFailedAlert {
         flex-direction: column;
-        gap: 12px;
+        align-items: flex-start;
+        padding: 16px;
+    }
+    
+    .alertActions {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 12px;
     }
 }
