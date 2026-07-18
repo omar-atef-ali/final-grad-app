@@ -18,12 +18,6 @@ export default function Protected(props) {
     } else {
         return <Navigate to={"/"} />
     }
-
-
-
-
     return <>
-
-
     </>
 }

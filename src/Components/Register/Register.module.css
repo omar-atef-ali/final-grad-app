@@ -40,6 +40,7 @@ body {
   height: 100%;
   object-fit: cover;
 }
+
 /* Background Image */
 /* .background_image {
     position: absolute;
@@ -62,9 +63,11 @@ body {
 }
 
 .logo_icon {
-  /* width: 32px;
-    height: 26px; */
   margin-top: -16px;
+  height: 35px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
 }
 
 .logo_text {
@@ -164,7 +167,8 @@ body {
 
 .form_input {
   width: 100%;
-  padding: 11px 24px 11px 45px; /* top right bottom left */
+  padding: 11px 24px 11px 45px;
+  /* top right bottom left */
   border: 1px solid rgba(10, 10, 10, 0.5);
   border-radius: 8px;
   font-family: "Poppins", sans-serif;
@@ -176,7 +180,7 @@ body {
   height: 39px;
 }
 
-.form_input::placeholder{
+.form_input::placeholder {
   font-size: 12px;
 }
 
@@ -249,6 +253,7 @@ body {
   transition: opacity 0.3s;
   margin-bottom: 20px;
 }
+
 .signup_button:disabled {
   opacity: 0.6;
   pointer-events: none;

@@ -1,23 +1,29 @@
 
 import React, { useContext, useEffect, useState } from 'react'
 import style from "./DashboardLayout.module.css"
+import logo from "../../assets/images/logo.png";
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { userContext } from '../../context/userContext';
 import api from '../../api';
 import toast from 'react-hot-toast';
 import { CartContext } from '../../context/CartContext';
 import { getImageUrl } from "../../utils/imageUrl";
+import ScrollToTop from '../ScrollToTop/ScrollToTop';
 
 
 export default function DashboardLayout() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(true);
   const location = useLocation();
   const pathSegments = location.pathname.split('/').filter(Boolean);
   let currentPage = pathSegments[pathSegments.length - 1] || 'subscription';
   if (currentPage === 'dashboard') currentPage = 'subscription';
-  const breadcrumbName = currentPage.split('-').map(word => word.charAt(0) + word.slice(1)).join(' ');
+  const breadcrumbName = currentPage.split('-').map(word => {
+    if (word.toLowerCase() === 'ai') return 'AI';
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -30,6 +36,8 @@ export default function DashboardLayout() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [userData, setUserData] = useState(null)
   const [displayedImage, setDisplayedImage] = useState(userProfileImage);
+  const [purchasedServices, setPurchasedServices] = useState([]);
+  const [isLoadingServices, setIsLoadingServices] = useState(true);
 
 
 
@@ -458,7 +466,87 @@ export default function DashboardLayout() {
   }, [userProfileImage]);
 
 
+  async function getServices() {
+    if (!userToken) {
+      setPurchasedServices([]);
+      setIsLoadingServices(false);
+      return;
+    }
+    try {
+      const { data } = await api.get("/ClientSubscriptions/my-plan", {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        }
+      });
+      let ids = [];
+      if (data?.planType === "StandardPackage" || data?.packageName) {
+        // Option 1: Standard Package containing services
+        // Lock only if status is canceled or terminated
+        const pkgStatus = (data.subscriptionStatus || data.packageStatus)?.toLowerCase();
+        if (pkgStatus !== "canceled" && pkgStatus !== "terminated") {
+          ids = data.includedFeatures?.map(f => String(f.serviceId)) || [];
+        }
+      } else if (data?.planType === "CustomizedPlan") {
+        // Option 2: Customized Plan with individual services
+        // Lock only features that are canceled or terminated
+        const activeFeatures = data.includedFeatures?.filter(f => {
+          const status = f.subscriptionStatus?.toLowerCase();
+          return status !== "canceled" && status !== "terminated";
+        }) || [];
+        ids = activeFeatures.map(f => String(f.serviceId));
+      } else {
+        // Fallback option
+        const mainStatus = (data?.subscriptionStatus || data?.packageStatus)?.toLowerCase();
+        if (mainStatus !== "canceled" && mainStatus !== "terminated") {
+          const activeFeatures = data?.includedFeatures?.filter(f => {
+            const status = f.subscriptionStatus?.toLowerCase();
+            return status !== "canceled" && status !== "terminated";
+          }) || [];
+          ids = activeFeatures.map(f => String(f.serviceId));
+        }
+      }
+      setPurchasedServices(ids);
+      setIsLoadingServices(false);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      setPurchasedServices([]);
+      setIsLoadingServices(false);
+      if (error.response?.status !== 404) {
+        toast.error(
+          error.response?.data?.errors?.[0] ||
+          "Error fetching services",
+          {
+            position: "top-center",
+            duration: 4000,
+            style: {
+              background:
+                "linear-gradient(to right, rgba(121, 5, 5, 0.9), rgba(171, 0, 0, 0.85))",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              padding: "16px 20px",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              borderRadius: "5px",
+              width: "300px",
+              height: "100%",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
+            },
+            iconTheme: {
+              primary: "#FF4D4F",
+              secondary: "#ffffff",
+            },
+          },
+        );
+      }
+    }
+  }
+
+  useEffect(() => {
+    getServices();
+  }, [userToken]);
+
+
   return <>
+    <ScrollToTop />
 
     <div className={`${style.allparent}`}>
       <div className={`${style.dashboard}`}>
@@ -483,7 +571,7 @@ export default function DashboardLayout() {
               >
                 <i className="fa-solid fa-xmark"></i>
               </button>
-              <div className={`${style.logoIcon}`}></div>
+              <img src={logo} alt="Namaa Logo" className={`${style.logoIcon}`} />
               <div className={`${style.logoText}`}>
                 <div className={`${style.logoTitle}`}>Namaa</div>
                 <div className={`${style.logoSubtitle}`}>AI Platform</div>
@@ -504,17 +592,6 @@ export default function DashboardLayout() {
               <span>Home</span>
             </NavLink>
 
-            {/* <button className={`${style.navItem}`}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M12 13.3337V6.66699" stroke="#6A7282" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M8 13.3337V2.66699" stroke="#6A7282" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M4 13.333V9.33301" stroke="#6A7282" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <span>Services</span>
-              <svg className="ms-auto" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="#99A1AF" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button> */}
 
             <NavLink to="/dashboard/data-sources" className={({ isActive }) =>
               `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
@@ -527,16 +604,69 @@ export default function DashboardLayout() {
               <span>Data Sources</span>
             </NavLink>
 
-            <NavLink to="/dashboard/api-access" className={({ isActive }) =>
-              `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
-            }>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M10.3335 5.00033L11.8668 6.53366C11.9914 6.65581 12.159 6.72423 12.3335 6.72423C12.508 6.72423 12.6755 6.65581 12.8002 6.53366L14.2002 5.13366C14.3223 5.00904 14.3907 4.84149 14.3907 4.66699C14.3907 4.49249 14.3223 4.32495 14.2002 4.20033L12.6668 2.66699" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M14.0001 1.33301L7.6001 7.73301" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M5.00016 14.0003C7.02521 14.0003 8.66683 12.3587 8.66683 10.3337C8.66683 8.30861 7.02521 6.66699 5.00016 6.66699C2.97512 6.66699 1.3335 8.30861 1.3335 10.3337C1.3335 12.3587 2.97512 14.0003 5.00016 14.0003Z" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span>API Access</span>
-            </NavLink>
+            {/* Services Dropdown */}
+            <div className={style.servicesContainer}>
+              <button
+                type="button"
+                className={`${style.navItem} ${style.servicesHeader}`}
+                onClick={() => setIsServicesOpen(!isServicesOpen)}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M12 13.3337V6.66699" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8 13.3337V2.66699" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M4 13.333V9.33301" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>Services</span>
+                <svg
+                  className={`${style.dropdownArrow} ${isServicesOpen ? style.arrowOpen : ""}`}
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                >
+                  <path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="currentColor" strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+
+              <div className={`${style.servicesList} ${isServicesOpen ? style.servicesListOpen : ""}`}>
+                {[
+                  { id: 2, name: 'AI Recommendations', path: '/dashboard/ai-recommendations', showDot: true },
+                  { id: 1, name: 'Business Dashboard', path: '/dashboard/business-dashboard' },
+                  { id: 4, name: 'Agentic Analyst', path: '/dashboard/agentic-analyst' },
+                  { id: 3, name: 'Agentic Chatbot', path: '/dashboard/agentic-chatbot' }
+                ].map((service) => {
+                  const isUnlocked = isLoadingServices || service.alwaysUnlocked || purchasedServices.includes(String(service.id));
+
+                  if (isUnlocked) {
+                    return (
+                      <NavLink
+                        key={service.name}
+                        to={service.path}
+                        className={({ isActive }) =>
+                          `${style.subNavItem} text-decoration-none ${isActive ? style.subActive : ""}`
+                        }
+                      >
+
+                        <span>{service.name}</span>
+                      </NavLink>
+                    );
+                  } else {
+                    return (
+                      <div
+                        key={service.name}
+                        className={`${style.subNavItem} ${style.disabledSubNavItem}`}
+                      >
+                        <span>{service.name}</span>
+                        <svg className={style.lockIcon} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+            </div>
 
             <NavLink to="/dashboard/subscription" end className={({ isActive }) =>
               `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
@@ -561,7 +691,7 @@ export default function DashboardLayout() {
               <span>Billing</span>
             </NavLink>
 
-            <NavLink to="/dashboard/security" className={({ isActive }) =>
+            <NavLink to="/dashboard/settings" className={({ isActive }) =>
               `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
             }>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -570,10 +700,19 @@ export default function DashboardLayout() {
               </svg>
               <span>Settings</span>
             </NavLink>
+            <NavLink to="/profile/info" className={({ isActive }) =>
+              `${style.navItem} text-decoration-none ${isActive ? style.active : ""}`
+            }>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 10.6663C5.50693 10.6663 3.39996 8.55932 3.39996 6C3.39996 3.44068 5.50693 1.33368 8 1.33368C10.4931 1.33368 12.6 3.44068 12.6 6C12.6 8.55932 10.4931 10.6663 8 10.6663Z" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M1.33333 14.6663V12.333C1.33333 11.472 1.6709 10.6468 2.26122 10.0565C2.85155 9.46617 3.67673 9.12958 4.53333 9.12958H11.4667C12.3233 9.12958 13.1485 9.46617 13.7388 10.0565C14.3291 10.6468 14.6667 11.472 14.6667 12.333V14.6663" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span>Back To Profile</span>
+            </NavLink>
           </nav>
 
           {/* <!-- User Profile --> */}
-          <div onClick={() => navigate("/profile/info")} className={`${style.sidebarFooter}`}>
+          <div  className={`${style.sidebarFooter}`}>
             <div className={`${style.userProfile}`}>
               <button className={style.UserAvatarSmall} style={{ overflow: "hidden", padding: 0 }}>
                 {displayedImage ? (
@@ -844,7 +983,7 @@ export default function DashboardLayout() {
               <button className={`${style.btn} ${style.cancel_btn}`} onClick={() => setIsCartOpen(false)}>Cancel</button>
             </div>
           </div>
-          <Outlet />
+          <Outlet context={{ fetchProfile }} />
         </main>
       </div>
     </div>

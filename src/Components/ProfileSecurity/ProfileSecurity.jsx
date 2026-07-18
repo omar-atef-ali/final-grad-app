@@ -7,9 +7,9 @@ import api from "../../api";
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { userContext } from '../../context/userContext';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useOutletContext } from 'react-router-dom';
 export default function ProfileSecurity() {
-  const { userToken } = useContext(userContext)
+  const { fetchProfile: refreshSidebar } = useOutletContext() || {};
   const [isLoading, setIsLoading] = useState(false);
   const [verified, setVerified] = useState(false);
   const [userSessions, setuserSessions] = useState([])

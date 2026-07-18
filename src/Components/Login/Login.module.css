@@ -61,6 +61,13 @@
   color: white;
 }
 
+.logoImg {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
 .logoText {
   font-size: 32px;
   font-weight: 400;

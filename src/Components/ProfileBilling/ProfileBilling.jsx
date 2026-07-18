@@ -240,6 +240,32 @@ export default function ProfileBilling() {
 
   }
 
+  async function downloadInvoice(invoiceId) {
+    try {
+      let response = await api.get(`/Billing/invoices/${invoiceId}/download`, {
+        responseType: 'blob',
+        headers: {
+          "Authorization": `Bearer ${userToken}`
+        }
+      });
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice-${invoiceId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Invoice downloaded successfully!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to download invoice");
+    }
+  }
+
   useEffect(() => {
     if (userToken) {
       getPaymentCards();
@@ -414,41 +440,41 @@ export default function ProfileBilling() {
 
             {/* <!-- Next Upcoming Charges --> */}
             {upcomingCharges?.length > 0 ? (
-            <div className={`${style.sidePanel} `} style={{ position: 'relative' }}>
-              {/* Calendar Icon - top right */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 className={`${style.panelTitle}`}>Next Upcoming Charges</h3>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-              </div>
-              {upcomingCharges.map((item, index) => (
-                <div className={`${style.chargeItem}`} key={index}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span className={`${style.chargeLabel}`} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{
-                        width: '10px',
-                        height: '10px',
-                        borderRadius: '50%',
-                        backgroundColor: '#2765a3ff',
-                        display: 'inline-block',
-                        flexShrink: 0
-                      }} />
-                      {item.itemName}
-                    </span>
-                    {/* Date below package name */}
-                    <span style={{ fontSize: '12px', color: '#9CA3AF', paddingLeft: '18px' }}>
-                      {item.nextRenewalDate}
-                    </span>
-                  </div>
-                  <span className={`${style.chargeAmount}`}>EGP {item.nextRenewalPrice}</span>
+              <div className={`${style.sidePanel} `} style={{ position: 'relative' }}>
+                {/* Calendar Icon - top right */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h3 className={`${style.panelTitle}`}>Next Upcoming Charges</h3>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
                 </div>
-              ))}
+                {upcomingCharges.map((item, index) => (
+                  <div className={`${style.chargeItem}`} key={index}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span className={`${style.chargeLabel}`} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          backgroundColor: '#2765a3ff',
+                          display: 'inline-block',
+                          flexShrink: 0
+                        }} />
+                        {item.itemName}
+                      </span>
+                      {/* Date below package name */}
+                      <span style={{ fontSize: '12px', color: '#9CA3AF', paddingLeft: '18px' }}>
+                        {item.nextRenewalDate}
+                      </span>
+                    </div>
+                    <span className={`${style.chargeAmount}`}>EGP {item.nextRenewalPrice}</span>
+                  </div>
+                ))}
 
-            </div>
+              </div>
             ) : (
               <div className={`${style.sidePanel} `} style={{ position: 'relative' }}>
                 <h3 className={`${style.panelTitle}`}>Next Upcoming Charges</h3>
@@ -499,11 +525,11 @@ export default function ProfileBilling() {
                   </thead>
                   <tbody>
                     {[...invoiceHistory]
-                      .sort((a, b) => new Date(b.lastRenewalDate) - new Date(a.lastRenewalDate))
+                      .sort((a, b) => new Date(b.issuedDate) - new Date(a.issuedDate))
                       .map((invoice) => (
                         <tr key={invoice.invoiceId}>
                           <td className={`${style.invoiceId}`}>{invoice.invoiceId}</td>
-                          <td>{invoice.lastRenewalDate}</td>
+                          <td>{invoice.issuedDate}</td>
 
                           <td style={{ maxWidth: '160px', whiteSpace: 'normal', wordBreak: 'break-word', lineHeight: '1.4' }}>
                             {invoice.plan}
@@ -524,34 +550,27 @@ export default function ProfileBilling() {
                           <td>
                             {invoice.downloadUrl === null ? (
                               // Retry icon - red (Failed / no download)
-                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13.5 2.5v3h-3" stroke="#EF4444" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M13.48 5.5A6 6 0 1 1 11 3.07" stroke="#EF4444" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
+                              <button className={style.btnIconAction} style={{ cursor: 'pointer' }}>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                  <path d="M13.5 2.5v3h-3" stroke="#EF4444" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M13.48 5.5A6 6 0 1 1 11 3.07" stroke="#EF4444" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              </button>
                             ) : (
                               // Download icon - gray (Paid)
-                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="#6A7282" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M4.66602 6.66699L7.99935 10.0003L11.3327 6.66699" stroke="#6A7282" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M8 10V2" stroke="#6A7282" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
+                              <button className={style.btnIconAction} onClick={() => downloadInvoice(invoice.invoiceId)} title="Download Invoice">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                  <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="#6A7282" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M4.66602 6.66699L7.99935 10.0003L11.3327 6.66699" stroke="#6A7282" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                  <path d="M8 10V2" stroke="#6A7282" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              </button>
                             )}
                           </td>
                         </tr>
                       ))}
                   </tbody>
                 </table>
-              </div>
-
-              <div className={`${style.tableFooter}`}>
-                <button className={`${style.btnDownloadAll}`}>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="#8A45B2" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M4.66602 6.66699L7.99935 10.0003L11.3327 6.66699" stroke="#8A45B2" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M8 10V2" stroke="#8A45B2" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Download All
-                </button>
               </div>
             </div>
           </div>

@@ -1,4 +1,3 @@
-
 /* .page_container {
     min-height: 100vh;
     background: white;
@@ -15,15 +14,16 @@
 .hero_background {
     position: absolute;
     inset: 0;
-    
+
 }
 
 .hero_background img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    
+
 }
+
 /* Header Logo */
 .header_logo {
     position: absolute;
@@ -41,6 +41,7 @@
     font-weight: 400;
     font-family: 'Inter', sans-serif;
 }
+
 /* Main Content Card */
 .content_wrapper {
     /* position: absolute;
@@ -48,7 +49,7 @@
     display: flex;
     align-items: center;
     justify-content: center; */
-     position: absolute;
+    position: absolute;
     inset: 0 460px;
     display: flex;
     align-items: center;
@@ -95,13 +96,15 @@
     color: #7F7783;
     margin-bottom: 8px;
 }
-.email_subtitle{
-     font-size: 16px;
+
+.email_subtitle {
+    font-size: 16px;
     line-height: 25px;
     color: #0A0A0A;
     margin-bottom: 24px;
 }
-.instruction{
+
+.instruction {
     font-size: 16px;
     line-height: 25px;
     font-family: 'Poppins', sans-serif;
@@ -112,35 +115,39 @@
 
 
 
-.warning_box{
+.warning_box {
     border-radius: 16px;
     padding: 11px 57px;
     background-color: #FCF0CF;
     border: 1px solid #9C9CA7;
     margin-bottom: 36px;
 }
-.warning_text{
+
+.warning_text {
     font-size: 16px;
     text-align: center;
 }
-.warn_icon{
-  margin-right: 6px;
+
+.warn_icon {
+    margin-right: 6px;
 }
-.p_resend{
+
+.p_resend {
     /* color: #7F7783; */
     color: #0A0A0A;
 }
+
 .resend_link {
-  color: #8A45B2;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 15px;
+    color: #8A45B2;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .disabled {
-  color: #B4AFB6;
-  cursor: not-allowed;
-  pointer-events: none;
+    color: #B4AFB6;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 
@@ -173,7 +180,7 @@
 }
 
 @media (max-width: 480px) {
-    
+
     .main_title {
         font-size: 28px;
         line-height: 32px;
@@ -192,8 +199,14 @@
 }
 
 @media (max-width: 1200px) {
-  .content_wrapper {
-    inset: 32px 32px;
-  }
+    .content_wrapper {
+        inset: 32px 32px;
+    }
 }
 
+.logo_icon {
+  height: 35px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}

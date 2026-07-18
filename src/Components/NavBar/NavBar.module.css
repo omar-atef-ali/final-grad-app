@@ -25,6 +25,13 @@
   cursor: pointer;
 }
 
+.LogoImg {
+  height: 35px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
 .LogoIcon {
   width: 32px;
   height: 32px;
@@ -132,6 +139,49 @@
   color: #0a0a0a;
 }
 
+.NavLinkItem {
+  text-decoration: none;
+  color: #717182;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 0;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.NavLinkItem:focus,
+.NavLinkItem:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.NavLinkItem:hover {
+  color: #0a0a0a;
+}
+
+.NavLinkItem.active {
+  color: #3D1B6A;
+  font-weight: 600;
+}
+
+.UnderlineIndicator {
+  position: absolute;
+  bottom: -4px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #3D1B6A, #8A45B2);
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .UnderlineIndicator {
+    display: block;
+  }
+}
+
 .cart_parent {
   position: relative;
 }
@@ -155,7 +205,7 @@
 
 @media (min-width: 768px) {
   .NavLinks {
-    position: static;
+    position: relative;
     visibility: visible;
     opacity: 1;
     transform: none;
@@ -164,6 +214,7 @@
     padding: 0;
 
     flex-direction: row;
+    gap: 32px;
   }
 }
 
@@ -258,4 +309,16 @@
 .navDemo:hover {
   background-color: #f9fafb;
   color: #0a0a0a;
+}
+
+.IconBtn:focus,
+.IconBtn:focus-visible,
+.UserAvatarSmall:focus,
+.UserAvatarSmall:focus-visible,
+.btnPrimaryCustom:focus,
+.btnPrimaryCustom:focus-visible,
+.navDemo:focus,
+.navDemo:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }

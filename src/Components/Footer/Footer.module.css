@@ -3,6 +3,8 @@
 .footer {
     background: #f9f9f9;
     padding: 54px 0 32px;
+    position: relative;
+    z-index: 5;
 }
 
 .footer_container {

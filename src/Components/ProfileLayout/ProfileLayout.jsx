@@ -258,16 +258,15 @@ export default function ProfileLayout() {
                 <div className={`${style.profile_info}`} >
                   <div className={`${style.info_row}`} >
                     <span className={`${style.info_label}`} >Plan</span>
-                    <span onClick={() => { if (userData?.hasActiveSubscription) navigate('/pricing') }} className={` ${userData?.hasActiveSubscription ? style.badgeBtn : style.badge}`}>{userData?.hasActiveSubscription ? "View More" : "No Plan"}</span>
+                    <span  className={` ${userData?.hasActiveSubscription ? style.badgeBtn : style.badge}`}>{userData?.hasActiveSubscription ? "View More" : "No Plan"}</span>
                   </div>
                   <div className={`${style.info_row}`} >
                     <span className={`${style.info_label}`} >Status</span>
                     <span className={`${style.badge} ${userData?.hasActiveSubscription ? style.badge_success : style.badge_warning}`} >{userData?.hasActiveSubscription ? "Pro" : "Free"}</span>
                   </div>
                 </div>
-
-                <button onClick={() =>  navigate('/dashboard/subscription')} className={`${style.btn_choose_plan} mb-1`}>dashboard</button>
-                <button onClick={() => navigate('/pricing')} className={`${style.btn_choose_plan}`}>Choose a Plan</button>
+                {userData?.hasActiveSubscription ?  <button onClick={() =>  navigate('/dashboard/subscription')} className={`${style.btn_choose_plan} mb-1`}>dashboard</button>:<button onClick={() => navigate('/pricing')} className={`${style.btn_choose_plan}`}>Choose a Plan</button>}
+                
               </div>
 
 

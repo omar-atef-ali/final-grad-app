@@ -65,3 +65,10 @@
     transform: rotate(360deg);
   }
 }
+
+.logo_icon {
+  height: 35px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}

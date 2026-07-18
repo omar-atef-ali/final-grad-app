@@ -38,6 +38,17 @@ import Privacy from "./Components/Privacy/Privacy";
 import DashboardSub from "./Components/DashboardSub/DashboardSub";
 import DashboardLayout from "./Components/DashboardLayout/DashboardLayout";
 import DashboardHome from "./Components/DashboardHome/DashboardHome";
+import Documentation from "./Components/Documentation/Documentation";
+import Overview from "./Components/DocumentationOverview/OverView";
+import DocPlaceholder from "./Components/Documentation/DocPlaceholder";
+import DatabaseOverView from "./Components/DatabaseConnection/DatabaseOverView";
+import SupportedDatabases from "./Components/DatabaseConnection/SupportedDatabases";
+import ConnectionStatus from "./Components/DatabaseConnection/ConnectionStatus";
+import RecommendationOverview from "./Components/RecommendationEngine/Overview";
+import ApiReference from "./Components/RecommendationEngine/ApiReference";
+import AIRecommendations from "./Components/AIRecommendations/AIRecommendations";
+import BusinessDashboard from "./Components/BusinessDashboard/BusinessDashboard";
+import AgenticAnalyst from "./Components/AgenticAnalyst/AgenticAnalyst";
 
 let routers = createBrowserRouter([
   { index: true, element: <Navigate to="/home" replace /> },
@@ -69,6 +80,20 @@ let routers = createBrowserRouter([
       { path: "Setup-page", element: <Setup /> },
       { path: "feature-details/:id", element: <FeatureDetails /> },
       { path: "/cart", element: <Cart /> },
+      {
+        path: 'documentation',
+        element: <Documentation />,
+        children: [
+          { index: true, element: <Navigate to="overview" replace /> },
+          { path: "overview", element: <Overview /> },
+          { path: "database-connection/overview", element: <DatabaseOverView /> },
+          { path: "database-connection/supported-databases", element: <SupportedDatabases /> },
+          { path: "database-connection/status", element: <ConnectionStatus /> },
+          { path: "recommendation-engine/overview", element: <RecommendationOverview /> },
+          { path: "recommendation-engine/api", element: <ApiReference /> },
+          { path: "*", element: <DocPlaceholder /> }
+        ]
+      },
 
       {
         path: "profile",
@@ -83,18 +108,18 @@ let routers = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: <Protected><DashboardLayout /></Protected>,
+    element: <DashboardLayout />,
     children: [
       { index: true, element: <Protected><DashboardSub /></Protected> },
       { path: "subscription", element: <Protected><DashboardSub /></Protected> },
-      { path: "billing", element: <Protected><ProfileBilling /></Protected> }, 
+      { path: "billing", element: <Protected><ProfileBilling /></Protected> },
 
-      { path: "security", element: <Protected><ProfileSecurity /></Protected> },
-      { path: "data-sources", element: <Protected><ProfileDataSources /></Protected> }, 
+      { path: "settings", element: <Protected><ProfileSecurity /></Protected> },
+      { path: "data-sources", element: <Protected><ProfileDataSources /></Protected> },
       { path: "home", element: <Protected><DashboardHome /></Protected> },
-
-
-
+      { path: "ai-recommendations", element: <AIRecommendations /> },
+      { path: "business-dashboard", element: <BusinessDashboard /> },
+      { path: "agentic-analyst", element: <AgenticAnalyst /> },
     ],
   }
 ]);
