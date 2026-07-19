@@ -1,0 +1,287 @@
+.pageWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 45px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1A1D21;
+}
+
+.iframeCard {
+  width: 100%;
+  padding: 10px;
+  min-height: 900px;
+  background: white;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.mainContainer {
+  width: 100%;
+}
+
+/* Header Section */
+.headerContainer {
+  margin-bottom: 24px;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #3F1C6E;
+  margin: 0;
+}
+
+.pendingBadge {
+  background-color: #FFFBEB;
+  color: #D97706;
+  border: 1px solid #FCD34D;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6A7282;
+  margin: 8px 0 0 0;
+}
+
+/* Stepper Card */
+.stepperCard {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  padding: 48px 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: rgba(138, 69, 178, 0.08);
+  /* light purple */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 12px;
+}
+
+.cardDescription {
+  font-size: 15px;
+  color: #6B7280;
+  max-width: 520px;
+  margin: 0 auto 32px auto;
+  line-height: 1.5;
+}
+
+/* Timeline Stepper */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: fit-content;
+  margin: 32px auto;
+  padding: 0;
+}
+
+.timelineStep {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  padding-bottom: 28px;
+}
+
+/* Vertical line connecting steps */
+.timelineStep:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  /* (24px marker width / 2) - 1px line width */
+  top: 24px;
+  bottom: 0;
+  width: 2px;
+  background-color: #E5E7EB;
+}
+
+/* Completed step line */
+.timelineStep.completed:not(:last-child)::after {
+  background-color: #8A45B2;
+}
+
+.stepMarker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* Completed Step */
+.timelineStep.completed .stepMarker {
+  background-color: #8A45B2;
+  border: 2px solid #8A45B2;
+}
+
+.timelineStep.completed .stepLabel {
+  color: #4B5563;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+/* Active Step */
+.timelineStep.active .stepMarker {
+  background-color: #FFFFFF;
+  border: 2px solid #D97706;
+}
+
+.activeInnerCircle {
+  width: 10px;
+  height: 10px;
+  background-color: #D97706;
+  border-radius: 50%;
+}
+
+.timelineStep.active .stepLabel {
+  color: #D97706;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Upcoming Step */
+.timelineStep.upcoming .stepMarker {
+  background-color: #F3F4F6;
+  border: 2px solid #D1D5DB;
+}
+
+.upcomingInnerCircle {
+  width: 10px;
+  height: 10px;
+  background-color: #9CA3AF;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.timelineStep.upcoming .stepLabel {
+  color: #9CA3AF;
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepLabel {
+  font-size: 15px;
+}
+
+/* Info Notice Box */
+.noticeBox {
+  margin-top: 24px;
+  background-color: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 16px 24px;
+  text-align: center;
+}
+
+.noticeText {
+  margin: 0;
+  font-size: 14px;
+  color: #4B5563;
+}
+
+.supportLink {
+  color: #8A45B2;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.supportLink:hover {
+  text-decoration: underline;
+}
+
+/* Empty State Card */
+.empty-state-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 48px 32px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+}
+
+.empty-state-heading {
+  color: #3F1C6E;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.empty-state-description {
+  color: #6A7282;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  background-color: rgba(138, 69, 178, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary-gradient {
+  background: linear-gradient(135deg, #8A45B2 0%, #3D1B6A 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-gradient:hover {
+  box-shadow: 0 4px 15px rgba(138, 69, 178, 0.4);
+  transform: translateY(-1px);
+}

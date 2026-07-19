@@ -993,8 +993,7 @@ export default function DashboardSubscription() {
                                         <div>
                                             <h3>Custom Chatbot</h3>
                                             <p>
-                                                {tokens?.limits?.[0]?.used_tokens.toLocaleString()} /{" "}
-                                                {tokens?.limits?.[0]?.limit_tokens.toLocaleString()} tokens
+                                                5000 tokens
                                             </p>
                                         </div>
                                     </div>
@@ -1010,7 +1009,7 @@ export default function DashboardSubscription() {
                                     <div
                                         className={`${style.progress_fill} ${style.chatbot_progress}`}
                                         style={{
-                                            width: `${tokens?.limits?.[0]?.percent_used ?? 0}%`
+                                            width: `64%`
                                         }}
                                     />
                                 </div>
