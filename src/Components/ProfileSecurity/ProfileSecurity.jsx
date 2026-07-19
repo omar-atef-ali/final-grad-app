@@ -14,6 +14,7 @@ export default function ProfileSecurity() {
   const [verified, setVerified] = useState(false);
   const [userSessions, setuserSessions] = useState([])
   const [searchParams] = useSearchParams()
+  const {userToken} = useContext(userContext)
 
   const UserId = searchParams.get('UserId') ?? ""
   const Code = searchParams.get('Code') ?? ""
